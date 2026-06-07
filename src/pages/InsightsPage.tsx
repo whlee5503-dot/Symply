@@ -3,20 +3,8 @@ import { format, subDays } from 'date-fns'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { getLogs } from '../lib/storage'
 import Card from '../components/ui/Card'
+import { runAnalysis, type AIAnalysis } from '../lib/analyze'
 import type { LogEntry } from '../types'
-
-interface AIPattern {
-  title: string
-  description: string
-  severity: 'positive' | 'neutral' | 'negative'
-}
-
-interface AIAnalysis {
-  patterns: AIPattern[]
-  topTriggers: { trigger: string; impact: string }[]
-  doctorPoints: string[]
-  summary: string
-}
 
 function getTriggerStats(logs: LogEntry[]) {
   const counts: Record<string, number> = {}
@@ -59,18 +47,12 @@ export default function InsightsPage() {
   const logs = Object.values(allLogs)
   const totalDays = logs.length
 
-  async function runAIAnalysis() {
+  async function handleAnalyze() {
     setAiLoading(true)
     setAiError(null)
     try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ logs, userName: 'User' }),
-      })
-      const data = await res.json() as { analysis?: AIAnalysis; error?: string }
-      if (data.error) throw new Error(data.error)
-      setAiAnalysis(data.analysis ?? null)
+      const analysis = await runAnalysis(logs, 'User')
+      setAiAnalysis(analysis)
     } catch (e) {
       setAiError(e instanceof Error ? e.message : 'Analysis failed')
     } finally {
@@ -101,14 +83,16 @@ export default function InsightsPage() {
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>Insights</h1>
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>Based on {totalDays} days of data</p>
+      <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>
+        Based on {totalDays} days of data
+      </p>
 
       {/* Summary stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '16px' }}>
         {[
-          { label: 'Avg Pain',    value: avgPain,            emoji: '🩹', color: '#ef4444' },
-          { label: 'Avg Fatigue', value: avgFatigue,          emoji: '😴', color: '#f59e0b' },
-          { label: 'Avg Sleep',   value: `${avgSleep}h`,      emoji: '🌙', color: '#3b82f6' },
+          { label: 'Avg Pain',    value: avgPain,                 emoji: '🩹', color: '#ef4444' },
+          { label: 'Avg Fatigue', value: avgFatigue,               emoji: '😴', color: '#f59e0b' },
+          { label: 'Avg Sleep',   value: `${avgSleep}h`,           emoji: '🌙', color: '#3b82f6' },
           { label: 'Good days',   value: `${goodDays}/${totalDays}`, emoji: '✨', color: '#22c55e' },
         ].map(({ label, value, emoji, color }) => (
           <Card key={label} padding="14px">
@@ -123,10 +107,10 @@ export default function InsightsPage() {
         ))}
       </div>
 
-      {/* AI Analysis Button */}
-      <Card style={{ marginBottom: '16px', textAlign: 'center' }}>
+      {/* AI Analysis */}
+      <Card style={{ marginBottom: '16px' }}>
         {!aiAnalysis ? (
-          <>
+          <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
             <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>AI Pattern Analysis</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
@@ -136,7 +120,7 @@ export default function InsightsPage() {
               <p style={{ fontSize: '0.82rem', color: '#ef4444', marginBottom: '12px' }}>{aiError}</p>
             )}
             <button
-              onClick={runAIAnalysis}
+              onClick={handleAnalyze}
               disabled={aiLoading}
               style={{
                 padding: '12px 24px',
@@ -153,16 +137,32 @@ export default function InsightsPage() {
             >
               {aiLoading ? '🔄 Analyzing...' : '✨ Analyze My Patterns'}
             </button>
-          </>
+          </div>
         ) : (
-          <>
+          <div>
+            {/* Mock badge */}
+            {aiAnalysis.mock && (
+              <div style={{
+                display: 'inline-block',
+                padding: '2px 10px',
+                borderRadius: '12px',
+                background: '#fef9c3',
+                border: '1px solid #fbbf24',
+                fontSize: '0.72rem',
+                color: '#92400e',
+                fontWeight: 600,
+                marginBottom: '10px',
+              }}>
+                🧪 Demo Analysis — Add credits for personalized AI insights
+              </div>
+            )}
+
             {/* Summary */}
             <div style={{
               padding: '12px',
               background: 'var(--color-primary-light)',
               borderRadius: '10px',
               marginBottom: '12px',
-              textAlign: 'left',
             }}>
               <p style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600 }}>
                 💜 {aiAnalysis.summary}
@@ -179,7 +179,6 @@ export default function InsightsPage() {
                   border: `1px solid ${c.border}`,
                   background: c.bg,
                   marginBottom: '8px',
-                  textAlign: 'left',
                 }}>
                   <p style={{ fontWeight: 700, fontSize: '0.85rem', color: c.text, marginBottom: '4px' }}>
                     {p.title}
@@ -195,7 +194,6 @@ export default function InsightsPage() {
                 padding: '12px',
                 borderRadius: '10px',
                 background: 'var(--color-surface-2)',
-                textAlign: 'left',
                 marginBottom: '8px',
               }}>
                 <p style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: '8px' }}>
@@ -224,7 +222,7 @@ export default function InsightsPage() {
             >
               🔄 Re-analyze
             </button>
-          </>
+          </div>
         )}
       </Card>
 
