@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { format, subDays } from 'date-fns'
 import jsPDF from 'jspdf'
 import { getLogs } from '../lib/storage'
@@ -27,7 +27,6 @@ export default function ReportPage() {
   const allLogs = getLogs()
   const [period, setPeriod] = useState<30 | 60 | 90>(30)
   const [generating, setGenerating] = useState(false)
-  const reportRef = useRef<HTMLDivElement>(null)
 
   const logs = getReportLogs(allLogs, period)
   const totalDays = logs.length
@@ -38,7 +37,6 @@ export default function ReportPage() {
   const flareDays  = logs.filter(e => (e.pain + e.fatigue) / 2 >= 6).length
   const goodDays   = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
 
-  // Trigger frequency
   const triggerCounts: Record<string, number> = {}
   logs.forEach(e => {
     Object.entries(e.triggers).forEach(([k, v]) => {
@@ -50,9 +48,7 @@ export default function ReportPage() {
     .slice(0, 5)
 
   async function generatePDF() {
-    if (!reportRef.current) return
     setGenerating(true)
-
     try {
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
       const pageW = 210
@@ -60,7 +56,6 @@ export default function ReportPage() {
       const contentW = pageW - margin * 2
       let y = margin
 
-      // Header
       pdf.setFillColor(124, 58, 237)
       pdf.rect(0, 0, pageW, 40, 'F')
       pdf.setTextColor(255, 255, 255)
@@ -76,12 +71,11 @@ export default function ReportPage() {
 
       y = 52
 
-      // Disclaimer
       pdf.setFillColor(254, 243, 199)
       pdf.roundedRect(margin, y, contentW, 10, 2, 2, 'F')
       pdf.setTextColor(146, 64, 14)
       pdf.setFontSize(8)
-      pdf.text('⚠  This report is for informational purposes only and does not constitute medical advice.', margin + 4, y + 6.5)
+      pdf.text('This report is for informational purposes only and does not constitute medical advice.', margin + 4, y + 6.5)
       y += 16
 
       if (totalDays === 0) {
@@ -92,7 +86,6 @@ export default function ReportPage() {
         return
       }
 
-      // Section: Summary
       pdf.setTextColor(124, 58, 237)
       pdf.setFontSize(13)
       pdf.setFont('helvetica', 'bold')
@@ -103,14 +96,13 @@ export default function ReportPage() {
       pdf.line(margin, y, margin + contentW, y)
       y += 6
 
-      // Stats grid
       const stats = [
-        { label: 'Avg Pain',     value: avgPain.toFixed(1),    sub: getSeverityLabel(avgPain) },
-        { label: 'Avg Fatigue',  value: avgFatigue.toFixed(1), sub: getSeverityLabel(avgFatigue) },
-        { label: 'Avg Sleep',    value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
-        { label: 'Flare Days',   value: String(flareDays),     sub: `${((flareDays/totalDays)*100).toFixed(0)}% of days` },
-        { label: 'Good Days',    value: String(goodDays),      sub: `${((goodDays/totalDays)*100).toFixed(0)}% of days` },
-        { label: 'Days Logged',  value: String(totalDays),     sub: `of last ${period}` },
+        { label: 'Avg Pain',    value: avgPain.toFixed(1),    sub: getSeverityLabel(avgPain) },
+        { label: 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: getSeverityLabel(avgFatigue) },
+        { label: 'Avg Sleep',   value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
+        { label: 'Flare Days',  value: String(flareDays),     sub: `${((flareDays/totalDays)*100).toFixed(0)}% of days` },
+        { label: 'Good Days',   value: String(goodDays),      sub: `${((goodDays/totalDays)*100).toFixed(0)}% of days` },
+        { label: 'Days Logged', value: String(totalDays),     sub: `of last ${period}` },
       ]
 
       const colW = contentW / 3
@@ -120,7 +112,6 @@ export default function ReportPage() {
         const row = Math.floor(i / 3)
         const x = margin + col * colW
         const cy = y + row * rowH
-
         pdf.setFillColor(245, 243, 255)
         pdf.roundedRect(x + 1, cy, colW - 2, rowH - 2, 3, 3, 'F')
         pdf.setTextColor(124, 58, 237)
@@ -137,7 +128,6 @@ export default function ReportPage() {
       })
       y += rowH * 2 + 8
 
-      // Section: Top Triggers
       if (topTriggers.length > 0) {
         pdf.setTextColor(124, 58, 237)
         pdf.setFontSize(13)
@@ -149,7 +139,7 @@ export default function ReportPage() {
         y += 6
 
         topTriggers.forEach(([key, count]) => {
-          const pct = (count / totalDays)
+          const pct = count / totalDays
           pdf.setTextColor(50, 50, 50)
           pdf.setFontSize(9)
           pdf.setFont('helvetica', 'normal')
@@ -166,7 +156,6 @@ export default function ReportPage() {
         y += 4
       }
 
-      // Section: Daily Log (last 14 entries)
       const recentLogs = logs.slice(-14)
       if (recentLogs.length > 0) {
         pdf.setTextColor(124, 58, 237)
@@ -178,29 +167,25 @@ export default function ReportPage() {
         pdf.line(margin, y, margin + contentW, y)
         y += 6
 
-        // Table header
         pdf.setFillColor(124, 58, 237)
         pdf.rect(margin, y, contentW, 7, 'F')
         pdf.setTextColor(255, 255, 255)
         pdf.setFontSize(8)
         pdf.setFont('helvetica', 'bold')
         const cols = [
-          { label: 'Date',     x: margin + 2,      w: 28 },
-          { label: 'Pain',     x: margin + 32,     w: 14 },
-          { label: 'Fatigue',  x: margin + 48,     w: 18 },
-          { label: 'Sleep',    x: margin + 68,     w: 16 },
-          { label: 'Mood',     x: margin + 86,     w: 14 },
-          { label: 'Activity', x: margin + 102,    w: 20 },
-          { label: 'Triggers', x: margin + 124,    w: contentW - 126 },
+          { label: 'Date',     x: margin + 2 },
+          { label: 'Pain',     x: margin + 32 },
+          { label: 'Fatigue',  x: margin + 48 },
+          { label: 'Sleep',    x: margin + 68 },
+          { label: 'Mood',     x: margin + 86 },
+          { label: 'Activity', x: margin + 102 },
+          { label: 'Triggers', x: margin + 124 },
         ]
         cols.forEach(c => pdf.text(c.label, c.x, y + 5))
         y += 8
 
         recentLogs.forEach((entry, idx) => {
-          if (y > 260) {
-            pdf.addPage()
-            y = margin
-          }
+          if (y > 260) { pdf.addPage(); y = margin }
           if (idx % 2 === 0) {
             pdf.setFillColor(248, 245, 255)
             pdf.rect(margin, y - 1, contentW, 7, 'F')
@@ -208,25 +193,21 @@ export default function ReportPage() {
           pdf.setTextColor(50, 50, 50)
           pdf.setFontSize(7.5)
           pdf.setFont('helvetica', 'normal')
-
           const activeTriggers = Object.entries(entry.triggers)
             .filter(([, v]) => v)
             .map(([k]) => k.replace('_', ' '))
             .join(', ')
-
           pdf.text(format(new Date(entry.id), 'MMM d, yyyy'), cols[0].x, y + 4)
           pdf.text(String(entry.pain),    cols[1].x, y + 4)
           pdf.text(String(entry.fatigue), cols[2].x, y + 4)
           pdf.text(`${entry.sleep}h`,     cols[3].x, y + 4)
           pdf.text(MOOD_EMOJIS[entry.mood].label, cols[4].x, y + 4)
           pdf.text(entry.activity,        cols[5].x, y + 4)
-          pdf.text(activeTriggers || '—', cols[6].x, y + 4, { maxWidth: cols[6].w })
+          pdf.text(activeTriggers || '—', cols[6].x, y + 4, { maxWidth: 50 })
           y += 7
         })
-        y += 4
       }
 
-      // Footer
       pdf.setFillColor(245, 243, 255)
       pdf.rect(0, 282, pageW, 15, 'F')
       pdf.setTextColor(124, 58, 237)
@@ -251,7 +232,6 @@ export default function ReportPage() {
         Generate a clinical summary PDF for your appointment.
       </p>
 
-      {/* Period selector */}
       <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>
           Report Period
@@ -279,12 +259,10 @@ export default function ReportPage() {
         </div>
       </Card>
 
-      {/* Preview */}
-      <Card style={{ marginBottom: '16px' }} ref={reportRef}>
+      <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '12px' }}>
           📋 Report Preview
         </p>
-
         {totalDays === 0 ? (
           <div style={{ textAlign: 'center', padding: '24px' }}>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>📭</p>
@@ -306,12 +284,9 @@ export default function ReportPage() {
                 </div>
               ))}
             </div>
-
             {topTriggers.length > 0 && (
               <div style={{ marginBottom: '12px' }}>
-                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>
-                  Top triggers:
-                </p>
+                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>Top triggers:</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {topTriggers.map(([key, count]) => (
                     <span key={key} style={{
@@ -329,21 +304,13 @@ export default function ReportPage() {
                 </div>
               </div>
             )}
-
-            <div style={{
-              padding: '10px 12px',
-              background: '#fef9c3',
-              borderRadius: '8px',
-              fontSize: '0.78rem',
-              color: '#92400e',
-            }}>
+            <div style={{ padding: '10px 12px', background: '#fef9c3', borderRadius: '8px', fontSize: '0.78rem', color: '#92400e' }}>
               ⚠️ This report is for informational purposes only and does not constitute medical advice.
             </div>
           </>
         )}
       </Card>
 
-      {/* Generate button */}
       <button
         onClick={generatePDF}
         disabled={generating || totalDays === 0}
@@ -352,11 +319,7 @@ export default function ReportPage() {
           padding: '16px',
           borderRadius: '14px',
           border: 'none',
-          background: totalDays === 0
-            ? 'var(--color-border)'
-            : generating
-            ? 'var(--color-border)'
-            : 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
+          background: totalDays === 0 || generating ? 'var(--color-border)' : 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
           color: '#fff',
           fontWeight: 700,
           fontSize: '1rem',
