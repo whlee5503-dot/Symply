@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
 import HomePage from './pages/HomePage'
@@ -5,8 +6,15 @@ import HistoryPage from './pages/HistoryPage'
 import InsightsPage from './pages/InsightsPage'
 import ReportPage from './pages/ReportPage'
 import SettingsPage from './pages/SettingsPage'
+import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
 
 export default function App() {
+  const [onboarded, setOnboarded] = useState(() => hasOnboarded())
+
+  if (!onboarded) {
+    return <OnboardingPage onComplete={() => setOnboarded(true)} />
+  }
+
   return (
     <BrowserRouter>
       <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100dvh' }}>

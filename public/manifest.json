@@ -1,0 +1,34 @@
+{
+  "name": "Symply — Symptom Tracker",
+  "short_name": "Symply",
+  "description": "Track symptoms, discover patterns, and bring evidence to your doctor.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf5ff",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "categories": ["health", "medical"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Check In Today",
+      "short_name": "Check In",
+      "description": "Log today's symptoms",
+      "url": "/",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
