@@ -12,8 +12,10 @@
   "dependencies": {
     "date-fns": "^4.4.0",
     "firebase": "^12.14.0",
+    "html2canvas": "^1.4.1",
     "i18next": "^26.3.1",
     "i18next-browser-languagedetector": "^8.2.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.17.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
