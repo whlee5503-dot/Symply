@@ -1,39 +1,64 @@
+import {
+  doc, setDoc, getDoc, collection,
+  query, orderBy, limit, getDocs, Timestamp
+} from 'firebase/firestore'
+import { db } from './firebase'
 import type { LogEntry } from '../types'
 
 const LOGS_KEY = 'symply-logs'
 
-// 전체 로그 불러오기
-export function getLogs(): Record<string, LogEntry> {
+export function todayId(): string {
+  return new Date().toISOString().split('T')[0]
+}
+
+function getLocalLogs(): Record<string, LogEntry> {
   try {
     const raw = localStorage.getItem(LOGS_KEY)
     return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
+  } catch { return {} }
 }
 
-// 날짜별 로그 불러오기 (YYYY-MM-DD)
-export function getLog(date: string): LogEntry | null {
-  const logs = getLogs()
-  return logs[date] ?? null
-}
-
-// 로그 저장
-export function saveLog(entry: LogEntry): void {
-  const logs = getLogs()
+function saveLocalLog(entry: LogEntry): void {
+  const logs = getLocalLogs()
   logs[entry.id] = entry
   localStorage.setItem(LOGS_KEY, JSON.stringify(logs))
 }
 
-// 최근 N일 로그 불러오기
-export function getRecentLogs(days: number): LogEntry[] {
-  const logs = getLogs()
-  return Object.values(logs)
-    .sort((a, b) => new Date(b.id).getTime() - new Date(a.id).getTime())
+export async function saveLog(entry: LogEntry, uid?: string): Promise<void> {
+  saveLocalLog(entry)
+  if (!uid) return
+  const ref = doc(db, 'logs', uid, 'entries', entry.id)
+  await setDoc(ref, {
+    ...entry,
+    createdAt: Timestamp.fromDate(new Date(entry.createdAt)),
+    updatedAt: Timestamp.fromDate(new Date()),
+  })
+}
+
+export async function getLog(date: string, uid?: string): Promise<LogEntry | null> {
+  if (uid) {
+    try {
+      const snap = await getDoc(doc(db, 'logs', uid, 'entries', date))
+      if (snap.exists()) return snap.data() as LogEntry
+    } catch { /* fall through */ }
+  }
+  return getLocalLogs()[date] ?? null
+}
+
+export async function getRecentLogs(days: number, uid?: string): Promise<LogEntry[]> {
+  if (uid) {
+    try {
+      const q    = query(collection(db, 'logs', uid, 'entries'), orderBy('id', 'desc'), limit(days))
+      const snap = await getDocs(q)
+      if (!snap.empty) return snap.docs.map(d => d.data() as LogEntry)
+    } catch { /* fall through */ }
+  }
+  return Object.values(getLocalLogs())
+    .sort((a, b) => b.id.localeCompare(a.id))
     .slice(0, days)
 }
 
-// 날짜 포맷 헬퍼 (오늘 = YYYY-MM-DD)
-export function todayId(): string {
-  return new Date().toISOString().split('T')[0]
+export function getLogs(): Record<string, LogEntry> {
+  return getLocalLogs()
 }
+
