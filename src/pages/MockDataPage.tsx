@@ -1,9 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { SCENARIOS, injectMockData, clearMockData, type ScenarioKey } from '../lib/mockData'
 
 export default function MockDataPage() {
-  const navigate = useNavigate()
   const [active, setActive] = useState<ScenarioKey | null>(null)
   const [injected, setInjected] = useState(false)
 
@@ -17,6 +15,11 @@ export default function MockDataPage() {
     clearMockData()
     setActive(null)
     setInjected(false)
+  }
+
+  // React Router 대신 직접 이동
+  function goToApp() {
+    window.location.href = '/'
   }
 
   const scenario = active ? SCENARIOS[active] : null
@@ -46,7 +49,7 @@ export default function MockDataPage() {
           </div>
         </div>
         <button
-          onClick={() => navigate('/')}
+          onClick={goToApp}
           style={{
             background: 'rgba(255,255,255,0.2)',
             border: 'none',
@@ -143,7 +146,6 @@ export default function MockDataPage() {
               marginBottom: '12px',
             }}
           >
-            {/* 헤더 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
               <span style={{ fontSize: '1.8rem' }}>{s.emoji}</span>
               <div style={{ flex: 1 }}>
@@ -166,7 +168,6 @@ export default function MockDataPage() {
               </span>
             </div>
 
-            {/* 예상 패턴 */}
             <div style={{ marginBottom: '14px' }}>
               <p style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)', marginBottom: '6px' }}>
                 EXPECTED PATTERNS
@@ -187,7 +188,6 @@ export default function MockDataPage() {
               ))}
             </div>
 
-            {/* 주입 버튼 */}
             <button
               onClick={() => handleInject(key)}
               style={{
@@ -254,7 +254,6 @@ export default function MockDataPage() {
           ))}
         </div>
 
-        {/* 하단 여백 */}
         <div style={{ height: '32px' }} />
       </div>
     </div>

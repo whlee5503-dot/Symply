@@ -31,12 +31,15 @@ function AppRoutes() {
     )
   }
 
-  // /mock 는 로그인 없이 접근 가능
-  if (window.location.pathname === '/mock') {
-    return <MockDataPage />
+  if (!user) {
+    // /mock 는 로그인 없이 접근 가능
+    return (
+      <Routes>
+        <Route path="/mock" element={<MockDataPage />} />
+        <Route path="*"    element={<LoginPage />} />
+      </Routes>
+    )
   }
-
-  if (!user) return <LoginPage />
 
   if (!onboarded) {
     return <OnboardingPage onComplete={() => setOnboarded(true)} />
