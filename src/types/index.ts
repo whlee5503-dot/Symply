@@ -28,13 +28,58 @@ export interface Medication {
   frequency: 'daily' | 'as_needed' | 'weekly'
 }
 
+// ─── Cycle Tracking ────────────────────────────────────────────────────────
+
+export type CyclePhase = 'menstruation' | 'follicular' | 'ovulation' | 'luteal' | null
+
+export interface CycleDay {
+  date: string         // YYYY-MM-DD
+  isMenstruating: boolean
+  flow: 0 | 1 | 2 | 3  // 0=none, 1=light, 2=medium, 3=heavy
+  symptoms: CycleSymptom[]
+  notes: string
+}
+
+export type CycleSymptom =
+  | 'cramps'
+  | 'bloating'
+  | 'headache'
+  | 'mood_swings'
+  | 'breast_tenderness'
+  | 'spotting'
+  | 'clots'
+
+export const CYCLE_SYMPTOM_LABELS: Record<CycleSymptom, string> = {
+  cramps:            'Cramps',
+  bloating:          'Bloating',
+  headache:          'Headache',
+  mood_swings:       'Mood swings',
+  breast_tenderness: 'Breast tenderness',
+  spotting:          'Spotting',
+  clots:             'Clots',
+}
+
+export const FLOW_LABELS: Record<0|1|2|3, string> = {
+  0: 'None',
+  1: 'Light',
+  2: 'Medium',
+  3: 'Heavy',
+}
+
+export const FLOW_COLORS: Record<0|1|2|3, string> = {
+  0: 'transparent',
+  1: '#fca5a5',
+  2: '#f87171',
+  3: '#dc2626',
+}
+
 // ─── Check-in / Log Entry ──────────────────────────────────────────────────
 
 export interface LogEntry {
   id: string          // YYYY-MM-DD
   userId: string
-  pain: number        // 0–10
-  fatigue: number     // 0–10
+  pain: number        // 0-10
+  fatigue: number     // 0-10
   mood: 1 | 2 | 3 | 4 | 5
   sleep: number       // hours
   triggers: TriggerMap
@@ -42,6 +87,7 @@ export interface LogEntry {
   medications: MedicationLog[]
   note: string
   weather?: WeatherData
+  cycle?: CycleDay    // optional cycle data
   createdAt: Date
   updatedAt: Date
 }
@@ -108,3 +154,4 @@ export const MOOD_EMOJIS: Record<number, { emoji: string; label: string }> = {
   4: { emoji: '🙂', label: 'Good' },
   5: { emoji: '😊', label: 'Great' },
 }
+

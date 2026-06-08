@@ -1,16 +1,30 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 
-const TABS = [
-  { icon: '🏠', label: 'Home',     path: '/' },
-  { icon: '📅', label: 'History',  path: '/history' },
-  { icon: '📊', label: 'Insights', path: '/insights' },
-  { icon: '📄', label: 'Report',   path: '/report' },
-  { icon: '⚙️', label: 'Settings', path: '/settings' },
-]
+const PROFILE_KEY = 'symply-profile'
+
+function hasCycleCondition(): boolean {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY)
+    if (!raw) return false
+    const profile = JSON.parse(raw)
+    const conditions: string[] = profile.conditions ?? []
+    return conditions.includes('PCOS') || conditions.includes('endometriosis')
+  } catch { return false }
+}
 
 export default function BottomNav() {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate  = useNavigate()
+  const location  = useLocation()
+  const showCycle = hasCycleCondition()
+
+  const TABS = [
+    { icon: '🏠', label: 'Home',     path: '/' },
+    { icon: '📅', label: 'History',  path: '/history' },
+    ...(showCycle ? [{ icon: '🌸', label: 'Cycle', path: '/cycle' }] : []),
+    { icon: '📊', label: 'Insights', path: '/insights' },
+    { icon: '📄', label: 'Report',   path: '/report' },
+    { icon: '⚙️', label: 'Settings', path: '/settings' },
+  ]
 
   return (
     <nav style={{
@@ -53,3 +67,4 @@ export default function BottomNav() {
     </nav>
   )
 }
+

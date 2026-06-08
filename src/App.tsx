@@ -9,6 +9,7 @@ import ReportPage from './pages/ReportPage'
 import SettingsPage from './pages/SettingsPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
+import CycleTrackerPage from './pages/CycleTrackerPage'
 
 function AppRoutes() {
   const { user, loading } = useAuth()
@@ -40,6 +41,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/"         element={<HomePage />} />
         <Route path="/history"  element={<HistoryPage />} />
+        <Route path="/cycle"    element={<CycleTrackerPage />} />
         <Route path="/insights" element={<InsightsPage />} />
         <Route path="/report"   element={<ReportPage />} />
         <Route path="/settings" element={<SettingsPage />} />
