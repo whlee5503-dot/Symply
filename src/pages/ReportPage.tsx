@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { format, subDays } from 'date-fns'
 import jsPDF from 'jspdf'
-import { getLogs } from '../lib/storage'
+import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
+import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
 import type { LogEntry } from '../types'
 import { MOOD_EMOJIS } from '../types'
@@ -24,11 +25,12 @@ function getSeverityLabel(avg: number): string {
 }
 
 export default function ReportPage() {
-  const allLogs = getLogs()
-  const [period, setPeriod] = useState<30 | 60 | 90>(30)
+  const { user } = useAuth()
+  const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
+  const [period, setPeriod]       = useState<30 | 60 | 90>(30)
   const [generating, setGenerating] = useState(false)
 
-  const logs = getReportLogs(allLogs, period)
+  const logs      = getReportLogs(allLogs, period)
   const totalDays = logs.length
 
   const avgPain    = totalDays > 0 ? (logs.reduce((s, e) => s + e.pain, 0) / totalDays) : 0
@@ -50,9 +52,9 @@ export default function ReportPage() {
   async function generatePDF() {
     setGenerating(true)
     try {
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-      const pageW = 210
-      const margin = 20
+      const pdf      = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+      const pageW    = 210
+      const margin   = 20
       const contentW = pageW - margin * 2
       let y = margin
 
@@ -100,8 +102,8 @@ export default function ReportPage() {
         { label: 'Avg Pain',    value: avgPain.toFixed(1),    sub: getSeverityLabel(avgPain) },
         { label: 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: getSeverityLabel(avgFatigue) },
         { label: 'Avg Sleep',   value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
-        { label: 'Flare Days',  value: String(flareDays),     sub: `${((flareDays/totalDays)*100).toFixed(0)}% of days` },
-        { label: 'Good Days',   value: String(goodDays),      sub: `${((goodDays/totalDays)*100).toFixed(0)}% of days` },
+        { label: 'Flare Days',  value: String(flareDays),     sub: `${((flareDays / totalDays) * 100).toFixed(0)}% of days` },
+        { label: 'Good Days',   value: String(goodDays),      sub: `${((goodDays / totalDays) * 100).toFixed(0)}% of days` },
         { label: 'Days Logged', value: String(totalDays),     sub: `of last ${period}` },
       ]
 
@@ -110,8 +112,8 @@ export default function ReportPage() {
       stats.forEach((s, i) => {
         const col = i % 3
         const row = Math.floor(i / 3)
-        const x = margin + col * colW
-        const cy = y + row * rowH
+        const x   = margin + col * colW
+        const cy  = y + row * rowH
         pdf.setFillColor(245, 243, 255)
         pdf.roundedRect(x + 1, cy, colW - 2, rowH - 2, 3, 3, 'F')
         pdf.setTextColor(124, 58, 237)
@@ -139,11 +141,11 @@ export default function ReportPage() {
         y += 6
 
         topTriggers.forEach(([key, count]) => {
-          const pct = count / totalDays
+          const pct   = count / totalDays
+          const label = key.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
           pdf.setTextColor(50, 50, 50)
           pdf.setFontSize(9)
           pdf.setFont('helvetica', 'normal')
-          const label = key.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
           pdf.text(label, margin, y)
           pdf.text(`${count} days (${(pct * 100).toFixed(0)}%)`, margin + contentW, y, { align: 'right' })
           y += 3
@@ -190,13 +192,13 @@ export default function ReportPage() {
             pdf.setFillColor(248, 245, 255)
             pdf.rect(margin, y - 1, contentW, 7, 'F')
           }
-          pdf.setTextColor(50, 50, 50)
-          pdf.setFontSize(7.5)
-          pdf.setFont('helvetica', 'normal')
           const activeTriggers = Object.entries(entry.triggers)
             .filter(([, v]) => v)
             .map(([k]) => k.replace('_', ' '))
             .join(', ')
+          pdf.setTextColor(50, 50, 50)
+          pdf.setFontSize(7.5)
+          pdf.setFont('helvetica', 'normal')
           pdf.text(format(new Date(entry.id), 'MMM d, yyyy'), cols[0].x, y + 4)
           pdf.text(String(entry.pain),    cols[1].x, y + 4)
           pdf.text(String(entry.fatigue), cols[2].x, y + 4)
@@ -221,6 +223,14 @@ export default function ReportPage() {
     } finally {
       setGenerating(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div style={{ padding: '20px 16px', maxWidth: '480px', margin: '0 auto', textAlign: 'center' }}>
+        <p style={{ color: 'var(--color-text-muted)', marginTop: '40px' }}>Loading report data…</p>
+      </div>
+    )
   }
 
   return (

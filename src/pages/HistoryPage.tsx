@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { format, subMonths, addMonths } from 'date-fns'
-import { getLogs, todayId } from '../lib/storage'
+import { todayId } from '../lib/storage'
+import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
+import { useAuth } from '../contexts/AuthContext'
 import CalendarHeatmap from '../components/CalendarHeatmap'
 import DayDetail from '../components/DayDetail'
 import Card from '../components/ui/Card'
 
 export default function HistoryPage() {
+  const { user } = useAuth()
+  const { logs, loading } = useFirestoreLogs(user?.uid)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<string>(todayId())
-  const logs = getLogs()
 
   const totalDays = Object.keys(logs).length
   const avgPain = totalDays > 0
@@ -17,6 +20,14 @@ export default function HistoryPage() {
   const avgFatigue = totalDays > 0
     ? (Object.values(logs).reduce((s, e) => s + e.fatigue, 0) / totalDays).toFixed(1)
     : '—'
+
+  if (loading) {
+    return (
+      <div style={{ padding: '20px 16px', maxWidth: '480px', margin: '0 auto', textAlign: 'center' }}>
+        <p style={{ color: 'var(--color-text-muted)', marginTop: '40px' }}>Loading your history…</p>
+      </div>
+    )
+  }
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
