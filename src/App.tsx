@@ -10,6 +10,7 @@ import SettingsPage from './pages/SettingsPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
 import CycleTrackerPage from './pages/CycleTrackerPage'
+import MockDataPage from './pages/MockDataPage'
 
 function AppRoutes() {
   const { user, loading } = useAuth()
@@ -30,6 +31,11 @@ function AppRoutes() {
     )
   }
 
+  // /mock 는 로그인 없이 접근 가능
+  if (window.location.pathname === '/mock') {
+    return <MockDataPage />
+  }
+
   if (!user) return <LoginPage />
 
   if (!onboarded) {
@@ -45,6 +51,7 @@ function AppRoutes() {
         <Route path="/insights" element={<InsightsPage />} />
         <Route path="/report"   element={<ReportPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/mock"     element={<MockDataPage />} />
         <Route path="*"         element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
@@ -60,4 +67,3 @@ export default function App() {
     </BrowserRouter>
   )
 }
-
