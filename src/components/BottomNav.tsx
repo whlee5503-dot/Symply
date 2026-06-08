@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 
 const PROFILE_KEY = 'symply-profile'
 
@@ -15,7 +16,11 @@ function hasCycleCondition(): boolean {
 export default function BottomNav() {
   const navigate  = useNavigate()
   const location  = useLocation()
-  const showCycle = hasCycleCondition()
+  const [showCycle, setShowCycle] = useState(hasCycleCondition)
+
+  useEffect(() => {
+    setShowCycle(hasCycleCondition())
+  }, [location.pathname])
 
   const TABS = [
     { icon: '🏠', label: 'Home',     path: '/' },
@@ -67,4 +72,3 @@ export default function BottomNav() {
     </nav>
   )
 }
-
