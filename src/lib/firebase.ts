@@ -3,7 +3,7 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey:            "AIzaSyC58sttIxCfvD0G4SItHEta7VFs448bcmY",
+  apiKey:            "AIzaSyC58sttIxCfvDOG4SItHEta7VFs448bcmY",
   authDomain:        "symply-7f93d.firebaseapp.com",
   projectId:         "symply-7f93d",
   storageBucket:     "symply-7f93d.firebasestorage.app",
@@ -16,4 +16,3 @@ export const app            = initializeApp(firebaseConfig)
 export const auth           = getAuth(app)
 export const db             = getFirestore(app)
 export const googleProvider = new GoogleAuthProvider()
-// cache bust Mon Jun  8 02:18:54 AM UTC 2026
