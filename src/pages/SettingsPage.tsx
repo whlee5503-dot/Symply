@@ -24,6 +24,7 @@ function loadLocalSettings(): UserSettings {
 
 function saveLocalSettings(s: UserSettings) {
   localStorage.setItem(PROFILE_KEY, JSON.stringify(s))
+  window.dispatchEvent(new Event('symply-profile-updated'))
 }
 
 const CONDITION_OPTIONS: { value: ChronicCondition; label: string; emoji: string }[] = [

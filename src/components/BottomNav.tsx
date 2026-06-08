@@ -22,6 +22,18 @@ export default function BottomNav() {
     setShowCycle(hasCycleCondition())
   }, [location.pathname])
 
+  useEffect(() => {
+    function handleStorage() {
+      setShowCycle(hasCycleCondition())
+    }
+    window.addEventListener('storage', handleStorage)
+    window.addEventListener('symply-profile-updated', handleStorage)
+    return () => {
+      window.removeEventListener('storage', handleStorage)
+      window.removeEventListener('symply-profile-updated', handleStorage)
+    }
+  }, [])
+
   const TABS = [
     { icon: '🏠', label: 'Home',     path: '/' },
     { icon: '📅', label: 'History',  path: '/history' },
@@ -33,10 +45,7 @@ export default function BottomNav() {
 
   return (
     <nav style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
+      position: 'fixed', bottom: 0, left: 0, right: 0,
       paddingBottom: 'env(safe-area-inset-bottom)',
       display: 'flex',
       backgroundColor: 'var(--color-surface)',
@@ -46,24 +55,13 @@ export default function BottomNav() {
       {TABS.map((tab) => {
         const active = location.pathname === tab.path
         return (
-          <button
-            key={tab.path}
-            onClick={() => navigate(tab.path)}
-            style={{
-              flex: 1,
-              border: 'none',
-              background: 'none',
-              padding: '8px 4px',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '2px',
-              color: active ? 'var(--color-primary)' : 'var(--color-text-muted)',
-              fontWeight: active ? 600 : 400,
-              fontSize: '0.7rem',
-            }}
-          >
+          <button key={tab.path} onClick={() => navigate(tab.path)} style={{
+            flex: 1, border: 'none', background: 'none',
+            padding: '8px 4px', cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
+            color: active ? 'var(--color-primary)' : 'var(--color-text-muted)',
+            fontWeight: active ? 600 : 400, fontSize: '0.7rem',
+          }}>
             <span style={{ fontSize: '1.3rem' }}>{tab.icon}</span>
             <span>{tab.label}</span>
           </button>
