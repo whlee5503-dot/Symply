@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '../contexts/ThemeContext'
 import { useAuth } from '../contexts/AuthContext'
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { verifyAndActivatePro } from '../lib/polar'
 import UpgradeModal from '../components/UpgradeModal'
@@ -33,7 +33,7 @@ const CONDITION_OPTIONS: { value: ChronicCondition; label: string; emoji: string
   { value: 'PCOS',                 label: 'PCOS',                    emoji: '🔄' },
   { value: 'endometriosis',        label: 'Endometriosis',           emoji: '🌸' },
   { value: 'fibromyalgia',         label: 'Fibromyalgia',            emoji: '💜' },
-  { value: 'lupus',                label: 'Lupus',                   emoji: '🦋' },
+  { value: 'lupus',                label: 'Lupus',                   emoji: '��' },
   { value: 'rheumatoid_arthritis', label: 'Rheumatoid Arthritis',    emoji: '🦴' },
   { value: 'crohns',               label: "Crohn's Disease",         emoji: '🫁' },
   { value: 'ibs',                  label: 'IBS',                     emoji: '⚡' },
@@ -47,11 +47,12 @@ const FREQ_LABELS: Record<Medication['frequency'], string> = {
   weekly:    'Weekly',
 }
 
-function SectionHeader({ children }: { children: React.ReactNode }) {
+function SectionHeader({ children, mt }: { children: React.ReactNode; mt?: number }) {
   return (
     <h2 style={{
       fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase',
-      letterSpacing: '0.08em', color: 'var(--color-text-muted)', marginBottom: '12px',
+      letterSpacing: '0.08em', color: 'var(--color-text-muted)',
+      marginBottom: '12px', marginTop: mt ?? 0,
     }}>
       {children}
     </h2>
@@ -100,29 +101,27 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { user, isPro, signOutUser } = useAuth()
 
-  const [settings, setSettings]           = useState<UserSettings>(loadLocalSettings)
+  const [settings, setSettings]             = useState<UserSettings>(loadLocalSettings)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
-  const [showMedForm, setShowMedForm]     = useState(false)
-  const [medName, setMedName]             = useState('')
-  const [medFreq, setMedFreq]             = useState<Medication['frequency']>('daily')
-  const [saving, setSaving]               = useState(false)
-  const [showUpgrade, setShowUpgrade]     = useState(false)
-  const [proActivated, setProActivated]   = useState(false)
-  const [verifying, setVerifying]         = useState(false)
+  const [showMedForm, setShowMedForm]       = useState(false)
+  const [medName, setMedName]               = useState('')
+  const [medFreq, setMedFreq]               = useState<Medication['frequency']>('daily')
+  const [saving, setSaving]                 = useState(false)
+  const [showUpgrade, setShowUpgrade]       = useState(false)
+  const [proActivated, setProActivated]     = useState(false)
+  const [verifying, setVerifying]           = useState(false)
 
   // 결제 완료 후 리턴 처리
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
+    const params     = new URLSearchParams(window.location.search)
     const success    = params.get('checkout_success')
     const checkoutId = params.get('checkout_id')
-
     if (success === 'true' && checkoutId && user) {
       setVerifying(true)
       verifyAndActivatePro(checkoutId, user.uid).then(ok => {
         setVerifying(false)
         if (ok) {
           setProActivated(true)
-          // URL 파라미터 제거
           window.history.replaceState({}, '', '/settings')
         }
       })
@@ -225,12 +224,12 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* SUBSCRIPTION 섹션 */}
+      {/* SUBSCRIPTION */}
       <SectionHeader>Subscription</SectionHeader>
       <SettingsCard>
         {isPro ? (
           <div style={{ padding: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={{ fontSize: '1.4rem' }}>✨</span>
               <div>
                 <div style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '0.95rem' }}>
@@ -241,10 +240,8 @@ export default function SettingsPage() {
                 </div>
               </div>
               <span style={{
-                marginLeft: 'auto',
-                padding: '3px 10px', borderRadius: '10px',
-                background: 'var(--color-primary-light)',
-                color: 'var(--color-primary)',
+                marginLeft: 'auto', padding: '3px 10px', borderRadius: '10px',
+                background: 'var(--color-primary-light)', color: 'var(--color-primary)',
                 fontSize: '0.72rem', fontWeight: 700,
               }}>ACTIVE</span>
             </div>
@@ -267,16 +264,14 @@ export default function SettingsPage() {
                   background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
                   color: '#fff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
                 }}
-              >
-                Upgrade ✨
-              </button>
+              >Upgrade ✨</button>
             </div>
           </div>
         )}
       </SettingsCard>
 
-      {/* PROFILE 섹션 */}
-      <SectionHeader style={{ marginTop: '20px' }}>Profile</SectionHeader>
+      {/* PROFILE */}
+      <SectionHeader mt={20}>Profile</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -323,8 +318,7 @@ export default function SettingsPage() {
                   flex: 1, padding: '8px', borderRadius: '10px',
                   border: theme === t ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
                   background: theme === t ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
-                  cursor: 'pointer', fontWeight: theme === t ? 700 : 400,
-                  fontSize: '0.82rem',
+                  cursor: 'pointer', fontWeight: theme === t ? 700 : 400, fontSize: '0.82rem',
                   color: theme === t ? 'var(--color-primary)' : 'var(--color-text-muted)',
                 }}
               >
@@ -336,7 +330,7 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* MY CONDITIONS */}
-      <SectionHeader style={{ marginTop: '20px' }}>My Conditions</SectionHeader>
+      <SectionHeader mt={20}>My Conditions</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px' }}>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '12px' }}>
@@ -371,7 +365,7 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* MEDICATIONS */}
-      <SectionHeader style={{ marginTop: '20px' }}>Medications</SectionHeader>
+      <SectionHeader mt={20}>Medications</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px' }}>
           {settings.medications.length === 0 ? (
@@ -458,7 +452,7 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* ABOUT */}
-      <SectionHeader style={{ marginTop: '20px' }}>About</SectionHeader>
+      <SectionHeader mt={20}>About</SectionHeader>
       <SettingsCard>
         <SettingsRow label="Symply"        value="Version 1.0.0 · Sprint 7" icon="💜" />
         <SettingsRow label="Privacy"       value="No ads. No data sales. Ever." icon="🔒" />
@@ -466,7 +460,7 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* ACCOUNT */}
-      <SectionHeader style={{ marginTop: '20px' }}>Account</SectionHeader>
+      <SectionHeader mt={20}>Account</SectionHeader>
       <SettingsCard>
         {!showSignOutConfirm ? (
           <SettingsRow
@@ -510,7 +504,6 @@ export default function SettingsPage() {
         Symply is not a medical device. All medical decisions should be made with your healthcare provider.
       </p>
 
-      {/* Upgrade Modal */}
       {showUpgrade && user && (
         <UpgradeModal
           onClose={() => setShowUpgrade(false)}
