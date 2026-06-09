@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '../contexts/ThemeContext'
 import { useAuth } from '../contexts/AuthContext'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { verifyAndActivatePro } from '../lib/polar'
+import UpgradeModal from '../components/UpgradeModal'
 import type { ChronicCondition, Medication } from '../types'
 
 const PROFILE_KEY = 'symply-profile'
@@ -59,8 +61,9 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 function SettingsCard({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)',
-      borderRadius: '16px', overflow: 'hidden', marginBottom: '24px',
+      background: 'var(--color-surface)', borderRadius: '16px',
+      border: '1px solid var(--color-border)', overflow: 'hidden',
+      marginBottom: '8px',
     }}>
       {children}
     </div>
@@ -68,183 +71,73 @@ function SettingsCard({ children }: { children: React.ReactNode }) {
 }
 
 function SettingsRow({
-  label, sublabel, right, onClick, noBorder,
+  label, value, icon, onClick, danger,
 }: {
-  label: string; sublabel?: string; right?: React.ReactNode
-  onClick?: () => void; noBorder?: boolean
+  label: string; value?: string; icon?: string
+  onClick?: () => void; danger?: boolean
 }) {
   return (
-    <div onClick={onClick} style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '14px 16px',
-      borderBottom: noBorder ? 'none' : '1px solid var(--color-border)',
-      cursor: onClick ? 'pointer' : 'default', gap: '12px',
-    }}>
-      <div>
-        <div style={{ fontSize: '0.95rem', color: 'var(--color-text)', fontWeight: 500 }}>{label}</div>
-        {sublabel && (
-          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>{sublabel}</div>
-        )}
-      </div>
-      {right}
-    </div>
-  )
-}
-
-function ThemeToggle() {
-  const { mode, setMode } = useTheme()
-  const options = [
-    { value: 'light'  as const, label: 'Light', icon: '☀️' },
-    { value: 'system' as const, label: 'Auto',  icon: '💻' },
-    { value: 'dark'   as const, label: 'Dark',  icon: '🌙' },
-  ]
-  return (
-    <div style={{ display: 'flex', gap: '6px' }}>
-      {options.map(opt => {
-        const active = mode === opt.value
-        return (
-          <button key={opt.value} onClick={() => setMode(opt.value)} style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
-            padding: '6px 10px', borderRadius: '10px',
-            border: `1.5px solid ${active ? 'var(--color-primary)' : 'var(--color-border)'}`,
-            backgroundColor: active ? 'var(--color-primary-light)' : 'transparent',
-            color: active ? 'var(--color-primary)' : 'var(--color-text-muted)',
-            cursor: 'pointer', fontSize: '0.7rem', fontWeight: active ? 700 : 400,
-          }}>
-            <span style={{ fontSize: '1rem' }}>{opt.icon}</span>
-            {opt.label}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
-
-function MedModal({ initial, onSave, onClose }: {
-  initial?: Medication; onSave: (med: Medication) => void; onClose: () => void
-}) {
-  const [name, setName] = useState(initial?.name ?? '')
-  const [freq, setFreq] = useState<Medication['frequency']>(initial?.frequency ?? 'daily')
-
-  const handleSave = () => {
-    const trimmed = name.trim()
-    if (!trimmed) return
-    onSave({ id: initial?.id ?? crypto.randomUUID(), name: trimmed, frequency: freq })
-  }
-
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      display: 'flex', alignItems: 'flex-end',
-      backgroundColor: 'rgba(0,0,0,0.5)',
-    }} onClick={onClose}>
-      <div style={{
-        width: '100%', backgroundColor: 'var(--color-surface)',
-        borderRadius: '20px 20px 0 0', padding: '24px 20px 40px',
-      }} onClick={e => e.stopPropagation()}>
-        <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '20px', color: 'var(--color-text)' }}>
-          {initial ? 'Edit Medication' : 'Add Medication'}
-        </h3>
-        <label style={{ display: 'block', marginBottom: '12px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>MEDICATION NAME</span>
-          <input autoFocus value={name} onChange={e => setName(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') handleSave() }}
-            placeholder="e.g. Metformin, Ibuprofen"
-            style={{
-              display: 'block', width: '100%', marginTop: '6px',
-              padding: '10px 14px', borderRadius: '12px',
-              border: '1.5px solid var(--color-border)',
-              backgroundColor: 'var(--color-surface-2)',
-              color: 'var(--color-text)', fontSize: '1rem', outline: 'none',
-            }}
-          />
-        </label>
-        <label style={{ display: 'block', marginBottom: '24px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>FREQUENCY</span>
-          <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-            {(Object.keys(FREQ_LABELS) as Medication['frequency'][]).map(f => (
-              <button key={f} onClick={() => setFreq(f)} style={{
-                flex: 1, padding: '8px 4px', borderRadius: '10px',
-                border: `1.5px solid ${freq === f ? 'var(--color-primary)' : 'var(--color-border)'}`,
-                backgroundColor: freq === f ? 'var(--color-primary-light)' : 'transparent',
-                color: freq === f ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                fontWeight: freq === f ? 700 : 400, fontSize: '0.85rem', cursor: 'pointer',
-              }}>
-                {FREQ_LABELS[f]}
-              </button>
-            ))}
-          </div>
-        </label>
-        <button onClick={handleSave} disabled={!name.trim()} style={{
-          width: '100%', padding: '14px', borderRadius: '12px', border: 'none',
-          cursor: name.trim() ? 'pointer' : 'not-allowed',
-          backgroundColor: name.trim() ? 'var(--color-primary)' : 'var(--color-border)',
-          color: name.trim() ? '#fff' : 'var(--color-text-muted)',
-          fontWeight: 700, fontSize: '1rem',
-        }}>
-          Save
-        </button>
+    <div
+      onClick={onClick}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 16px', cursor: onClick ? 'pointer' : 'default',
+        borderBottom: '1px solid var(--color-border)',
+      }}
+    >
+      <span style={{ fontSize: '0.9rem', color: danger ? '#ef4444' : 'var(--color-text)' }}>
+        {label}
+      </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        {value && <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{value}</span>}
+        {icon && <span>{icon}</span>}
       </div>
     </div>
   )
 }
 
-// ─── Sign Out Confirmation Modal ──────────────────────────────────────────
-function SignOutModal({ onConfirm, onClose }: { onConfirm: () => void; onClose: () => void }) {
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      display: 'flex', alignItems: 'flex-end',
-      backgroundColor: 'rgba(0,0,0,0.5)',
-    }} onClick={onClose}>
-      <div style={{
-        width: '100%', backgroundColor: 'var(--color-surface)',
-        borderRadius: '20px 20px 0 0', padding: '24px 20px 40px',
-      }} onClick={e => e.stopPropagation()}>
-        <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '8px', color: 'var(--color-text)' }}>
-          Sign out?
-        </h3>
-        <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', marginBottom: '24px', lineHeight: 1.5 }}>
-          Your data is safely stored in the cloud. You can sign back in anytime.
-        </p>
-        <button onClick={onConfirm} style={{
-          width: '100%', padding: '14px', borderRadius: '12px', border: 'none',
-          backgroundColor: '#ef4444', color: '#fff',
-          fontWeight: 700, fontSize: '1rem', cursor: 'pointer', marginBottom: '10px',
-        }}>
-          Sign out
-        </button>
-        <button onClick={onClose} style={{
-          width: '100%', padding: '10px', border: 'none', background: 'none',
-          color: 'var(--color-text-muted)', fontSize: '0.9rem', cursor: 'pointer',
-        }}>
-          Cancel
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// ─── Main ─────────────────────────────────────────────────────────────────
 export default function SettingsPage() {
-  const { user, signOutUser } = useAuth()
-  const [settings, setSettings] = useState<UserSettings>(loadLocalSettings)
-  const [showMedModal, setShowMedModal] = useState(false)
-  const [editingMed, setEditingMed] = useState<Medication | undefined>()
-  const [showSignOut, setShowSignOut] = useState(false)
-  const [savedFlash, setSavedFlash] = useState(false)
-  const [syncing, setSyncing] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const { user, isPro, signOutUser } = useAuth()
 
-  // Load from Firestore on mount
+  const [settings, setSettings]           = useState<UserSettings>(loadLocalSettings)
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [showMedForm, setShowMedForm]     = useState(false)
+  const [medName, setMedName]             = useState('')
+  const [medFreq, setMedFreq]             = useState<Medication['frequency']>('daily')
+  const [saving, setSaving]               = useState(false)
+  const [showUpgrade, setShowUpgrade]     = useState(false)
+  const [proActivated, setProActivated]   = useState(false)
+  const [verifying, setVerifying]         = useState(false)
+
+  // 결제 완료 후 리턴 처리
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const success    = params.get('checkout_success')
+    const checkoutId = params.get('checkout_id')
+
+    if (success === 'true' && checkoutId && user) {
+      setVerifying(true)
+      verifyAndActivatePro(checkoutId, user.uid).then(ok => {
+        setVerifying(false)
+        if (ok) {
+          setProActivated(true)
+          // URL 파라미터 제거
+          window.history.replaceState({}, '', '/settings')
+        }
+      })
+    }
+  }, [user])
+
+  // Firestore에서 설정 로드
   useEffect(() => {
     if (!user) return
-    const ref = doc(db, 'users', user.uid)
-    getDoc(ref).then(snap => {
+    getDoc(doc(db, 'users', user.uid)).then(snap => {
       if (snap.exists()) {
         const data = snap.data()
         const merged: UserSettings = {
-          name: data.displayName ?? '',
-          conditions: data.conditions ?? [],
+          name:        data.displayName ?? user.displayName ?? '',
+          conditions:  data.conditions  ?? [],
           medications: data.medications ?? [],
         }
         setSettings(merged)
@@ -253,214 +146,378 @@ export default function SettingsPage() {
     })
   }, [user])
 
-  // Save to both localStorage and Firestore
-  const handleSave = async (newSettings: UserSettings) => {
-    setSettings(newSettings)
-    saveLocalSettings(newSettings)
-    setSavedFlash(true)
-    setTimeout(() => setSavedFlash(false), 1200)
-
+  async function saveToFirestore(updated: UserSettings) {
     if (!user) return
-    setSyncing(true)
+    setSaving(true)
     try {
-      await setDoc(doc(db, 'users', user.uid), {
-        displayName:  newSettings.name || user.displayName,
-        email:        user.email,
-        conditions:   newSettings.conditions,
-        medications:  newSettings.medications,
-      }, { merge: true })
+      await updateDoc(doc(db, 'users', user.uid), {
+        displayName: updated.name,
+        conditions:  updated.conditions,
+        medications: updated.medications,
+      })
     } finally {
-      setSyncing(false)
+      setSaving(false)
     }
   }
 
-  const toggleCondition = (c: ChronicCondition) => {
-    const next = {
-      ...settings,
-      conditions: settings.conditions.includes(c)
-        ? settings.conditions.filter(x => x !== c)
-        : [...settings.conditions, c],
+  function updateSettings(patch: Partial<UserSettings>) {
+    const updated = { ...settings, ...patch }
+    setSettings(updated)
+    saveLocalSettings(updated)
+    saveToFirestore(updated)
+  }
+
+  function toggleCondition(c: ChronicCondition) {
+    const conditions = settings.conditions.includes(c)
+      ? settings.conditions.filter(x => x !== c)
+      : [...settings.conditions, c]
+    updateSettings({ conditions })
+  }
+
+  function addMedication() {
+    if (!medName.trim()) return
+    const med: Medication = {
+      id: Date.now().toString(), name: medName.trim(), frequency: medFreq,
     }
-    handleSave(next)
+    updateSettings({ medications: [...settings.medications, med] })
+    setMedName('')
+    setMedFreq('daily')
+    setShowMedForm(false)
   }
 
-  const saveMed = (med: Medication) => {
-    const next = {
-      ...settings,
-      medications: editingMed
-        ? settings.medications.map(m => (m.id === med.id ? med : m))
-        : [...settings.medications, med],
-    }
-    handleSave(next)
-    setShowMedModal(false)
+  function removeMedication(id: string) {
+    updateSettings({ medications: settings.medications.filter(m => m.id !== id) })
   }
 
-  const deleteMed = (id: string) => {
-    handleSave({ ...settings, medications: settings.medications.filter(m => m.id !== id) })
-  }
-
-  const handleSignOut = async () => {
-    await signOutUser()
-    setShowSignOut(false)
-  }
+  const showCycleTab = settings.conditions.includes('PCOS') ||
+    settings.conditions.includes('endometriosis')
 
   return (
-    <div style={{ padding: '24px 16px 8px', color: 'var(--color-text)', maxWidth: 480, margin: '0 auto' }}>
+    <div style={{ padding: '20px 16px 100px', maxWidth: '480px', margin: '0 auto' }}>
+      <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '20px' }}>
+        Settings
+      </h1>
 
-      {/* Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: 800 }}>Settings</h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
-          Personalize your Symply experience
-        </p>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '6px' }}>
-          {savedFlash && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', fontWeight: 600 }}>✓ Saved</span>
-          )}
-          {syncing && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>☁️ Syncing...</span>
-          )}
+      {/* 결제 완료 배너 */}
+      {verifying && (
+        <div style={{
+          padding: '14px 16px', borderRadius: '12px',
+          background: '#ede9fe', border: '1px solid var(--color-primary)',
+          marginBottom: '16px', textAlign: 'center',
+          fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600,
+        }}>
+          ⏳ Verifying your subscription…
         </div>
-      </div>
+      )}
+      {proActivated && (
+        <div style={{
+          padding: '14px 16px', borderRadius: '12px',
+          background: '#dcfce7', border: '1px solid #22c55e',
+          marginBottom: '16px', textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>🎉</div>
+          <div style={{ fontWeight: 700, color: '#15803d', fontSize: '0.95rem' }}>
+            Welcome to Symply Pro!
+          </div>
+          <div style={{ fontSize: '0.78rem', color: '#166534', marginTop: '2px' }}>
+            AI Analysis and PDF Reports are now unlocked.
+          </div>
+        </div>
+      )}
 
-      {/* Profile */}
-      <SectionHeader>Profile</SectionHeader>
+      {/* SUBSCRIPTION 섹션 */}
+      <SectionHeader>Subscription</SectionHeader>
       <SettingsCard>
-        {user && (
-          <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {user.photoURL && (
-              <img src={user.photoURL} alt="" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-            )}
-            <div>
-              <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{user.displayName}</div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>{user.email}</div>
+        {isPro ? (
+          <div style={{ padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '1.4rem' }}>✨</span>
+              <div>
+                <div style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '0.95rem' }}>
+                  Symply Pro
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+                  AI Analysis + Doctor's Report PDF
+                </div>
+              </div>
+              <span style={{
+                marginLeft: 'auto',
+                padding: '3px 10px', borderRadius: '10px',
+                background: 'var(--color-primary-light)',
+                color: 'var(--color-primary)',
+                fontSize: '0.72rem', fontWeight: 700,
+              }}>ACTIVE</span>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.9rem' }}>
+                  Free Plan
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+                  Upgrade to unlock AI & PDF reports
+                </div>
+              </div>
+              <button
+                onClick={() => setShowUpgrade(true)}
+                style={{
+                  padding: '8px 16px', borderRadius: '10px', border: 'none',
+                  background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
+                  color: '#fff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
+                }}
+              >
+                Upgrade ✨
+              </button>
             </div>
           </div>
         )}
-        <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
-          <label style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', fontWeight: 600, display: 'block', marginBottom: '6px' }}>
-            DISPLAY NAME (optional)
-          </label>
-          <input
-            value={settings.name}
-            onChange={e => handleSave({ ...settings, name: e.target.value })}
-            placeholder="e.g. Sarah"
-            style={{
-              width: '100%', padding: '8px 12px', borderRadius: '10px',
-              border: '1.5px solid var(--color-border)',
-              backgroundColor: 'var(--color-surface-2)',
-              color: 'var(--color-text)', fontSize: '0.95rem', outline: 'none',
-            }}
-          />
-        </div>
-        <SettingsRow label="Appearance" sublabel="Light, dark, or follow system" right={<ThemeToggle />} noBorder />
       </SettingsCard>
 
-      {/* Conditions */}
-      <SectionHeader>My Conditions</SectionHeader>
+      {/* PROFILE 섹션 */}
+      <SectionHeader style={{ marginTop: '20px' }}>Profile</SectionHeader>
+      <SettingsCard>
+        <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {user?.photoURL && (
+              <img src={user.photoURL} alt="" style={{ width: 40, height: 40, borderRadius: '50%' }} />
+            )}
+            <div>
+              <div style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+                {user?.displayName ?? 'User'}
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                {user?.email}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
+          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            DISPLAY NAME (optional)
+          </div>
+          <input
+            value={settings.name}
+            onChange={e => updateSettings({ name: e.target.value })}
+            placeholder="Your name"
+            style={{
+              width: '100%', padding: '8px 12px', borderRadius: '8px',
+              border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
+              color: 'var(--color-text)', fontSize: '0.9rem', boxSizing: 'border-box',
+            }}
+          />
+          {saving && <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>Saving…</div>}
+        </div>
+        <div style={{ padding: '14px 16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <span style={{ fontSize: '0.9rem', color: 'var(--color-text)' }}>Appearance</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Light, dark, or follow system</span>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {(['light', 'auto', 'dark'] as const).map(t => (
+              <button
+                key={t}
+                onClick={() => setTheme(t)}
+                style={{
+                  flex: 1, padding: '8px', borderRadius: '10px',
+                  border: theme === t ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                  background: theme === t ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
+                  cursor: 'pointer', fontWeight: theme === t ? 700 : 400,
+                  fontSize: '0.82rem',
+                  color: theme === t ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                }}
+              >
+                {t === 'light' ? '☀️ Light' : t === 'dark' ? '🌙 Dark' : '💻 Auto'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </SettingsCard>
+
+      {/* MY CONDITIONS */}
+      <SectionHeader style={{ marginTop: '20px' }}>My Conditions</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px' }}>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '12px' }}>
             Select all that apply. Used to personalize AI insights.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {CONDITION_OPTIONS.map(c => {
-              const selected = settings.conditions.includes(c.value)
+            {CONDITION_OPTIONS.map(opt => {
+              const selected = settings.conditions.includes(opt.value)
               return (
-                <button key={c.value} onClick={() => toggleCondition(c.value)} style={{
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: '7px 12px', borderRadius: '20px',
-                  border: `1.5px solid ${selected ? 'var(--color-primary)' : 'var(--color-border)'}`,
-                  backgroundColor: selected ? 'var(--color-primary-light)' : 'transparent',
-                  color: selected ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                  fontSize: '0.85rem', fontWeight: selected ? 700 : 400, cursor: 'pointer',
-                }}>
-                  <span>{c.emoji}</span>
-                  {c.label}
-                  {selected && <span>✓</span>}
+                <button
+                  key={opt.value}
+                  onClick={() => toggleCondition(opt.value)}
+                  style={{
+                    padding: '6px 14px', borderRadius: '20px', cursor: 'pointer',
+                    border: selected ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                    background: selected ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
+                    color: selected ? 'var(--color-primary)' : 'var(--color-text)',
+                    fontWeight: selected ? 700 : 400, fontSize: '0.85rem',
+                  }}
+                >
+                  {opt.emoji} {opt.label} {selected ? '✓' : ''}
                 </button>
               )
             })}
           </div>
+          {showCycleTab && (
+            <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', marginTop: '10px' }}>
+              💜 Cycle Tracker tab is enabled for your conditions.
+            </p>
+          )}
         </div>
       </SettingsCard>
 
-      {/* Medications */}
-      <SectionHeader>Medications</SectionHeader>
+      {/* MEDICATIONS */}
+      <SectionHeader style={{ marginTop: '20px' }}>Medications</SectionHeader>
       <SettingsCard>
-        {settings.medications.length === 0 ? (
-          <div style={{ padding: '20px 16px', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.88rem' }}>
-            No medications added yet.
-          </div>
-        ) : (
-          settings.medications.map((med, i) => (
-            <div key={med.id} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '12px 16px',
-              borderBottom: i < settings.medications.length - 1 ? '1px solid var(--color-border)' : 'none',
-            }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{med.name}</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>{FREQ_LABELS[med.frequency]}</div>
+        <div style={{ padding: '14px 16px' }}>
+          {settings.medications.length === 0 ? (
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textAlign: 'center', padding: '8px 0' }}>
+              No medications added yet.
+            </p>
+          ) : (
+            settings.medications.map(med => (
+              <div key={med.id} style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '8px 0', borderBottom: '1px solid var(--color-border)',
+              }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--color-text)' }}>{med.name}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{FREQ_LABELS[med.frequency]}</div>
+                </div>
+                <button
+                  onClick={() => removeMedication(med.id)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', fontSize: '1.1rem' }}
+                >×</button>
               </div>
+            ))
+          )}
+          {!showMedForm ? (
+            <button
+              onClick={() => setShowMedForm(true)}
+              style={{
+                width: '100%', marginTop: '10px', padding: '10px',
+                borderRadius: '10px', border: '1.5px dashed var(--color-border)',
+                background: 'none', color: 'var(--color-primary)',
+                fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+              }}
+            >+ Add Medication</button>
+          ) : (
+            <div style={{ marginTop: '12px' }}>
+              <input
+                value={medName}
+                onChange={e => setMedName(e.target.value)}
+                placeholder="e.g. Metformin, Ibuprofen"
+                style={{
+                  width: '100%', padding: '8px 12px', borderRadius: '8px',
+                  border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
+                  color: 'var(--color-text)', fontSize: '0.9rem',
+                  boxSizing: 'border-box', marginBottom: '8px',
+                }}
+                onClick={e => e.stopPropagation()}
+              />
+              <select
+                value={medFreq}
+                onChange={e => setMedFreq(e.target.value as Medication['frequency'])}
+                style={{
+                  width: '100%', padding: '8px 12px', borderRadius: '8px',
+                  border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
+                  color: 'var(--color-text)', fontSize: '0.9rem',
+                  boxSizing: 'border-box', marginBottom: '8px',
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                <option value="daily">Daily</option>
+                <option value="as_needed">As needed</option>
+                <option value="weekly">Weekly</option>
+              </select>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={() => { setEditingMed(med); setShowMedModal(true) }} style={{
-                  padding: '5px 12px', borderRadius: '8px',
-                  border: '1px solid var(--color-border)', backgroundColor: 'transparent',
-                  color: 'var(--color-text-muted)', fontSize: '0.8rem', cursor: 'pointer',
-                }}>Edit</button>
-                <button onClick={() => deleteMed(med.id)} style={{
-                  padding: '5px 10px', borderRadius: '8px',
-                  border: '1px solid var(--color-danger)', backgroundColor: 'transparent',
-                  color: 'var(--color-danger)', fontSize: '0.8rem', cursor: 'pointer',
-                }}>✕</button>
+                <button
+                  onClick={addMedication}
+                  style={{
+                    flex: 1, padding: '8px', borderRadius: '8px', border: 'none',
+                    background: 'var(--color-primary)', color: '#fff',
+                    fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
+                  }}
+                >Add</button>
+                <button
+                  onClick={() => { setShowMedForm(false); setMedName('') }}
+                  style={{
+                    flex: 1, padding: '8px', borderRadius: '8px',
+                    border: '1px solid var(--color-border)', background: 'none',
+                    color: 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer',
+                  }}
+                >Cancel</button>
               </div>
             </div>
-          ))
-        )}
-        <div style={{ padding: '12px 16px', borderTop: settings.medications.length > 0 ? '1px solid var(--color-border)' : 'none' }}>
-          <button onClick={() => { setEditingMed(undefined); setShowMedModal(true) }} style={{
-            width: '100%', padding: '10px', borderRadius: '10px',
-            border: '1.5px dashed var(--color-primary)',
-            backgroundColor: 'transparent', color: 'var(--color-primary)',
-            fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer',
-          }}>
-            + Add Medication
-          </button>
+          )}
         </div>
       </SettingsCard>
 
-      {/* About */}
-      <SectionHeader>About</SectionHeader>
+      {/* ABOUT */}
+      <SectionHeader style={{ marginTop: '20px' }}>About</SectionHeader>
       <SettingsCard>
-        <SettingsRow label="Symply" sublabel="Version 1.0.0 · Sprint 7" right={<span>💜</span>} />
-        <SettingsRow label="Privacy" sublabel="No ads. No data sales. Ever." right={<span>🔒</span>} />
-        <SettingsRow label="Evidence base" sublabel="WHO · Cochrane · peer-reviewed" right={<span>📚</span>} noBorder />
+        <SettingsRow label="Symply"        value="Version 1.0.0 · Sprint 7" icon="💜" />
+        <SettingsRow label="Privacy"       value="No ads. No data sales. Ever." icon="🔒" />
+        <SettingsRow label="Evidence base" value="WHO · Cochrane · peer-reviewed" icon="📚" />
       </SettingsCard>
 
-      {/* Account */}
-      <SectionHeader>Account</SectionHeader>
+      {/* ACCOUNT */}
+      <SectionHeader style={{ marginTop: '20px' }}>Account</SectionHeader>
       <SettingsCard>
-        <SettingsRow
-          label="Sign out"
-          sublabel={user?.email ?? ''}
-          right={<span style={{ fontSize: '0.8rem', color: '#ef4444' }}>→</span>}
-          onClick={() => setShowSignOut(true)}
-          noBorder
-        />
+        {!showSignOutConfirm ? (
+          <SettingsRow
+            label="Sign out"
+            value={user?.email ?? ''}
+            icon="—"
+            danger
+            onClick={() => setShowSignOutConfirm(true)}
+          />
+        ) : (
+          <div style={{ padding: '16px' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: '12px', textAlign: 'center' }}>
+              Sign out?
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => setShowSignOutConfirm(false)}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: '10px',
+                  border: '1px solid var(--color-border)', background: 'none',
+                  color: 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer',
+                }}
+              >Cancel</button>
+              <button
+                onClick={signOutUser}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: '10px', border: 'none',
+                  background: '#ef4444', color: '#fff',
+                  fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
+                }}
+              >Sign out</button>
+            </div>
+          </div>
+        )}
       </SettingsCard>
 
-      <p style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', textAlign: 'center', lineHeight: 1.5, paddingBottom: '8px' }}>
+      <p style={{
+        fontSize: '0.72rem', color: 'var(--color-text-muted)',
+        textAlign: 'center', marginTop: '24px', lineHeight: 1.5,
+      }}>
         Symply is not a medical device. All medical decisions should be made with your healthcare provider.
       </p>
 
-      {showMedModal && (
-        <MedModal initial={editingMed} onSave={saveMed} onClose={() => setShowMedModal(false)} />
-      )}
-      {showSignOut && (
-        <SignOutModal onConfirm={handleSignOut} onClose={() => setShowSignOut(false)} />
+      {/* Upgrade Modal */}
+      {showUpgrade && user && (
+        <UpgradeModal
+          onClose={() => setShowUpgrade(false)}
+          userEmail={user.email ?? ''}
+          feature="ai"
+        />
       )}
     </div>
   )
 }
-
