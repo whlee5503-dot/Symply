@@ -100,7 +100,7 @@ function SettingsRow({
 
 export default function SettingsPage() {
   const { mode: theme, setMode: setTheme } = useTheme()
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
   const { user, isPro, signOutUser } = useAuth()
 
   const [settings, setSettings]             = useState<UserSettings>(loadLocalSettings)
@@ -196,7 +196,7 @@ export default function SettingsPage() {
   return (
     <div style={{ padding: '20px 16px 100px', maxWidth: '480px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '20px' }}>
-        Settings
+        {t.settings.title}
       </h1>
 
       {/* 결제 완료 배너 */}
@@ -227,7 +227,7 @@ export default function SettingsPage() {
       )}
 
       {/* SUBSCRIPTION */}
-      <SectionHeader>Subscription</SectionHeader>
+      <SectionHeader>{t.settings.subscription_title}</SectionHeader>
       <SettingsCard>
         {isPro ? (
           <div style={{ padding: '16px' }}>
@@ -238,7 +238,7 @@ export default function SettingsPage() {
                   Symply Pro
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                  AI Analysis + Doctor's Report PDF
+                  {t.settings.plan_pro}
                 </div>
               </div>
               <span style={{
@@ -253,7 +253,7 @@ export default function SettingsPage() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.9rem' }}>
-                  Free Plan
+                  {t.settings.plan_free}
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                   Upgrade to unlock AI & PDF reports
@@ -266,14 +266,14 @@ export default function SettingsPage() {
                   background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
                   color: '#fff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
                 }}
-              >Upgrade ✨</button>
+              >{t.settings.upgrade_btn}</button>
             </div>
           </div>
         )}
       </SettingsCard>
 
       {/* PROFILE */}
-      <SectionHeader mt={20}>Profile</SectionHeader>
+      <SectionHeader mt={20}>{t.settings.account_title}</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -292,39 +292,39 @@ export default function SettingsPage() {
         </div>
         <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            DISPLAY NAME (optional)
+            {t.settings.language_label === t.settings.language_label ? "DISPLAY NAME (optional)" : "표시 이름 (선택)"}
           </div>
           <input
             value={settings.name}
             onChange={e => updateSettings({ name: e.target.value })}
-            placeholder="Your name"
+            placeholder={t.settings.language_sub}
             style={{
               width: '100%', padding: '8px 12px', borderRadius: '8px',
               border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
               color: 'var(--color-text)', fontSize: '0.9rem', boxSizing: 'border-box',
             }}
           />
-          {saving && <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>Saving…</div>}
+          {saving && <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>{t.settings.saving}</div>}
         </div>
         <div style={{ padding: '14px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--color-text)' }}>Appearance</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Light, dark, or follow system</span>
+            <span style={{ fontSize: '0.9rem', color: 'var(--color-text)' }}>{t.settings.theme_label}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t.settings.theme_sub}</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['light', 'system', 'dark'] as const).map(t => (
+            {(['light', 'system', 'dark'] as const).map(themeOpt => (
               <button
-                key={t}
-                onClick={() => setTheme(t)}
+                key={themeOpt}
+                onClick={() => setTheme(themeOpt)}
                 style={{
                   flex: 1, padding: '8px', borderRadius: '10px',
-                  border: theme === t ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
-                  background: theme === t ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
-                  cursor: 'pointer', fontWeight: theme === t ? 700 : 400, fontSize: '0.82rem',
-                  color: theme === t ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                  border: theme === themeOpt ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                  background: theme === themeOpt ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
+                  cursor: 'pointer', fontWeight: theme === themeOpt ? 700 : 400, fontSize: '0.82rem',
+                  color: theme === themeOpt ? 'var(--color-primary)' : 'var(--color-text-muted)',
                 }}
               >
-                {t === 'light' ? '☀️ Light' : t === 'dark' ? '🌙 Dark' : '💻 Auto'}
+                {themeOpt === 'light' ? t.settings.theme_light : themeOpt === 'dark' ? t.settings.theme_dark : t.settings.theme_auto}
               </button>
             ))}
           </div>
@@ -355,11 +355,11 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* MY CONDITIONS */}
-      <SectionHeader mt={20}>My Conditions</SectionHeader>
+      <SectionHeader mt={20}>{t.settings.conditions_title}</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px' }}>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '12px' }}>
-            Select all that apply. Used to personalize AI insights.
+            {t.settings.conditions_sub}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {CONDITION_OPTIONS.map(opt => {
@@ -390,7 +390,7 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* MEDICATIONS */}
-      <SectionHeader mt={20}>Medications</SectionHeader>
+      <SectionHeader mt={20}>{t.settings.medications_title}</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px' }}>
           {settings.medications.length === 0 ? (
@@ -423,7 +423,7 @@ export default function SettingsPage() {
                 background: 'none', color: 'var(--color-primary)',
                 fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
               }}
-            >+ Add Medication</button>
+            >{t.settings.add_med}</button>
           ) : (
             <div style={{ marginTop: '12px' }}>
               <input
@@ -449,9 +449,9 @@ export default function SettingsPage() {
                 }}
                 onClick={e => e.stopPropagation()}
               >
-                <option value="daily">Daily</option>
-                <option value="as_needed">As needed</option>
-                <option value="weekly">Weekly</option>
+                <option value="daily">{t.settings.med_freq_daily}</option>
+                <option value="as_needed">{t.settings.med_freq_asneeded}</option>
+                <option value="weekly">{t.settings.med_freq_weekly}</option>
               </select>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
@@ -461,7 +461,7 @@ export default function SettingsPage() {
                     background: 'var(--color-primary)', color: '#fff',
                     fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
                   }}
-                >Add</button>
+                >{t.settings.med_add_btn}</button>
                 <button
                   onClick={() => { setShowMedForm(false); setMedName('') }}
                   style={{
@@ -485,7 +485,7 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* ACCOUNT */}
-      <SectionHeader mt={20}>Account</SectionHeader>
+      <SectionHeader mt={20}>{t.settings.account_title}</SectionHeader>
       <SettingsCard>
         {!showSignOutConfirm ? (
           <SettingsRow
@@ -498,7 +498,7 @@ export default function SettingsPage() {
         ) : (
           <div style={{ padding: '16px' }}>
             <p style={{ fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: '12px', textAlign: 'center' }}>
-              Sign out?
+              {t.settings.sign_out_confirm}
             </p>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                   border: '1px solid var(--color-border)', background: 'none',
                   color: 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer',
                 }}
-              >Cancel</button>
+              >{t.settings.sign_out_cancel}</button>
               <button
                 onClick={signOutUser}
                 style={{
@@ -516,7 +516,7 @@ export default function SettingsPage() {
                   background: '#ef4444', color: '#fff',
                   fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
                 }}
-              >Sign out</button>
+              >{t.settings.sign_out_yes}</button>
             </div>
           </div>
         )}
