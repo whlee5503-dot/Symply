@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const PROFILE_KEY = 'symply-profile'
 
@@ -14,8 +15,9 @@ function hasCycleCondition(): boolean {
 }
 
 export default function BottomNav() {
-  const navigate  = useNavigate()
-  const location  = useLocation()
+  const navigate   = useNavigate()
+  const location   = useLocation()
+  const { t }      = useLanguage()
   const [showCycle, setShowCycle] = useState(hasCycleCondition)
 
   useEffect(() => {
@@ -23,9 +25,7 @@ export default function BottomNav() {
   }, [location.pathname])
 
   useEffect(() => {
-    function handleStorage() {
-      setShowCycle(hasCycleCondition())
-    }
+    function handleStorage() { setShowCycle(hasCycleCondition()) }
     window.addEventListener('storage', handleStorage)
     window.addEventListener('symply-profile-updated', handleStorage)
     return () => {
@@ -35,12 +35,12 @@ export default function BottomNav() {
   }, [])
 
   const TABS = [
-    { icon: '🏠', label: 'Home',     path: '/' },
-    { icon: '📅', label: 'History',  path: '/history' },
-    ...(showCycle ? [{ icon: '🌸', label: 'Cycle', path: '/cycle' }] : []),
-    { icon: '📊', label: 'Insights', path: '/insights' },
-    { icon: '📄', label: 'Report',   path: '/report' },
-    { icon: '⚙️', label: 'Settings', path: '/settings' },
+    { icon: '🏠', label: t.nav.home,     path: '/' },
+    { icon: '📅', label: t.nav.history,  path: '/history' },
+    ...(showCycle ? [{ icon: '🌸', label: t.nav.cycle, path: '/cycle' }] : []),
+    { icon: '📊', label: t.nav.insights, path: '/insights' },
+    { icon: '📄', label: t.nav.report,   path: '/report' },
+    { icon: '⚙️', label: t.nav.settings, path: '/settings' },
   ]
 
   return (

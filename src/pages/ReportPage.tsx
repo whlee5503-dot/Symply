@@ -4,6 +4,8 @@ import jsPDF from 'jspdf'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
+import UpgradeModal from '../components/UpgradeModal'
+import { useLanguage } from '../contexts/LanguageContext'
 import type { LogEntry } from '../types'
 import { MOOD_EMOJIS } from '../types'
 
@@ -25,10 +27,12 @@ function getSeverityLabel(avg: number): string {
 }
 
 export default function ReportPage() {
-  const { user } = useAuth()
+  const { user, isPro } = useAuth()
+  const { t } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
-  const [period, setPeriod]       = useState<30 | 60 | 90>(30)
+  const [period, setPeriod]         = useState<30 | 60 | 90>(30)
   const [generating, setGenerating] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   const logs      = getReportLogs(allLogs, period)
   const totalDays = logs.length
@@ -50,6 +54,10 @@ export default function ReportPage() {
     .slice(0, 5)
 
   async function generatePDF() {
+    if (!isPro) {
+      setShowUpgrade(true)
+      return
+    }
     setGenerating(true)
     try {
       const pdf      = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
@@ -236,11 +244,51 @@ export default function ReportPage() {
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>
-        Doctor's Report
+        {t.report.title}
       </h1>
       <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>
-        Generate a clinical summary PDF for your appointment.
+        {t.report.subtitle}
       </p>
+
+      {/* Pro 잠금 배너 (Free 유저용) */}
+      {!isPro && (
+        <div style={{
+          padding: '14px 16px',
+          borderRadius: '14px',
+          background: 'linear-gradient(135deg, #7c3aed15, #a855f715)',
+          border: '1.5px solid var(--color-primary)',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          <span style={{ fontSize: '1.5rem' }}>📄</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--color-primary)', marginBottom: '2px' }}>
+              {t.report.pro_banner_title}
+            </p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
+              {t.report.pro_banner_body}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowUpgrade(true)}
+            style={{
+              padding: '8px 14px',
+              borderRadius: '10px',
+              border: 'none',
+              background: 'var(--color-primary)',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: '0.78rem',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
 
       <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>
@@ -277,16 +325,16 @@ export default function ReportPage() {
           <div style={{ textAlign: 'center', padding: '24px' }}>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>📭</p>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-              No data in the last {period} days. Start logging to generate a report.
+              {t.report.no_data.replace('{n}', String(period))}
             </p>
           </div>
         ) : (
           <>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '12px' }}>
               {[
-                { label: 'Days logged', value: totalDays },
-                { label: 'Avg pain',    value: avgPain.toFixed(1) },
-                { label: 'Flare days',  value: flareDays },
+                { label: t.report.days_logged, value: totalDays },
+                { label: t.report.avg_pain,    value: avgPain.toFixed(1) },
+                { label: t.report.flare_days,  value: flareDays },
               ].map(({ label, value }) => (
                 <div key={label} style={{ textAlign: 'center', padding: '10px', background: 'var(--color-surface-2)', borderRadius: '10px' }}>
                   <div style={{ fontWeight: 700, fontSize: '1.3rem', color: 'var(--color-primary)' }}>{value}</div>
@@ -329,15 +377,32 @@ export default function ReportPage() {
           padding: '16px',
           borderRadius: '14px',
           border: 'none',
-          background: totalDays === 0 || generating ? 'var(--color-border)' : 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
+          background: totalDays === 0 || generating
+            ? 'var(--color-border)'
+            : isPro
+              ? 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))'
+              : 'linear-gradient(135deg, #7c3aed, #a855f7)',
           color: '#fff',
           fontWeight: 700,
           fontSize: '1rem',
           cursor: totalDays === 0 || generating ? 'not-allowed' : 'pointer',
         }}
       >
-        {generating ? '⏳ Generating PDF...' : '📄 Download PDF Report'}
+        {generating
+          ? '⏳ Generating PDF...'
+          : isPro
+            ? '📄 Download PDF Report'
+            : '🔒 Unlock PDF Report — Pro'}
       </button>
+
+      {/* Upgrade Modal */}
+      {showUpgrade && user && (
+        <UpgradeModal
+          onClose={() => setShowUpgrade(false)}
+          userEmail={user.email ?? ''}
+          feature="report"
+        />
+      )}
     </div>
   )
 }

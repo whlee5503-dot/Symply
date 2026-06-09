@@ -1,0 +1,54 @@
+import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
+import { en } from '../i18n/en'
+import { ko } from '../i18n/ko'
+
+export type Language = 'en' | 'ko'
+const STORAGE_KEY = 'symply-language'
+
+const TRANSLATIONS = { en, ko }
+
+interface LanguageContextValue {
+  language: Language
+  setLanguage: (lang: Language) => void
+  t: typeof en
+}
+
+const LanguageContext = createContext<LanguageContextValue | null>(null)
+
+function detectLanguage(): Language {
+  // 1) 저장된 설정 우선
+  const saved = localStorage.getItem(STORAGE_KEY)
+  if (saved === 'en' || saved === 'ko') return saved
+  // 2) 브라우저 언어 자동 감지
+  const browserLang = navigator.language.toLowerCase()
+  if (browserLang.startsWith('ko')) return 'ko'
+  return 'en'
+}
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(detectLanguage)
+
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang)
+    localStorage.setItem(STORAGE_KEY, lang)
+  }, [])
+
+  // html lang 속성 동기화 (접근성)
+  useEffect(() => {
+    document.documentElement.lang = language
+  }, [language])
+
+  const t = TRANSLATIONS[language]
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  )
+}
+
+export function useLanguage(): LanguageContextValue {
+  const ctx = useContext(LanguageContext)
+  if (!ctx) throw new Error('useLanguage must be used within LanguageProvider')
+  return ctx
+}

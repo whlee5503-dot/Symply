@@ -4,6 +4,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
+import UpgradeModal from '../components/UpgradeModal'
+import { useLanguage } from '../contexts/LanguageContext'
 import { runAnalysis, type AIAnalysis } from '../lib/analyze'
 import type { LogEntry } from '../types'
 
@@ -25,14 +27,12 @@ function severityColor(s: string) {
   return { bg: 'var(--color-surface-2)', border: 'var(--color-border)', text: 'var(--color-text-muted)' }
 }
 
-// 실제 데이터에서 패턴을 계산해 Mock 플레어 예측 인사이트를 생성
 function getMockFlareInsights(logs: LogEntry[]) {
   if (logs.length < 7) return null
 
   const sorted = [...logs].sort((a, b) => a.id.localeCompare(b.id))
   const insights: { icon: string; title: string; body: string; tag: string }[] = []
 
-  // 패턴 1: 수면 부족 → 다음 날 통증 상관
   const sleepPainPairs = sorted.slice(0, -1).map((entry, i) => ({
     sleep: entry.sleep,
     nextPain: sorted[i + 1].pain,
@@ -53,7 +53,6 @@ function getMockFlareInsights(logs: LogEntry[]) {
     }
   }
 
-  // 패턴 2: 트리거 + 통증 상관
   const triggerKeys = ['gluten', 'dairy', 'sugar', 'caffeine', 'alcohol', 'stress'] as const
   for (const key of triggerKeys) {
     const withTrigger    = logs.filter(l => l.triggers[key as keyof typeof l.triggers])
@@ -68,12 +67,11 @@ function getMockFlareInsights(logs: LogEntry[]) {
           body: `On days you logged ${key}, your average pain was ${avgWith.toFixed(1)} vs ${avgWithout.toFixed(1)} on days without it. Consider tracking this correlation with your doctor.`,
           tag: 'Trigger',
         })
-        break // 트리거 하나만 표시
+        break
       }
     }
   }
 
-  // 패턴 3: 활동량 vs 피로
   const highActivity = logs.filter(l => l.activity === 'high')
   const lowActivity  = logs.filter(l => l.activity === 'low')
   if (highActivity.length >= 3 && lowActivity.length >= 3) {
@@ -93,11 +91,13 @@ function getMockFlareInsights(logs: LogEntry[]) {
 }
 
 export default function InsightsPage() {
-  const { user } = useAuth()
+  const { user, isPro } = useAuth()
+  const { t } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null)
   const [aiLoading, setAiLoading]   = useState(false)
   const [aiError, setAiError]       = useState<string | null>(null)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   const logs      = Object.values(allLogs)
   const totalDays = logs.length
@@ -117,6 +117,10 @@ export default function InsightsPage() {
   }, [allLogs])
 
   async function handleAnalyze() {
+    if (!isPro) {
+      setShowUpgrade(true)
+      return
+    }
     setAiLoading(true)
     setAiError(null)
     try {
@@ -140,7 +144,7 @@ export default function InsightsPage() {
   if (totalDays === 0) {
     return (
       <div style={{ padding: '20px 16px', maxWidth: '480px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>Insights</h1>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.title}</h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>Your patterns will appear here.</p>
         <Card style={{ textAlign: 'center', padding: '40px 24px' }}>
           <p style={{ fontSize: '2rem', marginBottom: '12px' }}>📊</p>
@@ -160,18 +164,18 @@ export default function InsightsPage() {
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>Insights</h1>
+      <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.title}</h1>
       <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>
-        Based on {totalDays} days of data
+        {t.insights.subtitle_days.replace('{n}', String(totalDays))}
       </p>
 
       {/* Summary stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '16px' }}>
         {[
-          { label: 'Avg Pain',    value: avgPain,                   emoji: '🩹', color: '#ef4444' },
-          { label: 'Avg Fatigue', value: avgFatigue,                 emoji: '😴', color: '#f59e0b' },
-          { label: 'Avg Sleep',   value: `${avgSleep}h`,             emoji: '🌙', color: '#3b82f6' },
-          { label: 'Good days',   value: `${goodDays}/${totalDays}`, emoji: '✨', color: '#22c55e' },
+          { label: t.insights.avg_pain,    value: avgPain,                   emoji: '🩹', color: '#ef4444' },
+          { label: t.insights.avg_fatigue, value: avgFatigue,                 emoji: '😴', color: '#f59e0b' },
+          { label: 'Avg Sleep',   value: `${avgSleep}${t.common.hours}`,             emoji: '🌙', color: '#3b82f6' },
+          { label: t.insights.good_days,   value: `${goodDays}/${totalDays}`, emoji: '✨', color: '#22c55e' },
         ].map(({ label, value, emoji, color }) => (
           <Card key={label} padding="14px">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -185,7 +189,7 @@ export default function InsightsPage() {
         ))}
       </div>
 
-      {/* Mock Flare Prediction Insights */}
+      {/* Pattern Insights (Free — 맛보기) */}
       {flareInsights && flareInsights.length > 0 && (
         <Card style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
@@ -239,14 +243,55 @@ export default function InsightsPage() {
         </Card>
       )}
 
-      {/* AI Analysis */}
+      {/* AI Analysis (Pro) */}
       <Card style={{ marginBottom: '16px' }}>
-        {!aiAnalysis ? (
+        {!isPro && !aiAnalysis ? (
+          /* Pro 잠금 UI */
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #7c3aed22, #a855f722)',
+              border: '1px solid var(--color-primary)',
+              fontSize: '0.72rem',
+              color: 'var(--color-primary)',
+              fontWeight: 700,
+              marginBottom: '12px',
+            }}>
+              ✨ PRO FEATURE
+            </div>
+            <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
+            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>AI Pattern Analysis</p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '16px', lineHeight: 1.5 }}>
+              Claude AI analyzes your symptom history and delivers personalized insights —
+              like "sleep under 6h raises your pain by 40%."
+            </p>
+            <button
+              onClick={() => setShowUpgrade(true)}
+              style={{
+                padding: '12px 28px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+              }}
+            >
+              ✨ Unlock AI Analysis
+            </button>
+          </div>
+        ) : !aiAnalysis ? (
+          /* Pro 유저 — 분석 전 */
           <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
             <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>AI Pattern Analysis</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
-              Claude AI will analyze your symptom data and identify personalized patterns.
+              {t.insights.ai_subtitle}
             </p>
             {aiError && (
               <p style={{ fontSize: '0.82rem', color: '#ef4444', marginBottom: '12px' }}>{aiError}</p>
@@ -267,10 +312,11 @@ export default function InsightsPage() {
                 cursor: aiLoading ? 'not-allowed' : 'pointer',
               }}
             >
-              {aiLoading ? '🔄 Analyzing...' : '✨ Analyze My Patterns'}
+              {aiLoading ? t.insights.ai_analyzing : t.insights.ai_analyze}
             </button>
           </div>
         ) : (
+          /* 분석 결과 */
           <div>
             {aiAnalysis.mock && (
               <div style={{
@@ -392,7 +438,7 @@ export default function InsightsPage() {
             <div key={key} style={{ marginBottom: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                 <span style={{ fontSize: '0.85rem', color: 'var(--color-text)', textTransform: 'capitalize' }}>{key.replace('_', ' ')}</span>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{count} days</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{count} {t.insights.days}</span>
               </div>
               <div style={{ height: '6px', borderRadius: '3px', background: 'var(--color-surface-2)' }}>
                 <div style={{
@@ -405,6 +451,15 @@ export default function InsightsPage() {
             </div>
           ))}
         </Card>
+      )}
+
+      {/* Upgrade Modal */}
+      {showUpgrade && user && (
+        <UpgradeModal
+          onClose={() => setShowUpgrade(false)}
+          userEmail={user.email ?? ''}
+          feature="ai"
+        />
       )}
     </div>
   )
