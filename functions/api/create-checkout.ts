@@ -27,15 +27,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       userEmail: string
     }
 
-    const response = await fetch('https://sandbox-api.polar.sh/v1/checkouts/', {
+    const response = await fetch('https://api.polar.sh/v1/checkouts/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${context.env.POLAR_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        product_id:   '093c0c82-a1e8-4069-8c90-caae15535f97',
-        success_url:  successUrl,
+        product_id:     'd2a91a4d-e453-4107-9b28-9b1c81211ada',
+        success_url:    successUrl,
         customer_email: userEmail,
       }),
     })

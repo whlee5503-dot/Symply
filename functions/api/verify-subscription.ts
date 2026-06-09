@@ -31,8 +31,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       })
     }
 
-    // Polar에서 checkout 상태 확인
-    const res = await fetch(`https://sandbox-api.polar.sh/v1/checkouts/${checkoutId}`, {
+    const res = await fetch(`https://api.polar.sh/v1/checkouts/${checkoutId}`, {
       headers: {
         Authorization: `Bearer ${context.env.POLAR_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
