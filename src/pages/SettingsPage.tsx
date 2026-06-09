@@ -98,7 +98,7 @@ function SettingsRow({
 }
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme()
+  const { mode: theme, setMode: setTheme } = useTheme()
   const { user, isPro, signOutUser } = useAuth()
 
   const [settings, setSettings]             = useState<UserSettings>(loadLocalSettings)
@@ -240,7 +240,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               <span style={{
-                marginLeft: 'auto', padding: '3px 10px', borderRadius: '10px',
+                marginLeft: 'system', padding: '3px 10px', borderRadius: '10px',
                 background: 'var(--color-primary-light)', color: 'var(--color-primary)',
                 fontSize: '0.72rem', fontWeight: 700,
               }}>ACTIVE</span>
@@ -310,7 +310,7 @@ export default function SettingsPage() {
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Light, dark, or follow system</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['light', 'auto', 'dark'] as const).map(t => (
+            {(['light', 'system', 'dark'] as const).map(t => (
               <button
                 key={t}
                 onClick={() => setTheme(t)}
