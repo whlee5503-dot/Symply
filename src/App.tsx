@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
 import CycleTrackerPage from './pages/CycleTrackerPage'
 import MockDataPage from './pages/MockDataPage'
+import LandingPage from './pages/LandingPage'
 
 function AppRoutes() {
   const { user, loading } = useAuth()
@@ -32,11 +33,12 @@ function AppRoutes() {
   }
 
   if (!user) {
-    // /mock 는 로그인 없이 접근 가능
     return (
       <Routes>
+        <Route path="/"     element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/mock" element={<MockDataPage />} />
-        <Route path="*"    element={<LoginPage />} />
+        <Route path="*"    element={<LandingPage />} />
       </Routes>
     )
   }
