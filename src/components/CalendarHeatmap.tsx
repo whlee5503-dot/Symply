@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns'
+import { useLanguage } from '../contexts/LanguageContext'
 import type { LogEntry } from '../types'
 
 interface Props {
@@ -28,9 +29,12 @@ function getDayLabel(entry: LogEntry | undefined): string {
   return 'Bad day'
 }
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+// WEEKDAYS는 컴포넌트 내부에서 t로 처리
 
 export default function CalendarHeatmap({ logs, month, onDayClick, selectedDate }: Props) {
+  const { t } = useLanguage()
+  const WEEKDAYS = t.history.weekdays
+
   const days = useMemo(() => {
     const start = startOfMonth(month)
     const end = endOfMonth(month)
@@ -85,11 +89,11 @@ export default function CalendarHeatmap({ logs, month, onDayClick, selectedDate 
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
         {[
-          { color: '#22c55e', label: 'Good' },
-          { color: '#86efac', label: 'Okay' },
-          { color: '#f59e0b', label: 'Rough' },
-          { color: '#ef4444', label: 'Bad' },
-          { color: 'var(--color-surface-2)', label: 'No data' },
+          { color: '#22c55e', label: t.history.cal_good },
+          { color: '#86efac', label: t.history.cal_okay },
+          { color: '#f59e0b', label: t.history.cal_rough },
+          { color: '#ef4444', label: t.history.cal_bad },
+          { color: 'var(--color-surface-2)', label: t.history.cal_nodata },
         ].map(({ color, label }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: color, border: '1px solid var(--color-border)' }} />

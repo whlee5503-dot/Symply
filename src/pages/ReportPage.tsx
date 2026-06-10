@@ -311,7 +311,7 @@ export default function ReportPage() {
                 color: period === d ? 'var(--color-primary)' : 'var(--color-text-muted)',
               }}
             >
-              {d} days
+              {d === 30 ? t.report.period_30 : d === 60 ? t.report.period_60 : t.report.period_90}
             </button>
           ))}
         </div>

@@ -6,9 +6,11 @@ import { useAuth } from '../contexts/AuthContext'
 import CalendarHeatmap from '../components/CalendarHeatmap'
 import DayDetail from '../components/DayDetail'
 import Card from '../components/ui/Card'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function HistoryPage() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const { logs, loading } = useFirestoreLogs(user?.uid)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<string>(todayId())
@@ -32,18 +34,18 @@ export default function HistoryPage() {
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>
-        History
+        {t.history.title}
       </h1>
       <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>
-        {totalDays} days logged
+        {t.history.days_logged_count.replace('{n}', String(totalDays))}
       </p>
 
       {/* Summary stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '16px' }}>
         {[
-          { label: 'Days logged', value: totalDays, emoji: '📅' },
-          { label: 'Avg pain',    value: avgPain,   emoji: '🩹' },
-          { label: 'Avg fatigue', value: avgFatigue, emoji: '😴' },
+          { label: t.history.days_logged, value: totalDays, emoji: '📅' },
+          { label: t.history.avg_pain, value: avgPain, emoji: '🩹' },
+          { label: t.history.avg_fatigue, value: avgFatigue, emoji: '😴' },
         ].map(({ label, value, emoji }) => (
           <Card key={label} padding="12px" style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '1.2rem' }}>{emoji}</div>
@@ -85,6 +87,19 @@ export default function HistoryPage() {
         dateId={selectedDate}
         entry={logs[selectedDate] ?? null}
       />
+      {totalDays >= 7 && (
+        <div
+          style={{
+            marginTop: '8px', padding: '12px 16px', borderRadius: '12px',
+            background: 'var(--color-primary-light)',
+            border: '1px solid var(--color-primary)',
+            fontSize: '0.85rem', color: 'var(--color-primary)',
+            fontWeight: 600, textAlign: 'center',
+          }}
+        >
+          {t.history.next_insight}
+        </div>
+      )}
     </div>
   )
 }

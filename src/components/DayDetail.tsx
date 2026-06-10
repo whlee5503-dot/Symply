@@ -2,6 +2,7 @@ import { format, parseISO } from 'date-fns'
 import type { LogEntry } from '../types'
 import { MOOD_EMOJIS } from '../types'
 import Card from './ui/Card'
+import { useLanguage } from '../contexts/LanguageContext'
 
 interface Props {
   dateId: string
@@ -10,6 +11,7 @@ interface Props {
 
 export default function DayDetail({ dateId, entry }: Props) {
   const date = parseISO(dateId)
+  const { t } = useLanguage()
 
   if (!entry) {
     return (
@@ -19,7 +21,7 @@ export default function DayDetail({ dateId, entry }: Props) {
           {format(date, 'MMMM d, yyyy')}
         </p>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
-          No check-in recorded for this day.
+          {t.history.no_checkin}
         </p>
       </Card>
     )
@@ -39,10 +41,10 @@ export default function DayDetail({ dateId, entry }: Props) {
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '12px' }}>
         {[
-          { label: 'Pain',    value: entry.pain,    emoji: '🩹' },
-          { label: 'Fatigue', value: entry.fatigue,  emoji: '😴' },
-          { label: 'Sleep',   value: `${entry.sleep}h`, emoji: '🌙' },
-          { label: 'Mood',    value: MOOD_EMOJIS[entry.mood].emoji, emoji: '' },
+          { label: t.history.pain, value: entry.pain, emoji: '🩹' },
+          { label: t.history.fatigue, value: entry.fatigue, emoji: '😴' },
+          { label: t.history.sleep, value: `${entry.sleep}h`, emoji: '🌙' },
+          { label: t.history.mood, value: MOOD_EMOJIS[entry.mood].emoji, emoji: '' },
         ].map(({ label, value, emoji }) => (
           <div key={label} style={{
             background: 'var(--color-surface-2)',
@@ -59,7 +61,7 @@ export default function DayDetail({ dateId, entry }: Props) {
 
       {/* Activity */}
       <div style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Activity:</span>
+        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t.history.activity_label}</span>
         <span style={{
           padding: '2px 10px',
           borderRadius: '12px',
@@ -76,7 +78,7 @@ export default function DayDetail({ dateId, entry }: Props) {
       {/* Triggers */}
       {activeTriggers.length > 0 && (
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Triggers:</span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t.history.triggers_label}</span>
           {activeTriggers.map(t => (
             <span key={t} style={{
               padding: '2px 10px',
