@@ -7,15 +7,15 @@ import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
 
-const TRIGGERS: { key: keyof TriggerMap; label: string; emoji: string }[] = [
-  { key: 'gluten',       label: 'Gluten',     emoji: '🌾' },
-  { key: 'dairy',        label: 'Dairy',      emoji: '🥛' },
-  { key: 'sugar',        label: 'Sugar',      emoji: '🍬' },
-  { key: 'caffeine',     label: 'Caffeine',   emoji: '☕' },
-  { key: 'alcohol',      label: 'Alcohol',    emoji: '🍷' },
-  { key: 'stress',       label: 'Stress',     emoji: '😤' },
-  { key: 'poor_sleep',   label: 'Poor sleep', emoji: '😴' },
-  { key: 'overexertion', label: 'Overdid it', emoji: '🏃' },
+const TRIGGER_KEYS: { key: keyof TriggerMap; tKey: string; emoji: string }[] = [
+  { key: 'gluten',       tKey: 'trigger_gluten',       emoji: '🌾' },
+  { key: 'dairy',        tKey: 'trigger_dairy',        emoji: '🥛' },
+  { key: 'sugar',        tKey: 'trigger_sugar',        emoji: '🍬' },
+  { key: 'caffeine',     tKey: 'trigger_caffeine',     emoji: '☕' },
+  { key: 'alcohol',      tKey: 'trigger_alcohol',      emoji: '🍷' },
+  { key: 'stress',       tKey: 'trigger_stress',       emoji: '😤' },
+  { key: 'poor_sleep',   tKey: 'trigger_poor_sleep',   emoji: '😴' },
+  { key: 'overexertion', tKey: 'trigger_overexertion', emoji: '🏃' },
 ]
 
 function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
@@ -167,7 +167,7 @@ export default function HomePage() {
       <Card style={{ marginBottom: '12px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>{t.home.triggers}</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
-          {TRIGGERS.map(({ key, label, emoji }) => (
+          {TRIGGER_KEYS.map(({ key, tKey, emoji }) => (
             <button key={key} onClick={() => toggleTrigger(key)} style={{
               padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
               border: triggers[key] ? '2px solid var(--color-secondary)' : '1px solid var(--color-border)',
@@ -175,7 +175,7 @@ export default function HomePage() {
               fontSize: '0.82rem', fontWeight: triggers[key] ? 600 : 400,
               color: triggers[key] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
             }}>
-              {emoji} {label}
+              {emoji} {t.home[tKey as keyof typeof t.home] as string}
             </button>
           ))}
         </div>
@@ -191,7 +191,7 @@ export default function HomePage() {
               color: noTriggers ? '#15803d' : 'var(--color-text-muted)',
             }}
           >
-            {noTriggers ? '✅ No triggers today' : '✓ No triggers today'}
+            {noTriggers ? t.home.no_triggers_active : t.home.no_triggers_btn}
           </button>
         )}
       </Card>

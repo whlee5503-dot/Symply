@@ -395,7 +395,7 @@ export default function SettingsPage() {
         <div style={{ padding: '14px 16px' }}>
           {settings.medications.length === 0 ? (
             <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textAlign: 'center', padding: '8px 0' }}>
-              No medications added yet.
+              {t.settings.no_meds_yet}
             </p>
           ) : (
             settings.medications.map(med => (
