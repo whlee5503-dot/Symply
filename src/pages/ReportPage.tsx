@@ -363,7 +363,7 @@ export default function ReportPage() {
               </div>
             )}
             <div style={{ padding: '10px 12px', background: '#fef9c3', borderRadius: '8px', fontSize: '0.78rem', color: '#92400e' }}>
-              ⚠️ This report is for informational purposes only and does not constitute medical advice.
+              {t.report.disclaimer_short}
             </div>
           </>
         )}
