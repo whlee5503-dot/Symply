@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
 import AnchorSlider from '../components/ui/AnchorSlider'
-import { PAIN_ANCHORS, FATIGUE_ANCHORS, MOOD_EMOJIS } from '../types'
+import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, MOOD_EMOJIS } from '../types'
 import type { LogEntry, TriggerMap } from '../types'
 import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
@@ -28,7 +28,7 @@ function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
 export default function HomePage() {
   const today    = todayId()
   const { user } = useAuth()
-  const { t }    = useLanguage()
+  const { t, language } = useLanguage()
 
   const [pain,          setPain]          = useState(0)
   const [fatigue,       setFatigue]       = useState(0)
@@ -112,10 +112,10 @@ export default function HomePage() {
       </div>
 
       <Card style={{ marginBottom: '12px' }}>
-        <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} />
+        <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} anchorsKo={PAIN_ANCHORS_KO} />
       </Card>
       <Card style={{ marginBottom: '12px' }}>
-        <AnchorSlider label={t.home.fatigue} value={fatigue} onChange={setFatigue} anchors={FATIGUE_ANCHORS} />
+        <AnchorSlider label={t.home.fatigue} value={fatigue} onChange={setFatigue} anchors={FATIGUE_ANCHORS} anchorsKo={FATIGUE_ANCHORS_KO} />
       </Card>
 
       <Card style={{ marginBottom: '12px' }}>
@@ -220,7 +220,7 @@ export default function HomePage() {
         color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer',
         transition: 'all 0.2s ease',
       }}>
-        {saved ? `✓ ${t.home.saved}` : alreadyLogged ? t.home.save.replace('Check-in', 'Log') : t.home.save}
+        {saved ? (language === 'ko' ? '✓ 저장됨! 기록 탭에서 히스토리를 확인해보세요 →' : '✓ Saved! Check History tab for your log →') : alreadyLogged ? t.home.save.replace('Check-in', 'Log') : t.home.save}
       </button>
     </div>
   )

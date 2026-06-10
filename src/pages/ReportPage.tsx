@@ -344,7 +344,7 @@ export default function ReportPage() {
             </div>
             {topTriggers.length > 0 && (
               <div style={{ marginBottom: '12px' }}>
-                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>Top triggers:</p>
+                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>{t.report.top_triggers}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {topTriggers.map(([key, count]) => (
                     <span key={key} style={{

@@ -1,58 +1,57 @@
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function LoginPage() {
   const { signInWithGoogle } = useAuth()
+  const { language, setLanguage } = useLanguage()
+
+  const text = {
+    en: {
+      sub: 'Track your symptoms, discover patterns,\nand bring evidence to your doctor.',
+      google: 'Continue with Google',
+      noads: 'No ads. No data sales. Ever.',
+      encrypted: 'Your data is encrypted and belongs to you.',
+    },
+    ko: {
+      sub: '증상을 기록하고, 패턴을 발견하고,\n의사에게 증거를 가져가세요.',
+      google: 'Google로 계속하기',
+      noads: '광고 없음. 데이터 판매 없음.',
+      encrypted: '데이터는 암호화되어 있으며 당신의 것입니다.',
+    },
+  }
+  const t = text[language]
 
   return (
-    <div style={{
-      minHeight: '100dvh',
-      backgroundColor: 'var(--color-bg)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '32px 24px',
-      color: 'var(--color-text)',
-    }}>
+    <div style={{ minHeight: '100dvh', backgroundColor: 'var(--color-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', color: 'var(--color-text)' }}>
       <div style={{ maxWidth: 400, width: '100%', textAlign: 'center' }}>
         <div style={{ fontSize: '3rem', marginBottom: '16px' }}>💜</div>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>symply</h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '48px' }}>
-          Track your symptoms, discover patterns,<br />and bring evidence to your doctor.
+          {t.sub.split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
         </p>
         <button
           onClick={signInWithGoogle}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            padding: '14px 24px',
-            borderRadius: '14px',
-            border: '1.5px solid var(--color-border)',
-            backgroundColor: 'var(--color-surface)',
-            color: 'var(--color-text)',
-            fontSize: '1rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-          }}
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '16px 24px', borderRadius: '14px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)', color: 'var(--color-text)', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
         >
           <svg width="20" height="20" viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.2 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.6 26.9 36.5 24 36.5c-5.2 0-9.6-3.6-11.2-8.4l-6.5 5C9.6 39.6 16.3 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.4-2.5 4.4-4.6 5.8l6.2 5.2C40.7 36 44 30.4 44 24c0-1.3-.1-2.7-.4-4z"/>
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
           </svg>
-          Continue with Google
+          {t.google}
         </button>
-        <p style={{ marginTop: '32px', fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-          No ads. No data sales. Ever.<br />
-          Your data is encrypted and belongs to you.
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: '24px', lineHeight: 1.6 }}>
+          {t.noads}<br/>{t.encrypted}
         </p>
+        {/* 언어 토글 */}
+        <button
+          onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
+          style={{ marginTop: '24px', padding: '6px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}
+        >
+          {language === 'ko' ? '🇺🇸 English' : '🇰🇷 한국어'}
+        </button>
       </div>
     </div>
   )
 }
-

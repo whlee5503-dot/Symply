@@ -155,3 +155,20 @@ export const MOOD_EMOJIS: Record<number, { emoji: string; label: string }> = {
   5: { emoji: '😊', label: 'Great' },
 }
 
+
+export const PAIN_ANCHORS_KO: PainAnchor[] = [
+  { level: 0,  label: '없음',   description: '통증 없음. 완전히 정상.',                        color: '#22c55e' },
+  { level: 2,  label: '약함',   description: '신경 쓰이지만 하던 일을 계속할 수 있음.',          color: '#86efac' },
+  { level: 4,  label: '보통',   description: '집중하기 어렵지만 참을 수 있음. 심한 두통 수준.',  color: '#f59e0b' },
+  { level: 6,  label: '심함',   description: '하던 일을 멈춰야 함. 심한 치통 수준.',             color: '#f97316' },
+  { level: 8,  label: '극심함', description: '말하기도 힘듦. 신장결석·심한 골절 수준.',          color: '#ef4444' },
+  { level: 10, label: '최악',   description: '출산 진통 수준. 의식이 흐려질 정도.',              color: '#991b1b' },
+]
+
+export const FATIGUE_ANCHORS_KO: FatigueAnchor[] = [
+  { level: 0,  label: '활기참',  description: '완전히 활기차고 기민한 상태.' },
+  { level: 3,  label: '피곤함',  description: '오후에 좀 처지는 느낌.' },
+  { level: 5,  label: '기력없음', description: '소파에서 일어나기 싫음.' },
+  { level: 7,  label: '탈진',    description: '씻는 것도 힘듦.' },
+  { level: 10, label: '완전탈진', description: '침대에서 전혀 못 일어남.' },
+]
