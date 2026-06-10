@@ -5,40 +5,43 @@ import { PAIN_ANCHORS, FATIGUE_ANCHORS, MOOD_EMOJIS } from '../types'
 import type { LogEntry, TriggerMap } from '../types'
 import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const TRIGGERS: { key: keyof TriggerMap; label: string; emoji: string }[] = [
   { key: 'gluten',       label: 'Gluten',     emoji: '🌾' },
   { key: 'dairy',        label: 'Dairy',      emoji: '🥛' },
   { key: 'sugar',        label: 'Sugar',      emoji: '🍬' },
   { key: 'caffeine',     label: 'Caffeine',   emoji: '☕' },
-  { key: 'alcohol',      label: 'Alcohol',    emoji: '��' },
+  { key: 'alcohol',      label: 'Alcohol',    emoji: '🍷' },
   { key: 'stress',       label: 'Stress',     emoji: '😤' },
   { key: 'poor_sleep',   label: 'Poor sleep', emoji: '😴' },
   { key: 'overexertion', label: 'Overdid it', emoji: '🏃' },
 ]
 
-function getGreeting(): string {
+function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
   const h = new Date().getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 18) return 'Good afternoon'
-  return 'Good evening'
+  if (h < 12) return t.home.greeting_morning
+  if (h < 18) return t.home.greeting_afternoon
+  return t.home.greeting_evening
 }
 
 export default function HomePage() {
-  const today     = todayId()
-  const { user }  = useAuth()
+  const today    = todayId()
+  const { user } = useAuth()
+  const { t }    = useLanguage()
 
-  const [pain,         setPain]         = useState(0)
-  const [fatigue,      setFatigue]      = useState(0)
-  const [mood,         setMood]         = useState<1|2|3|4|5>(3)
-  const [sleep,        setSleep]        = useState(7)
-  const [activity,     setActivity]     = useState<'low'|'medium'|'high'>('medium')
-  const [triggers,     setTriggers]     = useState<TriggerMap>({
+  const [pain,          setPain]          = useState(0)
+  const [fatigue,       setFatigue]       = useState(0)
+  const [mood,          setMood]          = useState<1|2|3|4|5>(3)
+  const [sleep,         setSleep]         = useState(7)
+  const [activity,      setActivity]      = useState<'low'|'medium'|'high'>('medium')
+  const [triggers,      setTriggers]      = useState<TriggerMap>({
     gluten: false, dairy: false, sugar: false, caffeine: false,
     alcohol: false, stress: false, poor_sleep: false, overexertion: false,
   })
-  const [note,         setNote]         = useState('')
-  const [saved,        setSaved]        = useState(false)
+  const [noTriggers,    setNoTriggers]    = useState(false)
+  const [note,          setNote]          = useState('')
+  const [saved,         setSaved]         = useState(false)
   const [alreadyLogged, setAlreadyLogged] = useState(false)
 
   useEffect(() => {
@@ -52,12 +55,24 @@ export default function HomePage() {
         setTriggers(existing.triggers)
         setNote(existing.note)
         setAlreadyLogged(true)
+        // 저장된 트리거가 모두 false이면 noTriggers로 표시
+        const anyTrigger = Object.values(existing.triggers).some(v => v)
+        if (!anyTrigger) setNoTriggers(true)
       }
     })
   }, [today, user?.uid])
 
   function toggleTrigger(key: keyof TriggerMap) {
+    setNoTriggers(false)
     setTriggers(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  function handleNoTriggers() {
+    setNoTriggers(true)
+    setTriggers({
+      gluten: false, dairy: false, sugar: false, caffeine: false,
+      alcohol: false, stress: false, poor_sleep: false, overexertion: false,
+    })
   }
 
   function handleSave() {
@@ -73,26 +88,38 @@ export default function HomePage() {
     setTimeout(() => setSaved(false), 2500)
   }
 
+  const anyTriggerSelected = Object.values(triggers).some(v => v)
+
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
       <div style={{ marginBottom: '20px' }}>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)' }}>
-          {getGreeting()} 💜
+          {getGreeting(t)} 💜
         </h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '2px' }}>
-          {alreadyLogged ? "You've logged today — update anytime." : "How are you feeling today?"}
+          {alreadyLogged ? t.home.already_logged : t.home.subtitle}
         </p>
+        {alreadyLogged && (
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            marginTop: '6px', padding: '4px 10px', borderRadius: '20px',
+            background: '#dcfce7', border: '1px solid #22c55e',
+            fontSize: '0.75rem', color: '#15803d', fontWeight: 600,
+          }}>
+            ✏️ {t.home.edit}
+          </div>
+        )}
       </div>
 
       <Card style={{ marginBottom: '12px' }}>
-        <AnchorSlider label="Pain" value={pain} onChange={setPain} anchors={PAIN_ANCHORS} />
+        <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} />
       </Card>
       <Card style={{ marginBottom: '12px' }}>
-        <AnchorSlider label="Fatigue" value={fatigue} onChange={setFatigue} anchors={FATIGUE_ANCHORS} />
+        <AnchorSlider label={t.home.fatigue} value={fatigue} onChange={setFatigue} anchors={FATIGUE_ANCHORS} />
       </Card>
 
       <Card style={{ marginBottom: '12px' }}>
-        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>Mood</p>
+        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>{t.home.mood}</p>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {([1,2,3,4,5] as const).map((m) => (
             <button key={m} onClick={() => setMood(m)} style={{
@@ -111,17 +138,17 @@ export default function HomePage() {
 
       <Card style={{ marginBottom: '12px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)' }}>Sleep</p>
+          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)' }}>{t.home.sleep}</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button onClick={() => setSleep(s => Math.max(0, s - 0.5))} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--color-border)', background: 'var(--color-surface-2)', cursor: 'pointer', fontSize: '1rem', color: 'var(--color-text)' }}>−</button>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', minWidth: '48px', textAlign: 'center', color: 'var(--color-text)' }}>{sleep}h</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem', minWidth: '48px', textAlign: 'center', color: 'var(--color-text)' }}>{sleep}{t.home.sleep_unit}</span>
             <button onClick={() => setSleep(s => Math.min(24, s + 0.5))} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--color-border)', background: 'var(--color-surface-2)', cursor: 'pointer', fontSize: '1rem', color: 'var(--color-text)' }}>+</button>
           </div>
         </div>
       </Card>
 
       <Card style={{ marginBottom: '12px' }}>
-        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>Activity</p>
+        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>{t.home.activity}</p>
         <div style={{ display: 'flex', gap: '8px' }}>
           {(['low', 'medium', 'high'] as const).map((a) => (
             <button key={a} onClick={() => setActivity(a)} style={{
@@ -131,15 +158,15 @@ export default function HomePage() {
               fontWeight: activity === a ? 600 : 400, fontSize: '0.85rem',
               color: activity === a ? 'var(--color-primary)' : 'var(--color-text-muted)',
             }}>
-              {a === 'low' ? '🐢 Low' : a === 'medium' ? '🚶 Medium' : '🏃 High'}
+              {a === 'low' ? `🐢 ${t.home.activity_low}` : a === 'medium' ? `🚶 ${t.home.activity_medium}` : `🏃 ${t.home.activity_high}`}
             </button>
           ))}
         </div>
       </Card>
 
       <Card style={{ marginBottom: '12px' }}>
-        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>Triggers</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>{t.home.triggers}</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
           {TRIGGERS.map(({ key, label, emoji }) => (
             <button key={key} onClick={() => toggleTrigger(key)} style={{
               padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
@@ -152,16 +179,31 @@ export default function HomePage() {
             </button>
           ))}
         </div>
+        {/* 트리거 없는 날 버튼 */}
+        {!anyTriggerSelected && (
+          <button
+            onClick={handleNoTriggers}
+            style={{
+              width: '100%', padding: '8px', borderRadius: '10px', cursor: 'pointer',
+              border: noTriggers ? '2px solid #22c55e' : '1px dashed var(--color-border)',
+              background: noTriggers ? '#dcfce7' : 'transparent',
+              fontSize: '0.82rem', fontWeight: noTriggers ? 600 : 400,
+              color: noTriggers ? '#15803d' : 'var(--color-text-muted)',
+            }}
+          >
+            {noTriggers ? '✅ No triggers today' : '✓ No triggers today'}
+          </button>
+        )}
       </Card>
 
       <Card style={{ marginBottom: '20px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '8px' }}>
-          Note <span style={{ fontWeight: 400, color: 'var(--color-text-muted)' }}>(optional)</span>
+          {t.home.notes} <span style={{ fontWeight: 400, color: 'var(--color-text-muted)' }}>(optional)</span>
         </p>
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Anything else you'd like to remember..."
+          placeholder={t.home.notes_placeholder}
           rows={3}
           style={{
             width: '100%', padding: '10px', borderRadius: '10px',
@@ -178,9 +220,8 @@ export default function HomePage() {
         color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer',
         transition: 'all 0.2s ease',
       }}>
-        {saved ? '✓ Saved!' : alreadyLogged ? "Update Today's Log" : "Save Today's Check-in"}
+        {saved ? `✓ ${t.home.saved}` : alreadyLogged ? t.home.save.replace('Check-in', 'Log') : t.home.save}
       </button>
     </div>
   )
 }
-

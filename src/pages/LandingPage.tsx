@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function LandingPage() {
   const navigate = useNavigate()
+
+  const { language, setLanguage } = useLanguage()
 
   function goToLogin() {
     navigate('/login')
@@ -24,17 +27,30 @@ export default function LandingPage() {
           <img src="/favicon.svg" width={28} height={28} alt="Symply" />
           <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#7c3aed' }}>symply</span>
         </div>
-        <button
-          onClick={goToLogin}
-          style={{
-            padding: '8px 18px', borderRadius: '10px',
-            border: '1.5px solid #7c3aed', background: 'transparent',
-            color: '#7c3aed', fontWeight: 600, fontSize: '0.88rem',
-            cursor: 'pointer',
-          }}
-        >
-          Sign in
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button
+            onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
+            style={{
+              padding: '6px 12px', borderRadius: '8px',
+              border: '1px solid #ede9fe', background: '#faf5ff',
+              color: '#7c3aed', fontWeight: 600, fontSize: '0.82rem',
+              cursor: 'pointer',
+            }}
+          >
+            {language === 'ko' ? '🇺🇸 EN' : '🇰🇷 KO'}
+          </button>
+          <button
+            onClick={goToLogin}
+            style={{
+              padding: '8px 18px', borderRadius: '10px',
+              border: '1.5px solid #7c3aed', background: 'transparent',
+              color: '#7c3aed', fontWeight: 600, fontSize: '0.88rem',
+              cursor: 'pointer',
+            }}
+          >
+            {language === 'ko' ? '로그인' : 'Sign in'}
+          </button>
+        </div>
       </nav>
 
       {/* HERO */}

@@ -376,7 +376,7 @@ export default function SettingsPage() {
                     fontWeight: selected ? 700 : 400, fontSize: '0.85rem',
                   }}
                 >
-                  {opt.emoji} {opt.label} {selected ? '✓' : ''}
+                  {opt.emoji} {t.settings[('condition_' + opt.value) as keyof typeof t.settings] as string || opt.label} {selected ? '✓' : ''}
                 </button>
               )
             })}
