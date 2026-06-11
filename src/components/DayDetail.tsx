@@ -71,7 +71,7 @@ export default function DayDetail({ dateId, entry }: Props) {
           fontWeight: 600,
           textTransform: 'capitalize',
         }}>
-          {entry.activity}
+          {entry.activity === 'low' ? t.home.activity_low : entry.activity === 'high' ? t.home.activity_high : t.home.activity_medium}
         </span>
       </div>
 
