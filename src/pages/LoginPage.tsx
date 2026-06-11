@@ -25,6 +25,7 @@ export default function LoginPage() {
       encrypted: '데이터는 암호화되어 있으며 당신의 것입니다.',
     },
   }
+
   const t = text[language as keyof typeof text] ?? text.en
 
   return (
@@ -50,13 +51,24 @@ export default function LoginPage() {
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: '24px', lineHeight: 1.6 }}>
           {t.noads}<br/>{t.encrypted}
         </p>
-        {/* 언어 토글 */}
-        <button
-          onClick={() => setLanguage(language === 'en' ? 'es' : language === 'es' ? 'ko' : 'en')}
-          style={{ marginTop: '24px', padding: '6px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}
-        >
-          {language === 'ko' ? '🇺🇸 English' : '🇰🇷 한국어'}
-        </button>
+        {/* 언어 토글 — 3버튼 */}
+        <div style={{ marginTop: '24px', display: 'flex', gap: '4px', justifyContent: 'center' }}>
+          {(['en', 'es', 'ko'] as const).map(lang => (
+            <button
+              key={lang}
+              onClick={() => setLanguage(lang)}
+              style={{
+                padding: '5px 12px', borderRadius: '8px',
+                border: language === lang ? '1.5px solid var(--color-primary)' : '1px solid var(--color-border)',
+                background: language === lang ? 'var(--color-primary-light)' : 'transparent',
+                color: language === lang ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                fontSize: '0.82rem', cursor: 'pointer', fontWeight: language === lang ? 700 : 400,
+              }}
+            >
+              {lang === 'en' ? '🇺🇸 EN' : lang === 'es' ? '🇪🇸 ES' : '🇰🇷 KO'}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )
