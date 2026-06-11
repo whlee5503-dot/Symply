@@ -335,7 +335,7 @@ export default function SettingsPage() {
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>App display language</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['en', 'ko'] as const).map(lang => (
+            {(['en', 'es', 'ko'] as const).map(lang => (
               <button
                 key={lang}
                 onClick={() => setLanguage(lang)}
@@ -343,11 +343,11 @@ export default function SettingsPage() {
                   flex: 1, padding: '8px', borderRadius: '10px',
                   border: language === lang ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
                   background: language === lang ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
-                  cursor: 'pointer', fontWeight: language === lang ? 700 : 400, fontSize: '0.82rem',
+                  cursor: 'pointer', fontWeight: language === lang ? 700 : 400, fontSize: '0.75rem',
                   color: language === lang ? 'var(--color-primary)' : 'var(--color-text-muted)',
                 }}
               >
-                {lang === 'en' ? '🇺🇸 English' : '🇰🇷 한국어'}
+                {lang === 'en' ? '🇺🇸 EN' : lang === 'es' ? '🇪🇸 ES' : '🇰🇷 KO'}
               </button>
             ))}
           </div>

@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
 import { en } from '../i18n/en'
+import { es } from '../i18n/es'
 import { ko } from '../i18n/ko'
 
-export type Language = 'en' | 'ko'
+export type Language = 'en' | 'es' | 'ko'
 const STORAGE_KEY = 'symply-language'
 
-const TRANSLATIONS = { en, ko }
+const TRANSLATIONS = { en, es, ko }
 
 interface LanguageContextValue {
   language: Language
@@ -22,6 +23,7 @@ function detectLanguage(): Language {
   // 2) 브라우저 언어 자동 감지
   const browserLang = navigator.language.toLowerCase()
   if (browserLang.startsWith('ko')) return 'ko'
+  if (browserLang.startsWith('es')) return 'es'
   return 'en'
 }
 

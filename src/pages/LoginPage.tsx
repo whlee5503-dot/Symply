@@ -12,6 +12,12 @@ export default function LoginPage() {
       noads: 'No ads. No data sales. Ever.',
       encrypted: 'Your data is encrypted and belongs to you.',
     },
+    es: {
+      sub: 'Registra tus síntomas, descubre patrones\ny lleva evidencia a tu médico.',
+      google: 'Continuar con Google',
+      noads: 'Sin anuncios. Sin venta de datos.',
+      encrypted: 'Tus datos están cifrados y son tuyos.',
+    },
     ko: {
       sub: '증상을 기록하고, 패턴을 발견하고,\n의사에게 증거를 가져가세요.',
       google: 'Google로 계속하기',
@@ -19,7 +25,7 @@ export default function LoginPage() {
       encrypted: '데이터는 암호화되어 있으며 당신의 것입니다.',
     },
   }
-  const t = text[language]
+  const t = text[language as keyof typeof text] ?? text.en
 
   return (
     <div style={{ minHeight: '100dvh', backgroundColor: 'var(--color-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', color: 'var(--color-text)' }}>
@@ -46,7 +52,7 @@ export default function LoginPage() {
         </p>
         {/* 언어 토글 */}
         <button
-          onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
+          onClick={() => setLanguage(language === 'en' ? 'es' : language === 'es' ? 'ko' : 'en')}
           style={{ marginTop: '24px', padding: '6px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}
         >
           {language === 'ko' ? '🇺🇸 English' : '🇰🇷 한국어'}

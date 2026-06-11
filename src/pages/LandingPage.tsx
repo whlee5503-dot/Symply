@@ -39,6 +39,43 @@ const CONTENT = {
     footer: '© 2026 Symply · No ads · No data sales',
     signIn: 'Sign in',
   },
+  es: {
+    badge: '🩺 Para SOP · Endometriosis · Fibromialgia',
+    hero1: 'Registra tus síntomas.',
+    hero2: 'Demuestra tu dolor.',
+    heroSub: 'Registra en 30 segundos. Descubre patrones con IA. Genera un informe clínico que tu médico puede leer en 3 minutos.',
+    cta: 'Comenzar gratis →',
+    ctaSub: 'Gratis para siempre · Sin tarjeta de crédito',
+    problemLabel: 'El problema',
+    problemTitle: 'Vivir con una enfermedad crónica ya es difícil.',
+    problemSub: 'No ser creída lo hace peor.',
+    problems: [
+      { emoji: '⏳', title: '2–12 años', body: 'Tiempo promedio de diagnóstico para condiciones como la endometriosis' },
+      { emoji: '🗣️', title: '"Es psicológico"', body: 'El gaslighting médico afecta a millones de pacientes con enfermedades crónicas' },
+      { emoji: '📋', title: 'Citas de 3 minutos', body: 'No hay tiempo suficiente para explicar meses de síntomas complejos' },
+    ],
+    solutionLabel: 'Cómo ayuda Symply',
+    solutionTitle: 'Tu cuerpo tiene una historia.',
+    solutionSub: 'Symply te ayuda a contarla.',
+    solutions: [
+      { emoji: '⏱️', title: 'Check-in diario de 30 segundos', body: 'Registra dolor, fatiga, sueño, desencadenantes y ánimo — incluso en tus peores días.', badge: 'Gratis', color: '#059669' },
+      { emoji: '🤖', title: 'La IA encuentra tus patrones', body: '"Los días con menos de 6h de sueño, tu dolor es un 40% mayor." Claude AI entrega insights que puedes usar.', badge: 'Pro', color: '#7c3aed' },
+      { emoji: '📄', title: 'Informe médico en segundos', body: 'Genera un PDF clínico de 1-2 páginas resumiendo meses de síntomas. Diseñado por un profesional de salud pública.', badge: 'Pro', color: '#7c3aed' },
+    ],
+    pricingLabel: 'Precios',
+    pricingTitle: 'Menos que un café al mes.',
+    pricingSub: 'Sin anuncios. Sin venta de datos.',
+    freeFeatures: ['✓ Registro ilimitado de síntomas', '✓ Mapa de calor del calendario', '✓ Gráficos de tendencias', '✓ Detección automática del clima', '✓ Insights de patrones (vista previa)'],
+    proFeatures: ['✓ Todo lo del plan gratuito', '✓ Análisis de IA', '✓ Informe médico PDF', '✓ Predicción de brotes (próximamente)', '✓ Soporte prioritario'],
+    proSave: 'o $29.99/año — ahorra 37%',
+    startFree: 'Comenzar gratis',
+    startPro: '✨ Comenzar Pro',
+    builtBy: 'Creado por un <b>profesional de salud pública (MPH)</b> que cree que los pacientes crónicos merecen ser escuchados. Contenido basado en evidencia de OMS y Cochrane. Sin anuncios. Sin venta de datos.',
+    finalTitle: 'Empieza a registrar hoy.',
+    finalSub: 'Gratis para comenzar. Sin tarjeta. Cancela cuando quieras.',
+    footer: '© 2026 Symply · Sin anuncios · Sin venta de datos',
+    signIn: 'Iniciar sesión',
+  },
   ko: {
     badge: '🩺 PCOS · 자궁내막증 · 섬유근통 환자를 위한 앱',
     hero1: '증상을 기록하세요.',
@@ -95,8 +132,8 @@ export default function LandingPage() {
           <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#7c3aed' }}>symply</span>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #ede9fe', background: '#faf5ff', color: '#7c3aed', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' }}>
-            {language === 'ko' ? '🇺🇸 EN' : '🇰🇷 KO'}
+          <button onClick={() => setLanguage(language === 'en' ? 'es' : language === 'es' ? 'ko' : 'en')} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #ede9fe', background: '#faf5ff', color: '#7c3aed', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' }}>
+            {language === 'en' ? '🇪🇸 ES' : language === 'es' ? '🇰🇷 KO' : '🇺🇸 EN'}
           </button>
           <button onClick={goToLogin} style={{ padding: '8px 18px', borderRadius: '10px', border: '1.5px solid #7c3aed', background: 'transparent', color: '#7c3aed', fontWeight: 600, fontSize: '0.88rem', cursor: 'pointer' }}>
             {c.signIn}
