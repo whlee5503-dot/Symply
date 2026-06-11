@@ -391,7 +391,7 @@ export default function ReportPage() {
         {generating
           ? '⏳ Generating PDF...'
           : isPro
-            ? '📄 Download PDF Report'
+            ? t.report.download
             : '🔒 Unlock PDF Report — Pro'}
       </button>
 

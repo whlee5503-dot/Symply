@@ -172,3 +172,20 @@ export const FATIGUE_ANCHORS_KO: FatigueAnchor[] = [
   { level: 7,  label: '탈진',    description: '씻는 것도 힘듦.' },
   { level: 10, label: '완전탈진', description: '침대에서 전혀 못 일어남.' },
 ]
+
+export const PAIN_ANCHORS_ES: PainAnchor[] = [
+  { level: 0,  label: 'Sin dolor',  description: 'Sin dolor. Completamente normal.',                    color: '#22c55e' },
+  { level: 2,  label: 'Leve',       description: 'Molesto pero puedes continuar con tus actividades.',  color: '#86efac' },
+  { level: 4,  label: 'Moderado',   description: 'Difícil concentrarse pero manejable. Como una jaqueca fuerte.', color: '#f59e0b' },
+  { level: 6,  label: 'Severo',     description: 'Debes parar actividades. Como un dolor de muela severo.', color: '#f97316' },
+  { level: 8,  label: 'Intenso',    description: 'Difícil hablar. Como cálculos renales o una fractura.', color: '#ef4444' },
+  { level: 10, label: 'Máximo',     description: 'Como contracciones de parto. La conciencia se desvanece.', color: '#991b1b' },
+]
+
+export const FATIGUE_ANCHORS_ES: FatigueAnchor[] = [
+  { level: 0,  label: 'Con energía',  description: 'Completamente alerta y con energía.' },
+  { level: 3,  label: 'Cansado',      description: 'Sensación de bajón por la tarde.' },
+  { level: 5,  label: 'Agotado',      description: 'No quieres levantarte del sofá.' },
+  { level: 7,  label: 'Exhausto',     description: 'Incluso ducharse se siente difícil.' },
+  { level: 10, label: 'Sin fuerzas',  description: 'No puedes levantarte de la cama.' },
+]

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
 import AnchorSlider from '../components/ui/AnchorSlider'
-import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, MOOD_EMOJIS } from '../types'
+import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, PAIN_ANCHORS_ES, FATIGUE_ANCHORS_ES, MOOD_EMOJIS } from '../types'
 import type { LogEntry, TriggerMap } from '../types'
 import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
@@ -112,10 +112,10 @@ export default function HomePage() {
       </div>
 
       <Card style={{ marginBottom: '12px' }}>
-        <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} anchorsKo={PAIN_ANCHORS_KO} />
+        <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} anchorsKo={PAIN_ANCHORS_KO} anchorsEs={PAIN_ANCHORS_ES} />
       </Card>
       <Card style={{ marginBottom: '12px' }}>
-        <AnchorSlider label={t.home.fatigue} value={fatigue} onChange={setFatigue} anchors={FATIGUE_ANCHORS} anchorsKo={FATIGUE_ANCHORS_KO} />
+        <AnchorSlider label={t.home.fatigue} value={fatigue} onChange={setFatigue} anchors={FATIGUE_ANCHORS} anchorsKo={FATIGUE_ANCHORS_KO} anchorsEs={FATIGUE_ANCHORS_ES} />
       </Card>
 
       <Card style={{ marginBottom: '12px' }}>

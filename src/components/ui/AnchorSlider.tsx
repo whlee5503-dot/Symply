@@ -6,6 +6,7 @@ interface AnchorSliderProps {
   onChange: (v: number) => void
   anchors: (PainAnchor | FatigueAnchor)[]
   anchorsKo?: (PainAnchor | FatigueAnchor)[]
+  anchorsEs?: (PainAnchor | FatigueAnchor)[]
   color?: string
   label: string
 }
@@ -26,9 +27,9 @@ function getColorForValue(value: number): string {
   return '#991b1b'
 }
 
-export default function AnchorSlider({ value, onChange, anchors, anchorsKo, label }: AnchorSliderProps) {
+export default function AnchorSlider({ value, onChange, anchors, anchorsKo, anchorsEs, label }: AnchorSliderProps) {
   const { language } = useLanguage()
-  const activeAnchors = (language === 'ko' && anchorsKo) ? anchorsKo : anchors
+  const activeAnchors = language === 'ko' && anchorsKo ? anchorsKo : language === 'es' && anchorsEs ? anchorsEs : anchors
   const anchor = getAnchorForValue(value, activeAnchors)
   const color = getColorForValue(value)
 
