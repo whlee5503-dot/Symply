@@ -9,6 +9,20 @@ import { useLanguage } from '../contexts/LanguageContext'
 import type { LogEntry } from '../types'
 import { MOOD_EMOJIS } from '../types'
 
+function getTriggerLabel(key: string, t: any): string {
+  const map: Record<string, string> = {
+    gluten:       t.home.trigger_gluten,
+    dairy:        t.home.trigger_dairy,
+    sugar:        t.home.trigger_sugar,
+    caffeine:     t.home.trigger_caffeine,
+    alcohol:      t.home.trigger_alcohol,
+    stress:       t.home.trigger_stress,
+    poor_sleep:   t.home.trigger_poor_sleep,
+    overexertion: t.home.trigger_overexertion,
+  }
+  return map[key] ?? key.replace('_', ' ')
+}
+
 function getReportLogs(logs: Record<string, LogEntry>, days: number): LogEntry[] {
   return Array.from({ length: days })
     .map((_, i) => {
@@ -356,7 +370,7 @@ export default function ReportPage() {
                       fontWeight: 600,
                       textTransform: 'capitalize',
                     }}>
-                      {key.replace('_', ' ')} ({count})
+                      {getTriggerLabel(key, t)} ({count})
                     </span>
                   ))}
                 </div>

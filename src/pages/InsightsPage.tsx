@@ -9,6 +9,20 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { runAnalysis, type AIAnalysis } from '../lib/analyze'
 import type { LogEntry } from '../types'
 
+function getTriggerLabel(key: string, t: any): string {
+  const map: Record<string, string> = {
+    gluten:       t.home.trigger_gluten,
+    dairy:        t.home.trigger_dairy,
+    sugar:        t.home.trigger_sugar,
+    caffeine:     t.home.trigger_caffeine,
+    alcohol:      t.home.trigger_alcohol,
+    stress:       t.home.trigger_stress,
+    poor_sleep:   t.home.trigger_poor_sleep,
+    overexertion: t.home.trigger_overexertion,
+  }
+  return map[key] ?? key.replace('_', ' ')
+}
+
 function getTriggerStats(logs: LogEntry[]) {
   const counts: Record<string, number> = {}
   logs.forEach(log => {
@@ -437,7 +451,7 @@ export default function InsightsPage() {
           {triggerStats.map(([key, count]) => (
             <div key={key} style={{ marginBottom: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text)', textTransform: 'capitalize' }}>{key.replace('_', ' ')}</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text)' }}>{getTriggerLabel(key, t)}</span>
                 <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{count} {t.insights.days}</span>
               </div>
               <div style={{ height: '6px', borderRadius: '3px', background: 'var(--color-surface-2)' }}>
