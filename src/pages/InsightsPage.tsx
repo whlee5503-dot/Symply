@@ -399,7 +399,7 @@ export default function InsightsPage() {
       {/* Pain & Fatigue chart */}
       <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '12px' }}>
-          Pain & Fatigue — Last 30 Days
+          {t.insights.chart_pain_fatigue}
         </p>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -417,7 +417,7 @@ export default function InsightsPage() {
       {/* Sleep chart */}
       <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '12px' }}>
-          Sleep — Last 30 Days
+          {t.insights.chart_sleep}
         </p>
         <ResponsiveContainer width="100%" height={160}>
           <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -433,7 +433,7 @@ export default function InsightsPage() {
       {/* Top triggers */}
       {triggerStats.length > 0 && (
         <Card>
-          <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '12px' }}>Top Triggers</p>
+          <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '12px' }}>{t.insights.top_triggers}</p>
           {triggerStats.map(([key, count]) => (
             <div key={key} style={{ marginBottom: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>

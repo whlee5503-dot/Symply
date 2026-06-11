@@ -292,7 +292,7 @@ export default function ReportPage() {
 
       <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>
-          Report Period
+          {t.report.period_label}
         </p>
         <div style={{ display: 'flex', gap: '8px' }}>
           {([30, 60, 90] as const).map(d => (
@@ -319,7 +319,7 @@ export default function ReportPage() {
 
       <Card style={{ marginBottom: '16px' }}>
         <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '12px' }}>
-          📋 Report Preview
+          {t.report.preview_title}
         </p>
         {totalDays === 0 ? (
           <div style={{ textAlign: 'center', padding: '24px' }}>
