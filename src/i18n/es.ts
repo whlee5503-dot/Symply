@@ -212,6 +212,14 @@ export const es: Translations = {
     later:    'Quizás después',
   },
 
+  mood_labels: {
+    1: 'Muy bajo',
+    2: 'Bajo',
+    3: 'Neutral',
+    4: 'Bien',
+    5: 'Genial',
+  },
+
   common: {
     loading: 'Cargando…',
     error:   'Algo salió mal.',

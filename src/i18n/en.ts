@@ -219,6 +219,14 @@ export const en = {
   },
 
   // Common
+  mood_labels: {
+    1: 'Very low',
+    2: 'Low',
+    3: 'Neutral',
+    4: 'Good',
+    5: 'Great',
+  },
+
   common: {
     loading: 'Loading…',
     error: 'Something went wrong.',

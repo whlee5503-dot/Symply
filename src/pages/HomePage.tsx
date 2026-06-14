@@ -130,7 +130,7 @@ export default function HomePage() {
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
             }}>
               <span style={{ fontSize: '1.6rem' }}>{MOOD_EMOJIS[m].emoji}</span>
-              <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>{MOOD_EMOJIS[m].label}</span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>{(t.mood_labels as Record<number, string>)[m]}</span>
             </button>
           ))}
         </div>

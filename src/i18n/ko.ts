@@ -212,6 +212,14 @@ export const ko: Translations = {
     later: '나중에',
   },
 
+  mood_labels: {
+    1: '매우 낮음',
+    2: '낮음',
+    3: '보통',
+    4: '좋음',
+    5: '최고',
+  },
+
   common: {
     loading: '불러오는 중…',
     error: '오류가 발생했습니다.',

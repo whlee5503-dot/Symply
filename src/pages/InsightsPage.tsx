@@ -188,7 +188,7 @@ export default function InsightsPage() {
         {[
           { label: t.insights.avg_pain,    value: avgPain,                   emoji: '🩹', color: '#ef4444' },
           { label: t.insights.avg_fatigue, value: avgFatigue,                 emoji: '😴', color: '#f59e0b' },
-          { label: 'Avg Sleep',   value: `${avgSleep}${t.common.hours}`,             emoji: '🌙', color: '#3b82f6' },
+          { label: t.insights.avg_sleep, value: `${avgSleep}${t.common.hours}`, emoji: '🌙', color: '#3b82f6' },
           { label: t.insights.good_days,   value: `${goodDays}/${totalDays}`, emoji: '✨', color: '#22c55e' },
         ].map(({ label, value, emoji, color }) => (
           <Card key={label} padding="14px">
@@ -296,7 +296,7 @@ export default function InsightsPage() {
                 cursor: 'pointer',
               }}
             >
-              ✨ Unlock AI Analysis
+              {t.insights.ai_unlock}
             </button>
           </div>
         ) : !aiAnalysis ? (
