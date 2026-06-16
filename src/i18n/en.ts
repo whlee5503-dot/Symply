@@ -79,6 +79,7 @@ export const en = {
   // InsightsPage
   insights: {
     title: 'Insights',
+    subtitle: 'Your patterns will appear here.',
     subtitle_days: 'Based on {n} days of data',
     no_data_title: 'Not enough data yet',
     no_data_body: 'Log at least 7 days to start seeing patterns.',
