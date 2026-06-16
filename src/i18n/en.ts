@@ -180,6 +180,7 @@ export const en = {
     condition_ibs: 'IBS',
     condition_chronic_fatigue: 'Chronic Fatigue (ME/CFS)',
     condition_other: 'Other',
+    display_name_label: 'DISPLAY NAME (OPTIONAL)',
     save: 'Save Changes',
     saving: 'Saving…',
     saved: 'Saved',

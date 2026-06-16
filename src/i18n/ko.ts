@@ -176,6 +176,7 @@ export const ko: Translations = {
     condition_ibs: '과민성 장 증후군 (IBS)',
     condition_chronic_fatigue: '만성 피로 증후군 (ME/CFS)',
     condition_other: '기타',
+    display_name_label: '표시 이름 (선택)',
     save: '변경사항 저장',
     saving: '저장 중…',
     saved: '저장됨',

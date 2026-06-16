@@ -292,7 +292,7 @@ export default function SettingsPage() {
         </div>
         <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            t.settings.account_title
+            {t.settings.display_name_label}
           </div>
           <input
             value={settings.name}

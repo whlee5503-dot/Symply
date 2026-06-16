@@ -176,6 +176,7 @@ export const es: Translations = {
     condition_ibs:    'SII (Intestino irritable)',
     condition_chronic_fatigue: 'Fatiga crónica (SFC/EM)',
     condition_other:  'Otro',
+    display_name_label: 'NOMBRE MOSTRADO (OPCIONAL)',
     save:             'Guardar cambios',
     saving:           'Guardando…',
     saved:            'Guardado',
