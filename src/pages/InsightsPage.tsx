@@ -41,7 +41,7 @@ function severityColor(s: string) {
   return { bg: 'var(--color-surface-2)', border: 'var(--color-border)', text: 'var(--color-text-muted)' }
 }
 
-function getMockFlareInsights(logs: LogEntry[]) {
+function getMockFlareInsights(logs: LogEntry[], language = 'en') {
   if (logs.length < 7) return null
 
   const sorted = [...logs].sort((a, b) => a.id.localeCompare(b.id))
@@ -174,7 +174,7 @@ export default function InsightsPage() {
   const avgSleep     = (logs.reduce((s, e) => s + e.sleep, 0) / totalDays).toFixed(1)
   const goodDays     = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
   const triggerStats = getTriggerStats(logs)
-  const flareInsights = getMockFlareInsights(logs)
+  const flareInsights = getMockFlareInsights(logs, language)
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
