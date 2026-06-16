@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { format, subMonths, addMonths } from 'date-fns'
+import { ko, es } from 'date-fns/locale'
 import { todayId } from '../lib/storage'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
@@ -10,7 +11,8 @@ import { useLanguage } from '../contexts/LanguageContext'
 
 export default function HistoryPage() {
   const { user } = useAuth()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  const locale = language === "ko" ? ko : language === "es" ? es : undefined
   const { logs, loading } = useFirestoreLogs(user?.uid)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<string>(todayId())
@@ -65,7 +67,7 @@ export default function HistoryPage() {
             ‹
           </button>
           <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--color-text)' }}>
-            {format(currentMonth, 'MMMM yyyy')}
+            {format(currentMonth, 'MMMM yyyy', { locale })}
           </span>
           <button
             onClick={() => setCurrentMonth(m => addMonths(m, 1))}

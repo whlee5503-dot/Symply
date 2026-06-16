@@ -477,11 +477,11 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* ABOUT */}
-      <SectionHeader mt={20}>About</SectionHeader>
+      <SectionHeader mt={20}>{t.settings.about_title}</SectionHeader>
       <SettingsCard>
         <SettingsRow label="Symply"        value="Version 1.0.0 · Sprint 7" icon="💜" />
-        <SettingsRow label="Privacy"       value="No ads. No data sales. Ever." icon="🔒" />
-        <SettingsRow label="Evidence base" value="WHO · Cochrane · peer-reviewed" icon="📚" />
+        <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" />
+        <SettingsRow label={t.settings.about_evidence} value={t.settings.about_evidence_val} icon="📚" />
       </SettingsCard>
 
       {/* ACCOUNT */}
@@ -489,7 +489,7 @@ export default function SettingsPage() {
       <SettingsCard>
         {!showSignOutConfirm ? (
           <SettingsRow
-            label="Sign out"
+            label={t.settings.sign_out}
             value={user?.email ?? ''}
             icon="—"
             danger
@@ -526,7 +526,7 @@ export default function SettingsPage() {
         fontSize: '0.72rem', color: 'var(--color-text-muted)',
         textAlign: 'center', marginTop: '24px', lineHeight: 1.5,
       }}>
-        Symply is not a medical device. All medical decisions should be made with your healthcare provider.
+        {t.settings.about_disclaimer}
       </p>
 
       {showUpgrade && user && (

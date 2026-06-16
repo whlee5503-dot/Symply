@@ -32,7 +32,7 @@ export default function DayDetail({ dateId, entry }: Props) {
 
   const activeTriggers = Object.entries(entry.triggers)
     .filter(([, v]) => v)
-    .map(([k]) => k.replace('_', ' '))
+    .map(([k]) => (t.home as Record<string, string>)['trigger_' + k] || k.replace('_', ' '))
 
   return (
     <Card>
