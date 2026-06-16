@@ -429,7 +429,7 @@ export default function SettingsPage() {
               <input
                 value={medName}
                 onChange={e => setMedName(e.target.value)}
-                placeholder="e.g. Metformin, Ibuprofen"
+                placeholder={t.settings.med_name_placeholder}
                 style={{
                   width: '100%', padding: '8px 12px', borderRadius: '8px',
                   border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
@@ -469,7 +469,7 @@ export default function SettingsPage() {
                     border: '1px solid var(--color-border)', background: 'none',
                     color: 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer',
                   }}
-                >Cancel</button>
+                >{t.settings.med_cancel_btn}</button>
               </div>
             </div>
           )}

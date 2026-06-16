@@ -159,7 +159,7 @@ export default function InsightsPage() {
     return (
       <div style={{ padding: '20px 16px', maxWidth: '480px', margin: '0 auto' }}>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.title}</h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>Your patterns will appear here.</p>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>{t.insights.subtitle}</p>
         <Card style={{ textAlign: 'center', padding: '40px 24px' }}>
           <p style={{ fontSize: '2rem', marginBottom: '12px' }}>📊</p>
           <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '8px' }}>{t.insights.no_data_title}</p>

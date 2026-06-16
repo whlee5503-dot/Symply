@@ -77,6 +77,7 @@ export const ko: Translations = {
 
   insights: {
     title: '인사이트',
+    subtitle: '패턴이 여기에 표시됩니다.',
     subtitle_days: '{n}일간의 데이터 기반',
     no_data_title: '데이터가 부족합니다',
     no_data_body: '최소 7일 기록 후 패턴을 확인할 수 있습니다.',
