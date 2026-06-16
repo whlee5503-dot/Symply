@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -117,7 +116,6 @@ const CONTENT = {
 }
 
 export default function LandingPage() {
-  const navigate = useNavigate()
   const { signInWithGoogle } = useAuth()
   const { language } = useLanguage()
   const c = CONTENT[language]
