@@ -9,18 +9,21 @@ export default function LoginPage() {
     en: {
       sub: 'Track your symptoms, discover patterns,\nand bring evidence to your doctor.',
       google: 'Continue with Google',
+      hint: 'New? Your account is created automatically.',
       noads: 'No ads. No data sales. Ever.',
       encrypted: 'Your data is encrypted and belongs to you.',
     },
     es: {
       sub: 'Registra tus síntomas, descubre patrones\ny lleva evidencia a tu médico.',
       google: 'Continuar con Google',
+      hint: '¿Nuevo? Tu cuenta se crea automáticamente.',
       noads: 'Sin anuncios. Sin venta de datos.',
       encrypted: 'Tus datos están cifrados y son tuyos.',
     },
     ko: {
       sub: '증상을 기록하고, 패턴을 발견하고,\n의사에게 증거를 가져가세요.',
       google: 'Google로 계속하기',
+      hint: '처음이신가요? 구글 계정으로 자동 가입됩니다.',
       noads: '광고 없음. 데이터 판매 없음.',
       encrypted: '데이터는 암호화되어 있으며 당신의 것입니다.',
     },
@@ -35,6 +38,9 @@ export default function LoginPage() {
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>symply</h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '48px' }}>
           {t.sub.split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--color-primary)', marginBottom: '16px', fontWeight: 500 }}>
+          {t.hint}
         </p>
         <button
           onClick={signInWithGoogle}
