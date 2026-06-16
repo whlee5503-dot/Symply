@@ -132,18 +132,7 @@ export default function LandingPage() {
           <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#7c3aed' }}>symply</span>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-<div style={{ display: 'flex', gap: '4px' }}>
-            {(['en', 'es', 'ko'] as const).map(lang => (
-              <button key={lang} onClick={() => setLanguage(lang)} style={{
-                padding: '5px 10px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
-                border: language === lang ? '1.5px solid #7c3aed' : '1px solid #ede9fe',
-                background: language === lang ? '#ede9fe' : '#faf5ff',
-                color: language === lang ? '#6d28d9' : '#9ca3af',
-              }}>
-                {lang === 'en' ? '🇺🇸' : lang === 'es' ? '🇪🇸' : '🇰🇷'}
-              </button>
-            ))}
-          </div>
+
           <button onClick={goToLogin} style={{ padding: '8px 18px', borderRadius: '10px', border: '1.5px solid #7c3aed', background: 'transparent', color: '#7c3aed', fontWeight: 600, fontSize: '0.88rem', cursor: 'pointer' }}>
             {c.signIn}
           </button>
