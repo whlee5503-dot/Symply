@@ -117,7 +117,7 @@ const CONTENT = {
 
 export default function LandingPage() {
   const navigate = useNavigate()
-  const { language, setLanguage } = useLanguage()
+  const { language } = useLanguage()
   const c = CONTENT[language]
 
   function goToLogin() { navigate('/login') }
