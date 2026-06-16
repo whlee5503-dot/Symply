@@ -299,7 +299,7 @@ export default function ReportPage() {
               whiteSpace: 'nowrap',
             }}
           >
-            Upgrade
+            {t.settings.upgrade}
           </button>
         </div>
       )}
