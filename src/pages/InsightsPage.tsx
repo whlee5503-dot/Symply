@@ -106,7 +106,7 @@ function getMockFlareInsights(logs: LogEntry[]) {
 
 export default function InsightsPage() {
   const { user, isPro } = useAuth()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null)
   const [aiLoading, setAiLoading]   = useState(false)
@@ -421,8 +421,8 @@ export default function InsightsPage() {
             <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: 'var(--color-text-muted)' }} />
             <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.8rem' }} />
             <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
-            <Line type="monotone" dataKey="pain"    name={t.insights.pain}    stroke="#ef4444" strokeWidth={2} dot={false} connectNulls />
-            <Line type="monotone" dataKey="fatigue" name={t.insights.fatigue} stroke="#f59e0b" strokeWidth={2} dot={false} connectNulls />
+            <Line type="monotone" dataKey="pain"    name={language === 'ko' ? '통증' : language === 'es' ? 'Dolor' : 'pain'}    stroke="#ef4444" strokeWidth={2} dot={false} connectNulls />
+            <Line type="monotone" dataKey="fatigue" name={language === 'ko' ? '피로' : language === 'es' ? 'Fatiga' : 'fatigue'} stroke="#f59e0b" strokeWidth={2} dot={false} connectNulls />
           </LineChart>
         </ResponsiveContainer>
       </Card>
