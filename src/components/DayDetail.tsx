@@ -21,7 +21,9 @@ export default function DayDetail({ dateId, entry }: Props) {
       <Card style={{ textAlign: 'center', padding: '24px' }}>
         <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>📭</p>
         <p style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-          {format(date, 'MMMM d, yyyy', { locale })}
+          {language === 'ko'
+            ? format(date, 'yyyy년 M월 d일', { locale })
+            : format(date, 'MMMM d, yyyy', { locale })}
         </p>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
           {t.history.no_checkin}
@@ -38,7 +40,9 @@ export default function DayDetail({ dateId, entry }: Props) {
     <Card>
       {/* Date header */}
       <p style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--color-text)', marginBottom: '12px' }}>
-        {format(date, 'EEEE, MMMM d', { locale })}
+        {language === 'ko'
+        ? format(date, 'yyyy년 M월 d일 (EEEE)', { locale })
+        : format(date, 'EEEE, MMMM d', { locale })}
       </p>
 
       {/* Stats row */}
