@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ChronicCondition } from '../types'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const ONBOARDING_KEY = 'symply-onboarded'
 const PROFILE_KEY = 'symply-profile'
@@ -12,50 +13,27 @@ function markOnboarded() {
   localStorage.setItem(ONBOARDING_KEY, 'true')
 }
 
-const CONDITIONS: { value: ChronicCondition; label: string; emoji: string }[] = [
-  { value: 'PCOS',                 label: 'PCOS',                     emoji: '🔄' },
-  { value: 'endometriosis',        label: 'Endometriosis',            emoji: '🌸' },
-  { value: 'fibromyalgia',         label: 'Fibromyalgia',             emoji: '💜' },
-  { value: 'lupus',                label: 'Lupus',                    emoji: '🦋' },
-  { value: 'rheumatoid_arthritis', label: 'Rheumatoid Arthritis',     emoji: '🦴' },
-  { value: 'crohns',               label: "Crohn's Disease",          emoji: '🫁' },
-  { value: 'ibs',                  label: 'IBS',                      emoji: '⚡' },
-  { value: 'chronic_fatigue',      label: 'Chronic Fatigue (ME/CFS)', emoji: '😴' },
-  { value: 'other',                label: 'Other / Not listed',       emoji: '➕' },
+const CONDITIONS: { value: ChronicCondition; labelKey: string; emoji: string }[] = [
+  { value: 'PCOS',                 labelKey: 'condition_PCOS',                emoji: '🔄' },
+  { value: 'endometriosis',        labelKey: 'condition_endometriosis',        emoji: '🌸' },
+  { value: 'fibromyalgia',         labelKey: 'condition_fibromyalgia',         emoji: '💜' },
+  { value: 'lupus',                labelKey: 'condition_lupus',                emoji: '🦋' },
+  { value: 'rheumatoid_arthritis', labelKey: 'condition_rheumatoid_arthritis', emoji: '🦴' },
+  { value: 'crohns',               labelKey: 'condition_crohns',               emoji: '🫁' },
+  { value: 'ibs',                  labelKey: 'condition_ibs',                  emoji: '⚡' },
+  { value: 'chronic_fatigue',      labelKey: 'condition_chronic_fatigue',      emoji: '😴' },
+  { value: 'other',                labelKey: 'condition_other',                emoji: '➕' },
 ]
 
-const SLIDES = [
-  {
-    id: 'welcome',
-    icon: '💜',
-    title: 'Your symptoms\ndeserve to be heard.',
-    body: 'Symply helps you track your daily symptoms, discover personal patterns, and bring clear evidence to your doctor — all in 30 seconds a day.',
-  },
-  {
-    id: 'problem',
-    icon: '😔',
-    title: "You're not imagining it.",
-    body: 'On average, it takes 7-12 years to be diagnosed with conditions like endometriosis or fibromyalgia. Medical gaslighting is real — documented data changes that.',
-  },
-  {
-    id: 'how',
-    icon: '✨',
-    title: 'How Symply works',
-    body: null,
-  },
-  {
-    id: 'conditions',
-    icon: null,
-    title: 'What are you managing?',
-    body: 'Select all that apply. This personalizes your AI insights. You can always update this later.',
-  },
-  {
-    id: 'ready',
-    icon: '🚀',
-    title: "You're all set!",
-    body: 'Your first check-in takes about 30 seconds. The more you log, the more Symply learns about your body.',
-  },
-]
+type SlideId = 'welcome' | 'problem' | 'how' | 'conditions' | 'ready'
+const SLIDE_IDS: SlideId[] = ['welcome', 'problem', 'how', 'conditions', 'ready']
+
+function detectPlatform(): 'ios' | 'android' | 'other' {
+  const ua = navigator.userAgent.toLowerCase()
+  if (/iphone|ipad|ipod/.test(ua)) return 'ios'
+  if (/android/.test(ua)) return 'android'
+  return 'other'
+}
 
 function ProgressDots({ current, total }: { current: number; total: number }) {
   return (
@@ -76,12 +54,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
   )
 }
 
-function HowItWorks() {
-  const steps = [
-    { icon: '📝', title: '30-sec check-in',     desc: 'Log pain, fatigue, mood, sleep, and triggers every day.' },
-    { icon: '🤖', title: 'AI finds patterns',   desc: '"Sleep under 6h → 40% higher pain next day"' },
-    { icon: '📄', title: 'Doctor-ready report', desc: 'Auto-generate a 1-2 page clinical PDF before your appointment.' },
-  ]
+function HowItWorks({ steps }: { steps: { icon: string; title: string; body: string }[] }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', margin: '8px 0' }}>
       {steps.map((s, i) => (
@@ -99,7 +72,7 @@ function HowItWorks() {
               {s.title}
             </div>
             <div style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
-              {s.desc}
+              {s.body}
             </div>
           </div>
         </div>
@@ -109,12 +82,35 @@ function HowItWorks() {
 }
 
 export default function OnboardingPage({ onComplete }: { onComplete: () => void }) {
+  const { t } = useLanguage()
+  const o = t.onboarding
+  const platform = detectPlatform()
+
   const [step, setStep] = useState(0)
   const [conditions, setConditions] = useState<ChronicCondition[]>([])
 
-  const slide = SLIDES[step]
-  const isLast = step === SLIDES.length - 1
-  const isConditions = slide.id === 'conditions'
+  const slideId = SLIDE_IDS[step]
+  const isLast = step === SLIDE_IDS.length - 1
+  const isConditions = slideId === 'conditions'
+  const isHow = slideId === 'how'
+  const isReady = slideId === 'ready'
+
+  // Slide content from translations
+  const SLIDES: Record<SlideId, { icon: string | null; title: string; body: string | null }> = {
+    welcome:    { icon: '💜', title: o.slide_welcome_title,    body: o.slide_welcome_body },
+    problem:    { icon: '😔', title: o.slide_problem_title,    body: o.slide_problem_body },
+    how:        { icon: '✨', title: o.slide_how_title,         body: null },
+    conditions: { icon: null,  title: o.slide_conditions_title, body: o.slide_conditions_body },
+    ready:      { icon: '🚀', title: o.slide_ready_title,      body: o.slide_ready_body },
+  }
+
+  const slide = SLIDES[slideId]
+
+  const tipKey = platform === 'ios'
+    ? o.slide_ready_tip_ios
+    : platform === 'android'
+      ? o.slide_ready_tip_android
+      : o.slide_ready_tip_other
 
   const toggleCondition = (c: ChronicCondition) => {
     setConditions(prev =>
@@ -136,6 +132,12 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
     }
   }
 
+  const btnLabel = isLast
+    ? o.get_started
+    : isConditions && conditions.length === 0
+      ? o.conditions_none
+      : o.next
+
   return (
     <div style={{
       minHeight: '100dvh',
@@ -153,7 +155,7 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
             symply
           </span>
         </div>
-        <ProgressDots current={step} total={SLIDES.length} />
+        <ProgressDots current={step} total={SLIDE_IDS.length} />
       </div>
 
       <div style={{ flex: 1, width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -178,11 +180,12 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
             {slide.body}
           </p>
         )}
-        {slide.id === 'how' && <HowItWorks />}
+        {isHow && <HowItWorks steps={o.how_works} />}
         {isConditions && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
             {CONDITIONS.map(c => {
               const sel = conditions.includes(c.value)
+              const label = (t.settings as Record<string, string>)[c.labelKey] || c.labelKey
               return (
                 <button
                   key={c.value}
@@ -197,20 +200,19 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
                     cursor: 'pointer', transition: 'all 0.15s',
                   }}
                 >
-                  {c.emoji} {c.label}{sel ? ' ✓' : ''}
+                  {c.emoji} {label}{sel ? ' ✓' : ''}
                 </button>
               )
             })}
           </div>
         )}
-        {slide.id === 'ready' && (
+        {isReady && (
           <div style={{
             backgroundColor: 'var(--color-primary-light)',
             borderRadius: '16px', padding: '16px', marginTop: '8px',
           }}>
             <p style={{ fontSize: '0.88rem', color: 'var(--color-primary)', lineHeight: 1.55, fontWeight: 500 }}>
-              💡 Tip: Add Symply to your home screen for the fastest access.
-              In your browser, tap Share → Add to Home Screen.
+              {tipKey}
             </p>
           </div>
         )}
@@ -226,7 +228,7 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
             boxShadow: '0 4px 20px rgba(124,58,237,0.35)',
           }}
         >
-          {isLast ? 'Start tracking →' : (isConditions && conditions.length === 0 ? 'Skip for now →' : 'Continue →')}
+          {btnLabel}
         </button>
         {step > 0 && (
           <button
@@ -237,7 +239,7 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
               color: 'var(--color-text-muted)', fontSize: '0.9rem', cursor: 'pointer',
             }}
           >
-            ← Back
+            {o.back}
           </button>
         )}
       </div>

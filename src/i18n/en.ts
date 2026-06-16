@@ -188,10 +188,22 @@ export const en = {
 
   // OnboardingPage
   onboarding: {
-    next: 'Next',
-    back: 'Back',
-    get_started: "Let's go!",
-    conditions_none: 'Skip for now',
+    next: 'Continue →',
+    back: '← Back',
+    get_started: 'Start tracking →',
+    conditions_none: 'Skip for now →',
+    slide_welcome_title: 'Your symptoms\ndeserve to be heard.',
+    slide_welcome_body: 'Symply helps you track your daily symptoms, discover personal patterns, and bring clear evidence to your doctor — all in 30 seconds a day.',
+    slide_problem_title: "You're not imagining it.",
+    slide_problem_body: 'On average, it takes 7–12 years to be diagnosed with conditions like endometriosis or fibromyalgia. Medical gaslighting is real — documented data changes that.',
+    slide_how_title: 'How Symply works',
+    slide_conditions_title: 'What are you managing?',
+    slide_conditions_body: 'Select all that apply. This personalizes your AI insights. You can always update this later.',
+    slide_ready_title: "You're all set!",
+    slide_ready_body: 'Your first check-in takes about 30 seconds. The more you log, the more Symply learns about your body.',
+    slide_ready_tip_ios: '💡 Tip: Add Symply to your home screen. In Safari, tap Share → Add to Home Screen.',
+    slide_ready_tip_android: '💡 Tip: Add Symply to your home screen. In Chrome, tap the menu (⋮) → Add to Home Screen.',
+    slide_ready_tip_other: '💡 Tip: Add Symply to your home screen for the fastest access.',
     how_works: [
       { icon: '⏱️', title: '30-second check-in', body: 'Log pain, fatigue, sleep, and triggers in under a minute.' },
       { icon: '🤖', title: 'AI finds patterns', body: 'Claude AI analyzes your data and delivers personalized insights.' },
