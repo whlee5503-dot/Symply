@@ -256,7 +256,7 @@ export default function SettingsPage() {
                   {t.settings.plan_free}
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                  Upgrade to unlock AI & PDF reports
+                  {t.settings.plan_free}
                 </div>
               </div>
               <button
@@ -292,7 +292,7 @@ export default function SettingsPage() {
         </div>
         <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            {t.settings.language_label === t.settings.language_label ? "DISPLAY NAME (optional)" : "표시 이름 (선택)"}
+            t.settings.account_title
           </div>
           <input
             value={settings.name}
@@ -332,7 +332,7 @@ export default function SettingsPage() {
         <div style={{ padding: '14px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span style={{ fontSize: '0.9rem', color: 'var(--color-text)' }}>Language / 언어</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>App display language</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t.settings.language_sub}</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             {(['en', 'es', 'ko'] as const).map(lang => (

@@ -278,10 +278,9 @@ export default function InsightsPage() {
               ✨ PRO FEATURE
             </div>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
-            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>AI Pattern Analysis</p>
+            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.ai_title}</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '16px', lineHeight: 1.5 }}>
-              Claude AI analyzes your symptom history and delivers personalized insights —
-              like "sleep under 6h raises your pain by 40%."
+              {t.insights.ai_pro_subtitle}
             </p>
             <button
               onClick={() => setShowUpgrade(true)}
@@ -303,7 +302,7 @@ export default function InsightsPage() {
           /* Pro 유저 — 분석 전 */
           <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
-            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>AI Pattern Analysis</p>
+            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.ai_title}</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
               {t.insights.ai_subtitle}
             </p>

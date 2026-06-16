@@ -406,7 +406,7 @@ export default function ReportPage() {
           ? '⏳ Generating PDF...'
           : isPro
             ? t.report.download
-            : '🔒 Unlock PDF Report — Pro'}
+            : t.report.unlock}
       </button>
 
       {/* Upgrade Modal */}
