@@ -61,7 +61,7 @@ function getMockFlareInsights(logs: LogEntry[]) {
       insights.push({
         icon: '🌙',
         title: 'Sleep–Pain Pattern',
-        body: `On days following less than 6 hours of sleep, your pain was ~${pct}% higher than average. Prioritising 7–8 hours may help reduce flare risk.`,
+        body: language === 'ko' ? `수면 6시간 미만인 날 이후 통증이 평균 ~${pct}% 높았습니다. 7~8시간 수면이 플레어 위험을 줄이는 데 도움이 될 수 있습니다.` : `On days following less than 6 hours of sleep, your pain was ~${pct}% higher than average. Prioritising 7–8 hours may help reduce flare risk.`,
         tag: 'Sleep',
       })
     }
@@ -78,7 +78,7 @@ function getMockFlareInsights(logs: LogEntry[]) {
         insights.push({
           icon: '⚠️',
           title: `${key.charAt(0).toUpperCase() + key.slice(1)} May Be a Trigger`,
-          body: `On days you logged ${key}, your average pain was ${avgWith.toFixed(1)} vs ${avgWithout.toFixed(1)} on days without it. Consider tracking this correlation with your doctor.`,
+          body: language === 'ko' ? `${key} 기록일의 평균 통증은 ${avgWith.toFixed(1)}으로, 미기록일 ${avgWithout.toFixed(1)}보다 높았습니다. 이 상관관계를 의사와 상담해보세요.` : `On days you logged ${key}, your average pain was ${avgWith.toFixed(1)} vs ${avgWithout.toFixed(1)} on days without it. Consider tracking this correlation with your doctor.`,
           tag: 'Trigger',
         })
         break
@@ -95,7 +95,7 @@ function getMockFlareInsights(logs: LogEntry[]) {
       insights.push({
         icon: '🏃',
         title: 'Post-Exertion Fatigue',
-        body: `High-activity days correlate with fatigue ${avgHighFatigue.toFixed(1)} vs ${avgLowFatigue.toFixed(1)} on rest days. This pattern is common in fibromyalgia — pacing strategies may help.`,
+        body: language === 'ko' ? `고활동일의 피로는 ${avgHighFatigue.toFixed(1)}으로 저활동일 ${avgLowFatigue.toFixed(1)}보다 높았습니다. 섬유근통에서 흔한 패턴으로, 페이싱 전략이 도움이 될 수 있습니다.` : `High-activity days correlate with fatigue ${avgHighFatigue.toFixed(1)} vs ${avgLowFatigue.toFixed(1)} on rest days. This pattern is common in fibromyalgia — pacing strategies may help.`,
         tag: 'Activity',
       })
     }
@@ -150,7 +150,7 @@ export default function InsightsPage() {
   if (loading) {
     return (
       <div style={{ padding: '20px 16px', maxWidth: '480px', margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: '40px' }}>Loading insights…</p>
+        <p style={{ color: 'var(--color-text-muted)', marginTop: '40px' }}>{language === 'ko' ? '인사이트 불러오는 중…' : language === 'es' ? 'Cargando insights…' : 'Loading insights…'}</p>
       </div>
     )
   }
@@ -403,7 +403,7 @@ export default function InsightsPage() {
                 cursor: 'pointer',
               }}
             >
-              🔄 Re-analyze
+              {language === 'ko' ? '🔄 다시 분석' : language === 'es' ? '🔄 Reanalizar' : '🔄 Re-analyze'}
             </button>
           </div>
         )}
@@ -421,8 +421,8 @@ export default function InsightsPage() {
             <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: 'var(--color-text-muted)' }} />
             <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.8rem' }} />
             <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
-            <Line type="monotone" dataKey="pain"    stroke="#ef4444" strokeWidth={2} dot={false} connectNulls />
-            <Line type="monotone" dataKey="fatigue" stroke="#f59e0b" strokeWidth={2} dot={false} connectNulls />
+            <Line type="monotone" dataKey="pain"    name={t.insights.pain}    stroke="#ef4444" strokeWidth={2} dot={false} connectNulls />
+            <Line type="monotone" dataKey="fatigue" name={t.insights.fatigue} stroke="#f59e0b" strokeWidth={2} dot={false} connectNulls />
           </LineChart>
         </ResponsiveContainer>
       </Card>

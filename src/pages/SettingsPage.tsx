@@ -331,7 +331,7 @@ export default function SettingsPage() {
         </div>
         <div style={{ padding: '14px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--color-text)' }}>Language / 언어</span>
+            <span style={{ fontSize: '0.9rem', color: 'var(--color-text)' }}>{t.settings.language_label}</span>
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t.settings.language_sub}</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
