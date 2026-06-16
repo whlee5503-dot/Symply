@@ -77,6 +77,7 @@ export const es: Translations = {
 
   insights: {
     title:           'Insights',
+    subtitle: 'Tus patrones aparecerán aquí.',
     subtitle_days:   'Basado en {n} días de datos',
     no_data_title:   'Datos insuficientes',
     no_data_body:    'Registra al menos 7 días para ver patrones.',
