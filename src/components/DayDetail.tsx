@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns'
+import { ko, es } from 'date-fns/locale'
 import type { LogEntry } from '../types'
 import { MOOD_EMOJIS } from '../types'
 import Card from './ui/Card'
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export default function DayDetail({ dateId, entry }: Props) {
+  const { language } = useLanguage()
+  const locale = language === "ko" ? ko : language === "es" ? es : undefined
   const date = parseISO(dateId)
   const { t } = useLanguage()
 
@@ -18,7 +21,7 @@ export default function DayDetail({ dateId, entry }: Props) {
       <Card style={{ textAlign: 'center', padding: '24px' }}>
         <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>📭</p>
         <p style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-          {format(date, 'MMMM d, yyyy')}
+          {format(date, 'MMMM d, yyyy', { locale })}
         </p>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
           {t.history.no_checkin}
@@ -35,7 +38,7 @@ export default function DayDetail({ dateId, entry }: Props) {
     <Card>
       {/* Date header */}
       <p style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--color-text)', marginBottom: '12px' }}>
-        {format(date, 'EEEE, MMMM d')}
+        {format(date, 'EEEE, MMMM d', { locale })}
       </p>
 
       {/* Stats row */}

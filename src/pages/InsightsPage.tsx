@@ -162,8 +162,8 @@ export default function InsightsPage() {
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>Your patterns will appear here.</p>
         <Card style={{ textAlign: 'center', padding: '40px 24px' }}>
           <p style={{ fontSize: '2rem', marginBottom: '12px' }}>📊</p>
-          <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '8px' }}>Not enough data yet</p>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Log at least 7 days to start seeing patterns.</p>
+          <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '8px' }}>{t.insights.no_data_title}</p>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{t.insights.no_data_body}</p>
         </Card>
       </div>
     )
