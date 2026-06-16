@@ -6,11 +6,11 @@ export interface AIAnalysis {
   mock?: boolean
 }
 
-export async function runAnalysis(logs: unknown[], userName: string): Promise<AIAnalysis> {
+export async function runAnalysis(logs: unknown[], userName: string, language = 'en'): Promise<AIAnalysis> {
   const res = await fetch('/api/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ logs, userName }),
+    body: JSON.stringify({ logs, userName, language }),
   })
   const data = await res.json() as { analysis?: AIAnalysis; error?: string; mock?: boolean }
   if (data.error) throw new Error(data.error)
