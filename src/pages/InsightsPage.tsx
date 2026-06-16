@@ -209,7 +209,7 @@ export default function InsightsPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <span style={{ fontSize: '1.2rem' }}>🔮</span>
             <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)' }}>
-              Pattern Insights
+              {t.insights.pattern_insights}
             </p>
             <span style={{
               marginLeft: 'auto',
@@ -221,7 +221,7 @@ export default function InsightsPage() {
               color: '#92400e',
               fontWeight: 600,
             }}>
-              Based on your data
+              {t.insights.based_on_data}
             </span>
           </div>
           {flareInsights.map((insight, i) => (
