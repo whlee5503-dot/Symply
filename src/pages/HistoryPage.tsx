@@ -67,7 +67,9 @@ export default function HistoryPage() {
             ‹
           </button>
           <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--color-text)' }}>
-            {format(currentMonth, 'MMMM yyyy', { locale })}
+            {language === 'ko'
+              ? format(currentMonth, 'yyyy년 M월', { locale })
+              : format(currentMonth, 'MMMM yyyy', { locale })}
           </span>
           <button
             onClick={() => setCurrentMonth(m => addMonths(m, 1))}
