@@ -29,7 +29,7 @@ export default function LoginPage() {
   const t = text[language as keyof typeof text] ?? text.en
 
   return (
-    <div style={{ minHeight: '100dvh', backgroundColor: 'var(--color-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', color: 'var(--color-text)' }}>
+    <div style={{ minHeight: '100dvh', backgroundColor: '#faf5ff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', color: '#1e1b4b' }}>
       <div style={{ maxWidth: 400, width: '100%', textAlign: 'center' }}>
         <div style={{ fontSize: '3rem', marginBottom: '16px' }}>💜</div>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>symply</h1>
@@ -38,7 +38,7 @@ export default function LoginPage() {
         </p>
         <button
           onClick={signInWithGoogle}
-          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '16px 24px', borderRadius: '14px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)', color: 'var(--color-text)', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '16px 24px', borderRadius: '14px', border: '1px solid #ede9fe', backgroundColor: '#ffffff', color: '#1e1b4b', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
         >
           <svg width="20" height="20" viewBox="0 0 48 48">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -60,7 +60,7 @@ export default function LoginPage() {
               style={{
                 padding: '5px 12px', borderRadius: '8px',
                 border: language === lang ? '1.5px solid var(--color-primary)' : '1px solid var(--color-border)',
-                background: language === lang ? 'var(--color-primary-light)' : 'transparent',
+                background: language === lang ? '#ede9fe' : 'transparent',
                 color: language === lang ? 'var(--color-primary)' : 'var(--color-text-muted)',
                 fontSize: '0.82rem', cursor: 'pointer', fontWeight: language === lang ? 700 : 400,
               }}
