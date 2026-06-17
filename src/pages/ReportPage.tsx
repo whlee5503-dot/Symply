@@ -33,13 +33,7 @@ function getReportLogs(logs: Record<string, LogEntry>, days: number): LogEntry[]
     .reverse()
 }
 
-function getSeverityLabel(avg: number, lang = 'en'): string {
-  if (lang === 'ko') {
-    if (avg <= 2) return '경미'
-    if (avg <= 4) return '보통'
-    if (avg <= 6) return '심함'
-    return '매우 심함'
-  }
+function getSeverityLabel(avg: number): string {
   if (avg <= 2) return 'Mild'
   if (avg <= 4) return 'Moderate'
   if (avg <= 6) return 'Severe'
@@ -94,10 +88,10 @@ export default function ReportPage() {
       pdf.text('Symply', margin, 18)
       pdf.setFontSize(11)
       pdf.setFont('helvetica', 'normal')
-      pdf.text(language === 'ko' ? '만성 증상 추적 보고서' : 'Chronic Symptom Tracking Report', margin, 27)
+      pdf.text('Chronic Symptom Tracking Report', margin, 27)
       pdf.setFontSize(9)
-      pdf.text(language === 'ko' ? `생성일: ${format(new Date(), 'yyyy년 M월 d일')}` : `Generated: ${format(new Date(), 'MMMM d, yyyy')}`, margin, 35)
-      pdf.text(language === 'ko' ? `기간: 최근 ${period}일  |  기록일수: ${totalDays}` : `Period: Last ${period} days  |  Days logged: ${totalDays}`, pageW - margin, 35, { align: 'right' })
+      pdf.text(`Generated: ${format(new Date(), 'MMMM d, yyyy')}`, margin, 35)
+      pdf.text(`Period: Last ${period} days  |  Days logged: ${totalDays}`, pageW - margin, 35, { align: 'right' })
 
       y = 52
 
@@ -105,13 +99,13 @@ export default function ReportPage() {
       pdf.roundedRect(margin, y, contentW, 10, 2, 2, 'F')
       pdf.setTextColor(146, 64, 14)
       pdf.setFontSize(8)
-      pdf.text(language === 'ko' ? '이 보고서는 정보 제공 목적이며 의학적 진단이 아닙니다.' : 'This report is for informational purposes only and does not constitute medical advice.', margin + 4, y + 6.5)
+      pdf.text('This report is for informational purposes only and does not constitute medical advice.', margin + 4, y + 6.5)
       y += 16
 
       if (totalDays === 0) {
         pdf.setTextColor(100, 100, 100)
         pdf.setFontSize(12)
-        pdf.text(language === 'ko' ? '해당 기간에 기록된 데이터가 없습니다.' : 'No data logged in this period.', margin, y)
+        pdf.text('No data logged in this period.', margin, y)
         pdf.save(`symply-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`)
         return
       }
@@ -119,7 +113,7 @@ export default function ReportPage() {
       pdf.setTextColor(124, 58, 237)
       pdf.setFontSize(13)
       pdf.setFont('helvetica', 'bold')
-      pdf.text(language === 'ko' ? '요약' : 'Summary', margin, y)
+      pdf.text('Summary', margin, y)
       y += 2
       pdf.setDrawColor(124, 58, 237)
       pdf.setLineWidth(0.5)
@@ -127,12 +121,12 @@ export default function ReportPage() {
       y += 6
 
       const stats = [
-        { label: language === 'ko' ? '평균 통증' : 'Avg Pain',    value: avgPain.toFixed(1),    sub: getSeverityLabel(avgPain, language) },
-        { label: language === 'ko' ? '평균 피로' : 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: getSeverityLabel(avgFatigue, language) },
-        { label: language === 'ko' ? '평균 수면' : 'Avg Sleep',   value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
-        { label: language === 'ko' ? '악화일수' : 'Flare Days',  value: String(flareDays),     sub: language === 'ko' ? `전체의 ${((flareDays / totalDays) * 100).toFixed(0)}%` : `${((flareDays / totalDays) * 100).toFixed(0)}% of days` },
-        { label: language === 'ko' ? '좋은 날' : 'Good Days',   value: String(goodDays),      sub: language === 'ko' ? `전체의 ${((goodDays / totalDays) * 100).toFixed(0)}%` : `${((goodDays / totalDays) * 100).toFixed(0)}% of days` },
-        { label: language === 'ko' ? '기록일수' : 'Days Logged', value: String(totalDays),     sub: language === 'ko' ? `최근 ${period}일 중` : `of last ${period}` },
+        { label: 'Avg Pain',    value: avgPain.toFixed(1),    sub: getSeverityLabel(avgPain) },
+        { label: 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: getSeverityLabel(avgFatigue) },
+        { label: 'Avg Sleep',   value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
+        { label: 'Flare Days',  value: String(flareDays),     sub: `${((flareDays / totalDays) * 100).toFixed(0)}% of days` },
+        { label: 'Good Days',   value: String(goodDays),      sub: `${((goodDays / totalDays) * 100).toFixed(0)}% of days` },
+        { label: 'Days Logged', value: String(totalDays),     sub: `of last ${period}` },
       ]
 
       const colW = contentW / 3
@@ -162,7 +156,7 @@ export default function ReportPage() {
         pdf.setTextColor(124, 58, 237)
         pdf.setFontSize(13)
         pdf.setFont('helvetica', 'bold')
-        pdf.text(language === 'ko' ? '주요 트리거' : 'Top Triggers', margin, y)
+        pdf.text('Top Triggers', margin, y)
         y += 2
         pdf.setDrawColor(124, 58, 237)
         pdf.line(margin, y, margin + contentW, y)
@@ -191,7 +185,7 @@ export default function ReportPage() {
         pdf.setTextColor(124, 58, 237)
         pdf.setFontSize(13)
         pdf.setFont('helvetica', 'bold')
-        pdf.text(language === 'ko' ? '최근 일별 기록' : 'Recent Daily Log', margin, y)
+        pdf.text('Recent Daily Log', margin, y)
         y += 2
         pdf.setDrawColor(124, 58, 237)
         pdf.line(margin, y, margin + contentW, y)
@@ -203,13 +197,13 @@ export default function ReportPage() {
         pdf.setFontSize(8)
         pdf.setFont('helvetica', 'bold')
         const cols = [
-          { label: language === 'ko' ? '날짜' : 'Date',     x: margin + 2 },
-          { label: language === 'ko' ? '통증' : 'Pain',     x: margin + 32 },
-          { label: language === 'ko' ? '피로' : 'Fatigue',  x: margin + 48 },
-          { label: language === 'ko' ? '수면' : 'Sleep',    x: margin + 68 },
-          { label: language === 'ko' ? '기분' : 'Mood',     x: margin + 86 },
-          { label: language === 'ko' ? '활동' : 'Activity', x: margin + 102 },
-          { label: language === 'ko' ? '트리거' : 'Triggers', x: margin + 124 },
+          { label: 'Date',     x: margin + 2 },
+          { label: 'Pain',     x: margin + 32 },
+          { label: 'Fatigue',  x: margin + 48 },
+          { label: 'Sleep',    x: margin + 68 },
+          { label: 'Mood',     x: margin + 86 },
+          { label: 'Activity', x: margin + 102 },
+          { label: 'Triggers', x: margin + 124 },
         ]
         cols.forEach(c => pdf.text(c.label, c.x, y + 5))
         y += 8
@@ -227,7 +221,7 @@ export default function ReportPage() {
           pdf.setTextColor(50, 50, 50)
           pdf.setFontSize(7.5)
           pdf.setFont('helvetica', 'normal')
-          pdf.text(language === 'ko' ? format(new Date(entry.id), 'M월 d일') : format(new Date(entry.id), 'MMM d, yyyy'), cols[0].x, y + 4)
+          pdf.text(format(new Date(entry.id), 'MMM d, yyyy'), cols[0].x, y + 4)
           pdf.text(String(entry.pain),    cols[1].x, y + 4)
           pdf.text(String(entry.fatigue), cols[2].x, y + 4)
           pdf.text(`${entry.sleep}h`,     cols[3].x, y + 4)
@@ -245,7 +239,7 @@ export default function ReportPage() {
       pdf.text('Generated by Symply — symply.pages.dev', pageW / 2, 290, { align: 'center' })
       pdf.setTextColor(150, 150, 150)
       pdf.setFontSize(7)
-      pdf.text(language === 'ko' ? '이 보고서는 의학적 진단이 아닙니다. 전문 의료인과 상담하세요.' : 'This report is not a medical diagnosis. Please consult your healthcare provider.', pageW / 2, 294, { align: 'center' })
+      pdf.text('This report is not a medical diagnosis. Please consult your healthcare provider.', pageW / 2, 294, { align: 'center' })
 
       pdf.save(`symply-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`)
     } finally {
