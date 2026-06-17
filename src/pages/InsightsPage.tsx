@@ -343,7 +343,7 @@ export default function InsightsPage() {
                 fontWeight: 600,
                 marginBottom: '10px',
               }}>
-                🧪 Demo Analysis — Add credits for personalized AI insights
+                {t.insights.ai_demo_badge}
               </div>
             )}
             <div style={{
