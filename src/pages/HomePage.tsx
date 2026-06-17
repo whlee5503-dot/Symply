@@ -38,6 +38,7 @@ export default function HomePage() {
   const [triggers,      setTriggers]      = useState<TriggerMap>({
     gluten: false, dairy: false, sugar: false, caffeine: false,
     alcohol: false, stress: false, poor_sleep: false, overexertion: false,
+    pressure_change: false, temperature_change: false, sun_exposure: false,
   })
   const [noTriggers,    setNoTriggers]    = useState(false)
   const [note,          setNote]          = useState('')
@@ -72,6 +73,7 @@ export default function HomePage() {
     setTriggers({
       gluten: false, dairy: false, sugar: false, caffeine: false,
       alcohol: false, stress: false, poor_sleep: false, overexertion: false,
+      pressure_change: false, temperature_change: false, sun_exposure: false,
     })
   }
 

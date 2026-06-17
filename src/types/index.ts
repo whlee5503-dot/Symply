@@ -101,6 +101,9 @@ export interface TriggerMap {
   stress: boolean
   poor_sleep: boolean
   overexertion: boolean
+  pressure_change: boolean
+  temperature_change: boolean
+  sun_exposure: boolean
 }
 
 export interface MedicationLog {

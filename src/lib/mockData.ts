@@ -23,7 +23,7 @@ function makeEntry(
       alcohol:      false,
       stress:       false,
       poor_sleep:   false,
-      overexertion: false,
+      overexertion: false, pressure_change: false, temperature_change: false, sun_exposure: false,
     } as TriggerMap,
     activity:    'medium',
     medications: [],
@@ -231,7 +231,7 @@ function emptyTriggers(): TriggerMap {
     alcohol:      false,
     stress:       false,
     poor_sleep:   false,
-    overexertion: false,
+    overexertion: false, pressure_change: false, temperature_change: false, sun_exposure: false,
   }
 }
 
