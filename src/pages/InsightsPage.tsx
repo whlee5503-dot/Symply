@@ -41,68 +41,6 @@ function severityColor(s: string) {
   return { bg: 'var(--color-surface-2)', border: 'var(--color-border)', text: 'var(--color-text-muted)' }
 }
 
-function getMockFlareInsights(logs: LogEntry[], language = 'en') {
-  if (logs.length < 7) return null
-
-  const sorted = [...logs].sort((a, b) => a.id.localeCompare(b.id))
-  const insights: { icon: string; title: string; body: string; tag: string }[] = []
-
-  const sleepPainPairs = sorted.slice(0, -1).map((entry, i) => ({
-    sleep: entry.sleep,
-    nextPain: sorted[i + 1].pain,
-  }))
-  const lowSleepPain = sleepPainPairs.filter(p => p.sleep < 6)
-  const normalSleepPain = sleepPainPairs.filter(p => p.sleep >= 6)
-  if (lowSleepPain.length >= 3 && normalSleepPain.length >= 3) {
-    const avgLow    = lowSleepPain.reduce((s, p) => s + p.nextPain, 0) / lowSleepPain.length
-    const avgNormal = normalSleepPain.reduce((s, p) => s + p.nextPain, 0) / normalSleepPain.length
-    if (avgLow > avgNormal + 1) {
-      const pct = Math.round(((avgLow - avgNormal) / Math.max(avgNormal, 1)) * 100)
-      insights.push({
-        icon: '🌙',
-        title: language === 'ko' ? '수면–통증 패턴' : language === 'es' ? 'Patrón Sueño–Dolor' : 'Sleep–Pain Pattern',
-        body: language === 'ko' ? `수면 6시간 미만인 날 이후 통증이 평균 ~${pct}% 높았습니다. 7~8시간 수면이 플레어 위험을 줄이는 데 도움이 될 수 있습니다.` : `On days following less than 6 hours of sleep, your pain was ~${pct}% higher than average. Prioritising 7–8 hours may help reduce flare risk.`,
-        tag: language === 'ko' ? '수면' : language === 'es' ? 'Sueño' : 'Sleep',
-      })
-    }
-  }
-
-  const triggerKeys = ['gluten', 'dairy', 'sugar', 'caffeine', 'alcohol', 'stress'] as const
-  for (const key of triggerKeys) {
-    const withTrigger    = logs.filter(l => l.triggers[key as keyof typeof l.triggers])
-    const withoutTrigger = logs.filter(l => !l.triggers[key as keyof typeof l.triggers])
-    if (withTrigger.length >= 3 && withoutTrigger.length >= 3) {
-      const avgWith    = withTrigger.reduce((s, l) => s + l.pain, 0) / withTrigger.length
-      const avgWithout = withoutTrigger.reduce((s, l) => s + l.pain, 0) / withoutTrigger.length
-      if (avgWith > avgWithout + 1.5) {
-        insights.push({
-          icon: '⚠️',
-          title: language === 'ko' ? `${key} 트리거 가능성` : `${key.charAt(0).toUpperCase() + key.slice(1)} May Be a Trigger`,
-          body: language === 'ko' ? `${key} 기록일의 평균 통증은 ${avgWith.toFixed(1)}으로, 미기록일 ${avgWithout.toFixed(1)}보다 높았습니다. 이 상관관계를 의사와 상담해보세요.` : `On days you logged ${key}, your average pain was ${avgWith.toFixed(1)} vs ${avgWithout.toFixed(1)} on days without it. Consider tracking this correlation with your doctor.`,
-          tag: language === 'ko' ? '트리거' : language === 'es' ? 'Desencadenante' : 'Trigger',
-        })
-        break
-      }
-    }
-  }
-
-  const highActivity = logs.filter(l => l.activity === 'high')
-  const lowActivity  = logs.filter(l => l.activity === 'low')
-  if (highActivity.length >= 3 && lowActivity.length >= 3) {
-    const avgHighFatigue = highActivity.reduce((s, l) => s + l.fatigue, 0) / highActivity.length
-    const avgLowFatigue  = lowActivity.reduce((s, l) => s + l.fatigue, 0) / lowActivity.length
-    if (avgHighFatigue > avgLowFatigue + 2) {
-      insights.push({
-        icon: '🏃',
-        title: language === 'ko' ? '활동 후 피로' : language === 'es' ? 'Fatiga Post-Esfuerzo' : 'Post-Exertion Fatigue',
-        body: language === 'ko' ? `고활동일의 피로는 ${avgHighFatigue.toFixed(1)}으로 저활동일 ${avgLowFatigue.toFixed(1)}보다 높았습니다. 섬유근통에서 흔한 패턴으로, 페이싱 전략이 도움이 될 수 있습니다.` : `High-activity days correlate with fatigue ${avgHighFatigue.toFixed(1)} vs ${avgLowFatigue.toFixed(1)} on rest days. This pattern is common in fibromyalgia — pacing strategies may help.`,
-        tag: language === 'ko' ? '활동' : language === 'es' ? 'Actividad' : 'Activity',
-      })
-    }
-  }
-
-  return insights.length > 0 ? insights : null
-}
 
 export default function InsightsPage() {
   const { user, isPro } = useAuth()
@@ -174,7 +112,6 @@ export default function InsightsPage() {
   const avgSleep     = (logs.reduce((s, e) => s + e.sleep, 0) / totalDays).toFixed(1)
   const goodDays     = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
   const triggerStats = getTriggerStats(logs)
-  const flareInsights = getMockFlareInsights(logs, language)
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
@@ -202,58 +139,6 @@ export default function InsightsPage() {
           </Card>
         ))}
       </div>
-
-      {/* Pattern Insights (Free — 맛보기) */}
-      {flareInsights && flareInsights.length > 0 && (
-        <Card style={{ marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <span style={{ fontSize: '1.2rem' }}>🔮</span>
-            <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-text)' }}>
-              {t.insights.pattern_insights}
-            </p>
-            <span style={{
-              marginLeft: 'auto',
-              padding: '2px 8px',
-              borderRadius: '10px',
-              background: '#fef9c3',
-              border: '1px solid #fbbf24',
-              fontSize: '0.68rem',
-              color: '#92400e',
-              fontWeight: 600,
-            }}>
-              {t.insights.based_on_data}
-            </span>
-          </div>
-          {flareInsights.map((insight, i) => (
-            <div key={i} style={{
-              padding: '12px',
-              borderRadius: '10px',
-              border: '1px solid var(--color-border)',
-              background: 'var(--color-surface-2)',
-              marginBottom: i < flareInsights.length - 1 ? '8px' : 0,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                <span>{insight.icon}</span>
-                <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--color-text)' }}>
-                  {insight.title}
-                </span>
-                <span style={{
-                  marginLeft: 'auto',
-                  padding: '1px 6px',
-                  borderRadius: '8px',
-                  background: 'var(--color-primary-light)',
-                  fontSize: '0.68rem',
-                  color: 'var(--color-primary)',
-                  fontWeight: 600,
-                }}>
-                  {insight.tag}
-                </span>
-              </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
-                {insight.body}
-              </p>
-            </div>
-          ))}
         </Card>
       )}
 

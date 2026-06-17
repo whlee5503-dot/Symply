@@ -103,7 +103,6 @@ const CONTENT = {
     pricingTitle: '한 달에 커피 한 잔보다 저렴합니다.',
     pricingSub: '광고 없음. 데이터 판매 없음.',
     freeFeatures: ['✓ 무제한 증상 기록', '✓ 달력 히트맵', '✓ 트렌드 차트', '✓ 날씨 자동 감지', '✓ 패턴 인사이트 (미리보기)'],
-    proFeatures: ['✓ 무료 기능 전체', '✓ AI 패턴 분석', '✓ 진료 보고서 PDF', '✓ 플레어 예측 (출시 예정)', '✓ 우선 지원'],
     proSave: '또는 $29.99/년 — 37% 절약',
     startFree: 'Google로 시작하기',
     startPro: '✨ Pro 시작하기',
