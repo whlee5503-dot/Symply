@@ -18,7 +18,10 @@ function getTriggerLabel(key: string, t: any): string {
     alcohol:      t.home.trigger_alcohol,
     stress:       t.home.trigger_stress,
     poor_sleep:   t.home.trigger_poor_sleep,
-    overexertion: t.home.trigger_overexertion,
+    overexertion:       t.home.trigger_overexertion,
+    pressure_change:    t.home.trigger_pressure_change,
+    temperature_change: t.home.trigger_temperature_change,
+    sun_exposure:       t.home.trigger_sun_exposure,
   }
   return map[key] ?? key.replace('_', ' ')
 }
