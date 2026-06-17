@@ -42,7 +42,7 @@ function getSeverityLabel(avg: number): string {
 
 export default function ReportPage() {
   const { user, isPro } = useAuth()
-  const { t, language } = useLanguage()
+  const { t } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
   const [period, setPeriod]         = useState<30 | 60 | 90>(30)
   const [generating, setGenerating] = useState(false)
