@@ -77,7 +77,7 @@ function getMockFlareInsights(logs: LogEntry[], language = 'en') {
       if (avgWith > avgWithout + 1.5) {
         insights.push({
           icon: '⚠️',
-          title: language === 'ko' ? `${key} 트리거 가능성` : language === 'es' ? `${key} puede ser un desencadenante` : `${key.charAt(0).toUpperCase() + key.slice(1)} May Be a Trigger`,`
+          title: language === 'ko' ? `${key} 트리거 가능성` : `${key.charAt(0).toUpperCase() + key.slice(1)} May Be a Trigger`,
           body: language === 'ko' ? `${key} 기록일의 평균 통증은 ${avgWith.toFixed(1)}으로, 미기록일 ${avgWithout.toFixed(1)}보다 높았습니다. 이 상관관계를 의사와 상담해보세요.` : `On days you logged ${key}, your average pain was ${avgWith.toFixed(1)} vs ${avgWithout.toFixed(1)} on days without it. Consider tracking this correlation with your doctor.`,
           tag: language === 'ko' ? '트리거' : language === 'es' ? 'Desencadenante' : 'Trigger',
         })
