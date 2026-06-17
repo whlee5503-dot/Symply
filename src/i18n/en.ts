@@ -224,7 +224,6 @@ export const en = {
     features: [
       { icon: '🤖', text: 'AI Pattern Analysis — personalized insights' },
       { icon: '📄', text: "Doctor's Report PDF — clinical summary" },
-      { icon: '🔮', text: 'Flare Prediction — pattern alerts' },
       { icon: '📊', text: 'Unlimited history & advanced charts' },
     ],
     price: '$3.99',

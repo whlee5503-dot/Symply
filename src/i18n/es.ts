@@ -218,7 +218,6 @@ export const es: Translations = {
     features: [
       { icon: '🤖', text: 'Análisis de IA — insights personalizados' },
       { icon: '📄', text: 'Informe médico PDF — resumen clínico' },
-      { icon: '🔮', text: 'Predicción de brotes — alertas de patrones' },
       { icon: '📊', text: 'Historial ilimitado y gráficos avanzados' },
     ],
     price:    '$3.99',

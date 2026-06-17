@@ -218,7 +218,6 @@ export const ko: Translations = {
     features: [
       { icon: '🤖', text: 'AI 패턴 분석 — 개인화된 인사이트' },
       { icon: '📄', text: '진료 보고서 PDF — 임상 요약' },
-      { icon: '🔮', text: '플레어 예측 — 패턴 알림' },
       { icon: '📊', text: '무제한 기록 & 고급 차트' },
     ],
     price: '$3.99',
