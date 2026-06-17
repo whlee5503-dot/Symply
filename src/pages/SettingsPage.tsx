@@ -34,7 +34,7 @@ const CONDITION_OPTIONS: { value: ChronicCondition; label: string; emoji: string
   { value: 'PCOS',                 label: 'PCOS',                    emoji: '🔄' },
   { value: 'endometriosis',        label: 'Endometriosis',           emoji: '🌸' },
   { value: 'fibromyalgia',         label: 'Fibromyalgia',            emoji: '💜' },
-  { value: 'lupus',                label: 'Lupus',                   emoji: '��' },
+  { value: 'lupus',                label: 'Lupus',                   emoji: '🫀' },
   { value: 'rheumatoid_arthritis', label: 'Rheumatoid Arthritis',    emoji: '🦴' },
   { value: 'crohns',               label: "Crohn's Disease",         emoji: '🫁' },
   { value: 'ibs',                  label: 'IBS',                     emoji: '⚡' },
