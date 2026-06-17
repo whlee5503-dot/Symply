@@ -15,7 +15,10 @@ const TRIGGER_KEYS: { key: keyof TriggerMap; tKey: string; emoji: string }[] = [
   { key: 'alcohol',      tKey: 'trigger_alcohol',      emoji: '🍷' },
   { key: 'stress',       tKey: 'trigger_stress',       emoji: '😤' },
   { key: 'poor_sleep',   tKey: 'trigger_poor_sleep',   emoji: '😴' },
-  { key: 'overexertion', tKey: 'trigger_overexertion', emoji: '🏃' },
+  { key: 'overexertion',      tKey: 'trigger_overexertion',      emoji: '🏃' },
+  { key: 'pressure_change',    tKey: 'trigger_pressure_change',    emoji: '🌪️' },
+  { key: 'temperature_change', tKey: 'trigger_temperature_change', emoji: '🌡️' },
+  { key: 'sun_exposure',       tKey: 'trigger_sun_exposure',       emoji: '☀️' },
 ]
 
 function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
