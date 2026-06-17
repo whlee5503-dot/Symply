@@ -139,8 +139,6 @@ export default function InsightsPage() {
           </Card>
         ))}
       </div>
-        </Card>
-      )}
 
       {/* AI Analysis (Pro) */}
       <Card style={{ marginBottom: '16px' }}>
