@@ -138,7 +138,7 @@ export default function InsightsPage() {
     setAiLoading(true)
     setAiError(null)
     try {
-      const analysis = await runAnalysis(recentLogs, user.displayName ?? 'User', language)
+      const analysis = await runAnalysis(logs, user?.displayName ?? 'User', language)
       setAiAnalysis(analysis)
     } catch (e) {
       setAiError(e instanceof Error ? e.message : 'Analysis failed')
