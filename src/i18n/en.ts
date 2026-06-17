@@ -169,7 +169,7 @@ export const en = {
     about_privacy: 'Privacy',
     about_privacy_val: 'No ads. No data sales. Ever.',
     about_evidence: 'Evidence base',
-    about_evidence_val: 'WHO · Cochrane · peer-reviewed',
+    about_evidence_val: 'MPH-informed design',
     about_disclaimer: 'Symply is not a medical device. All medical decisions should be made with your healthcare provider.',
     sign_out: 'Sign Out',
     sign_out_confirm: 'Are you sure you want to sign out?',

@@ -165,7 +165,7 @@ export const ko: Translations = {
     about_privacy: '개인정보',
     about_privacy_val: '광고 없음. 데이터 판매 없음.',
     about_evidence: '근거 기반',
-    about_evidence_val: 'WHO · Cochrane · 동료 심사',
+    about_evidence_val: 'MPH 전문가 설계',
     about_disclaimer: 'Symply는 의료 기기가 아닙니다. 모든 의료적 결정은 전문 의료인과 상담하세요.',
     sign_out: '로그아웃',
     sign_out_confirm: '정말 로그아웃 하시겠습니까?',

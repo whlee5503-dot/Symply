@@ -165,7 +165,7 @@ export const es: Translations = {
     about_privacy:    'Privacidad',
     about_privacy_val: 'Sin anuncios. Sin venta de datos.',
     about_evidence:   'Base de evidencia',
-    about_evidence_val: 'OMS · Cochrane · revisado por pares',
+    about_evidence_val: 'Diseño basado en MPH',
     about_disclaimer: 'Symply no es un dispositivo médico. Todas las decisiones médicas deben tomarse con tu proveedor de salud.',
     sign_out:         'Cerrar sesión',
     sign_out_confirm: '¿Seguro que quieres cerrar sesión?',
