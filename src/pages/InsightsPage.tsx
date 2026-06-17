@@ -60,9 +60,9 @@ function getMockFlareInsights(logs: LogEntry[], language = 'en') {
       const pct = Math.round(((avgLow - avgNormal) / Math.max(avgNormal, 1)) * 100)
       insights.push({
         icon: '🌙',
-        title: 'Sleep–Pain Pattern',
+        title: language === 'ko' ? '수면–통증 패턴' : language === 'es' ? 'Patrón Sueño–Dolor' : 'Sleep–Pain Pattern',
         body: language === 'ko' ? `수면 6시간 미만인 날 이후 통증이 평균 ~${pct}% 높았습니다. 7~8시간 수면이 플레어 위험을 줄이는 데 도움이 될 수 있습니다.` : `On days following less than 6 hours of sleep, your pain was ~${pct}% higher than average. Prioritising 7–8 hours may help reduce flare risk.`,
-        tag: 'Sleep',
+        tag: language === 'ko' ? '수면' : language === 'es' ? 'Sueño' : 'Sleep',
       })
     }
   }
@@ -77,9 +77,9 @@ function getMockFlareInsights(logs: LogEntry[], language = 'en') {
       if (avgWith > avgWithout + 1.5) {
         insights.push({
           icon: '⚠️',
-          title: `${key.charAt(0).toUpperCase() + key.slice(1)} May Be a Trigger`,
+          title: language === 'ko' ? `${key} 트리거 가능성` : language === 'es' ? `${key} puede ser un desencadenante` : `${key.charAt(0).toUpperCase() + key.slice(1)} May Be a Trigger`,`
           body: language === 'ko' ? `${key} 기록일의 평균 통증은 ${avgWith.toFixed(1)}으로, 미기록일 ${avgWithout.toFixed(1)}보다 높았습니다. 이 상관관계를 의사와 상담해보세요.` : `On days you logged ${key}, your average pain was ${avgWith.toFixed(1)} vs ${avgWithout.toFixed(1)} on days without it. Consider tracking this correlation with your doctor.`,
-          tag: 'Trigger',
+          tag: language === 'ko' ? '트리거' : language === 'es' ? 'Desencadenante' : 'Trigger',
         })
         break
       }
@@ -94,9 +94,9 @@ function getMockFlareInsights(logs: LogEntry[], language = 'en') {
     if (avgHighFatigue > avgLowFatigue + 2) {
       insights.push({
         icon: '🏃',
-        title: 'Post-Exertion Fatigue',
+        title: language === 'ko' ? '활동 후 피로' : language === 'es' ? 'Fatiga Post-Esfuerzo' : 'Post-Exertion Fatigue',
         body: language === 'ko' ? `고활동일의 피로는 ${avgHighFatigue.toFixed(1)}으로 저활동일 ${avgLowFatigue.toFixed(1)}보다 높았습니다. 섬유근통에서 흔한 패턴으로, 페이싱 전략이 도움이 될 수 있습니다.` : `High-activity days correlate with fatigue ${avgHighFatigue.toFixed(1)} vs ${avgLowFatigue.toFixed(1)} on rest days. This pattern is common in fibromyalgia — pacing strategies may help.`,
-        tag: 'Activity',
+        tag: language === 'ko' ? '활동' : language === 'es' ? 'Actividad' : 'Activity',
       })
     }
   }
@@ -138,7 +138,7 @@ export default function InsightsPage() {
     setAiLoading(true)
     setAiError(null)
     try {
-      const analysis = await runAnalysis(logs, 'User')
+      const analysis = await runAnalysis(recentLogs, user.displayName ?? 'User', language)
       setAiAnalysis(analysis)
     } catch (e) {
       setAiError(e instanceof Error ? e.message : 'Analysis failed')
