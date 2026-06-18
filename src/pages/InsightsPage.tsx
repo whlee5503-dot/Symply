@@ -264,7 +264,7 @@ export default function InsightsPage() {
                 marginBottom: '8px',
               }}>
                 <p style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: '8px' }}>
-                  🩺 Tell your doctor:
+                  {t.insights.ai_doctor}
                 </p>
                 {aiAnalysis.doctorPoints.map((pt, i) => (
                   <p key={i} style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: '4px' }}>
