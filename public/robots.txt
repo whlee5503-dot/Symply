@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://symply.phtlab.org/sitemap.xml
