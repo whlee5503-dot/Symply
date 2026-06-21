@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react'
-import { format, subDays } from 'date-fns'
+import { useEffect, useMemo, useState } from 'react'
+import { format, subDays, differenceInDays, parseISO } from 'date-fns'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
 import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
-import { runAnalysis, type AIAnalysis } from '../lib/analyze'
+import { runAnalysis, type AIAnalysis, type CycleSummary } from '../lib/analyze'
 import type { LogEntry } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
@@ -41,6 +43,58 @@ function severityColor(s: string) {
   return { bg: 'var(--color-surface-2)', border: 'var(--color-border)', text: 'var(--color-text-muted)' }
 }
 
+/** logs에서 생리주기 요약 데이터 추출 */
+function extractCycleSummary(logs: LogEntry[], conditions: string[]): CycleSummary | undefined {
+  const hasCycleCondition =
+    conditions.includes('PCOS') || conditions.includes('endometriosis')
+  if (!hasCycleCondition) return undefined
+
+  const menstruatingDays = logs
+    .filter(l => l.cycle?.isMenstruating)
+    .map(l => l.id)
+    .sort()
+
+  if (menstruatingDays.length === 0) {
+    return { hasCycleData: false, menstruatingDays: [], preMenstrualDays: [], conditions }
+  }
+
+  // 생리 시작일 추출 (연속 날짜 중 첫 번째만)
+  const cycleStarts: string[] = []
+  for (let i = 0; i < menstruatingDays.length; i++) {
+    if (i === 0) { cycleStarts.push(menstruatingDays[i]); continue }
+    const prev = parseISO(menstruatingDays[i - 1])
+    const curr = parseISO(menstruatingDays[i])
+    if (differenceInDays(curr, prev) > 2) cycleStarts.push(menstruatingDays[i])
+  }
+
+  // 평균 주기 계산 (시작일 간격)
+  let cycleLengthEstimate: number | undefined
+  if (cycleStarts.length >= 2) {
+    const gaps: number[] = []
+    for (let i = 1; i < cycleStarts.length; i++) {
+      gaps.push(differenceInDays(parseISO(cycleStarts[i]), parseISO(cycleStarts[i - 1])))
+    }
+    cycleLengthEstimate = Math.round(gaps.reduce((s, g) => s + g, 0) / gaps.length)
+  }
+
+  // 생리 2~5일 전 날짜 (premenstrual 구간)
+  const preMenstrualDays: string[] = []
+  cycleStarts.forEach(start => {
+    const startDate = parseISO(start)
+    for (let d = 2; d <= 5; d++) {
+      const preDate = format(subDays(startDate, d), 'yyyy-MM-dd')
+      preMenstrualDays.push(preDate)
+    }
+  })
+
+  return {
+    hasCycleData: true,
+    menstruatingDays,
+    cycleLengthEstimate,
+    preMenstrualDays,
+    conditions,
+  }
+}
 
 export default function InsightsPage() {
   const { user, isPro } = useAuth()
@@ -50,6 +104,17 @@ export default function InsightsPage() {
   const [aiLoading, setAiLoading]   = useState(false)
   const [aiError, setAiError]       = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [userConditions, setUserConditions] = useState<string[]>([])
+
+  // Firestore에서 user conditions 로드
+  useEffect(() => {
+    if (!user?.uid) return
+    getDoc(doc(db, 'users', user.uid)).then(snap => {
+      if (snap.exists()) {
+        setUserConditions(snap.data().conditions ?? [])
+      }
+    }).catch(() => {})
+  }, [user?.uid])
 
   const logs      = Object.values(allLogs)
   const totalDays = logs.length
@@ -76,7 +141,8 @@ export default function InsightsPage() {
     setAiLoading(true)
     setAiError(null)
     try {
-      const analysis = await runAnalysis(logs, user?.displayName ?? 'User', language)
+      const cycleData = extractCycleSummary(logs, userConditions)
+      const analysis = await runAnalysis(logs, user?.displayName ?? 'User', language, cycleData)
       setAiAnalysis(analysis)
     } catch (e) {
       setAiError(e instanceof Error ? e.message : 'Analysis failed')

@@ -1,3 +1,11 @@
+export interface CycleSummary {
+  hasCycleData: boolean
+  menstruatingDays: string[]    // YYYY-MM-DD[]
+  cycleLengthEstimate?: number  // 추정 주기 (일)
+  preMenstrualDays: string[]    // 생리 2~5일 전
+  conditions: string[]          // ['PCOS', 'endometriosis', ...]
+}
+
 export interface AIAnalysis {
   patterns: { title: string; description: string; severity: 'positive' | 'neutral' | 'negative' }[]
   topTriggers: { trigger: string; impact: string }[]
@@ -6,11 +14,16 @@ export interface AIAnalysis {
   mock?: boolean
 }
 
-export async function runAnalysis(logs: unknown[], userName: string, language = 'en'): Promise<AIAnalysis> {
+export async function runAnalysis(
+  logs: unknown[],
+  userName: string,
+  language = 'en',
+  cycleData?: CycleSummary
+): Promise<AIAnalysis> {
   const res = await fetch('/api/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ logs, userName, language }),
+    body: JSON.stringify({ logs, userName, language, cycleData }),
   })
   const data = await res.json() as { analysis?: AIAnalysis; error?: string; mock?: boolean }
   if (data.error) throw new Error(data.error)
