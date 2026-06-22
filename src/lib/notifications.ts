@@ -56,7 +56,6 @@ function scheduleNext(settings: NotificationSettings, title: string, body: strin
         icon: '/icon-192.png',
         badge: '/icon-192.png',
         tag: 'symply-checkin',
-        renotify: true,
         data: { url: '/' },
       })
     } else {
