@@ -198,6 +198,31 @@ export default function SettingsPage() {
     updateSettings({ medications: settings.medications.filter(m => m.id !== id) })
   }
 
+  async function handleNotifToggle(enabled: boolean) {
+    if (enabled && isNotificationSupported()) {
+      const perm = await requestPermission()
+      setNotifPermission(perm)
+      if (perm !== 'granted') return
+    }
+    const next = { ...notifSettings, enabled }
+    setNotifSettings(next)
+    applyNotifSettings(
+      next,
+      language === 'ko' ? '💜 Symply 체크인 시간이에요' : language === 'es' ? '💜 Hora de registrar síntomas' : '💜 Time for your daily check-in',
+      language === 'ko' ? '오늘 증상을 기록하고 패턴을 추적하세요.' : language === 'es' ? 'Registra tus síntomas de hoy.' : 'Log your symptoms and track your patterns.'
+    )
+  }
+
+  function handleNotifTime(time: string) {
+    const next = { ...notifSettings, time }
+    setNotifSettings(next)
+    applyNotifSettings(
+      next,
+      language === 'ko' ? '💜 Symply 체크인 시간이에요' : language === 'es' ? '💜 Hora de registrar síntomas' : '💜 Time for your daily check-in',
+      language === 'ko' ? '오늘 증상을 기록하고 패턴을 추적하세요.' : language === 'es' ? 'Registra tus síntomas de hoy.' : 'Log your symptoms and track your patterns.'
+    )
+  }
+
   const showCycleTab = settings.conditions.includes('PCOS') ||
     settings.conditions.includes('endometriosis')
 
