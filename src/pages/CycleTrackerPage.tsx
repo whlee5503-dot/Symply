@@ -27,7 +27,7 @@ export default function CycleTrackerPage() {
 
   useEffect(() => {
     if (!user) return
-    getLogs(user.uid).then(setLogs)
+    setLogs(getLogs())
   }, [user])
 
   useEffect(() => {
@@ -55,8 +55,8 @@ export default function CycleTrackerPage() {
       updatedAt: new Date(),
     }
     const updated = { ...existing, cycle: cycleDay, updatedAt: new Date() }
-    await saveLog(user.uid, selectedDate, updated)
-    setLogs(prev => ({ ...prev, [selectedDate]: updated }))
+    await saveLog(updated, user?.uid)
+    setLogs(getLogs())
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
