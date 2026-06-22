@@ -7,6 +7,10 @@ import { db } from '../lib/firebase'
 import { verifyAndActivatePro } from '../lib/polar'
 import UpgradeModal from '../components/UpgradeModal'
 import type { ChronicCondition, Medication } from '../types'
+import {
+  loadNotifSettings, requestPermission, applyNotifSettings,
+  isNotificationSupported, type NotificationSettings,
+} from '../lib/notifications'
 
 const PROFILE_KEY = 'symply-profile'
 
@@ -105,6 +109,10 @@ export default function SettingsPage() {
 
   const [settings, setSettings]             = useState<UserSettings>(loadLocalSettings)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [notifSettings, setNotifSettings] = useState<NotificationSettings>(() => loadNotifSettings())
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission | null>(
+    isNotificationSupported() ? Notification.permission : null
+  )
   const [showMedForm, setShowMedForm]       = useState(false)
   const [medName, setMedName]               = useState('')
   const [medFreq, setMedFreq]               = useState<Medication['frequency']>('daily')
@@ -472,6 +480,69 @@ export default function SettingsPage() {
                 >{t.settings.med_cancel_btn}</button>
               </div>
             </div>
+          )}
+        </div>
+      </SettingsCard>
+
+      {/* NOTIFICATIONS */}
+      <SectionHeader mt={20}>{t.settings.notifications_title}</SectionHeader>
+      <SettingsCard>
+        <div style={{ padding: '14px 16px' }}>
+          {!isNotificationSupported() ? (
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
+              {t.settings.notifications_not_supported}
+            </p>
+          ) : notifPermission === 'denied' ? (
+            <p style={{ fontSize: '0.82rem', color: '#ef4444' }}>
+              {t.settings.notifications_permission_denied}
+            </p>
+          ) : (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: notifSettings.enabled ? '14px' : '0' }}>
+                <div>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '2px' }}>
+                    {t.settings.notifications_enable}
+                  </p>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+                    {t.settings.notifications_sub}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleNotifToggle(!notifSettings.enabled)}
+                  style={{
+                    width: '48px', height: '28px', borderRadius: '14px', border: 'none',
+                    background: notifSettings.enabled ? 'var(--color-primary)' : 'var(--color-border)',
+                    position: 'relative', cursor: 'pointer', flexShrink: 0, transition: 'background 0.2s',
+                  }}
+                >
+                  <span style={{
+                    position: 'absolute', top: '4px',
+                    left: notifSettings.enabled ? '24px' : '4px',
+                    width: '20px', height: '20px', borderRadius: '50%',
+                    background: '#fff', transition: 'left 0.2s',
+                  }} />
+                </button>
+              </div>
+              {notifSettings.enabled && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--color-text)' }}>
+                    {t.settings.notifications_time}
+                  </p>
+                  <input
+                    type="time"
+                    value={notifSettings.time}
+                    onChange={e => handleNotifTime(e.target.value)}
+                    style={{
+                      padding: '6px 10px', borderRadius: '8px',
+                      border: '1px solid var(--color-border)',
+                      background: 'var(--color-surface-2)',
+                      color: 'var(--color-text)',
+                      fontSize: '0.9rem', cursor: 'pointer',
+                    }}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </SettingsCard>

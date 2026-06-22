@@ -12,9 +12,20 @@ import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
 import CycleTrackerPage from './pages/CycleTrackerPage'
 import MockDataPage from './pages/MockDataPage'
 import LandingPage from './pages/LandingPage'
+import { initNotifications } from './lib/notifications'
+import { useEffect } from 'react'
 
 function AppRoutes() {
   const { user, loading } = useAuth()
+
+  useEffect(() => {
+    if (!user) return
+    const lang = navigator.language.startsWith('ko') ? 'ko' : navigator.language.startsWith('es') ? 'es' : 'en'
+    initNotifications(
+      lang === 'ko' ? '💜 Symply 체크인 시간이에요' : lang === 'es' ? '💜 Hora de registrar síntomas' : '�� Time for your daily check-in',
+      lang === 'ko' ? '오늘 증상을 기록하고 패턴을 추적하세요.' : lang === 'es' ? 'Registra tus síntomas de hoy.' : 'Log your symptoms and track your patterns.'
+    )
+  }, [user])
   const [onboarded, setOnboarded] = useState(() => hasOnboarded())
 
   if (loading) {
