@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '../contexts/ThemeContext'
-import { useLanguage } from '../contexts/LanguageContext'
+import { useLanguage, AVAILABLE_LANGS } from '../contexts/LanguageContext'
 import { useAuth } from '../contexts/AuthContext'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
@@ -368,7 +368,7 @@ export default function SettingsPage() {
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t.settings.language_sub}</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['en', 'es', 'ko'] as const).map(lang => (
+            {AVAILABLE_LANGS.map(lang => (
               <button
                 key={lang}
                 onClick={() => setLanguage(lang)}

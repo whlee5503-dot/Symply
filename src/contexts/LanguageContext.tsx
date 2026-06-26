@@ -8,6 +8,10 @@ const STORAGE_KEY = 'symply-language'
 
 const TRANSLATIONS = { en, es, ko }
 
+// KR 모드: 한국어/영어만 허용
+const KR_MODE = import.meta.env.VITE_LOCALE_MODE === 'kr'
+export const AVAILABLE_LANGS: Language[] = KR_MODE ? ['ko', 'en'] : ['en', 'es', 'ko']
+
 interface LanguageContextValue {
   language: Language
   setLanguage: (lang: Language) => void
@@ -18,12 +22,12 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function detectLanguage(): Language {
   // 1) 저장된 설정 우선
-  const saved = localStorage.getItem(STORAGE_KEY)
-  if (saved === 'en' || saved === 'ko') return saved
+  const saved = localStorage.getItem(STORAGE_KEY) as Language | null
+  if (saved && AVAILABLE_LANGS.includes(saved)) return saved
   // 2) 브라우저 언어 자동 감지
   const browserLang = navigator.language.toLowerCase()
   if (browserLang.startsWith('ko')) return 'ko'
-  if (browserLang.startsWith('es')) return 'es'
+  if (!KR_MODE && browserLang.startsWith('es')) return 'es'
   return 'en'
 }
 
@@ -35,7 +39,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, lang)
   }, [])
 
-  // html lang 속성 동기화 (접근성)
   useEffect(() => {
     document.documentElement.lang = language
   }, [language])
