@@ -7,18 +7,33 @@ import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
 
-const TRIGGER_KEYS: { key: keyof TriggerMap; tKey: string; emoji: string }[] = [
-  { key: 'gluten',       tKey: 'trigger_gluten',       emoji: '🌾' },
-  { key: 'dairy',        tKey: 'trigger_dairy',        emoji: '🥛' },
-  { key: 'sugar',        tKey: 'trigger_sugar',        emoji: '🍬' },
-  { key: 'caffeine',     tKey: 'trigger_caffeine',     emoji: '☕' },
-  { key: 'alcohol',      tKey: 'trigger_alcohol',      emoji: '🍷' },
-  { key: 'stress',       tKey: 'trigger_stress',       emoji: '😤' },
-  { key: 'poor_sleep',   tKey: 'trigger_poor_sleep',   emoji: '😴' },
-  { key: 'overexertion',      tKey: 'trigger_overexertion',      emoji: '🏃' },
-  { key: 'pressure_change',    tKey: 'trigger_pressure_change',    emoji: '🌪️' },
-  { key: 'temperature_change', tKey: 'trigger_temperature_change', emoji: '🌡️' },
-  { key: 'sun_exposure',       tKey: 'trigger_sun_exposure',       emoji: '☀️' },
+const TRIGGER_CATEGORIES = [
+  {
+    labelKey: 'triggers_food_label' as const,
+    keys: [
+      { key: 'gluten'   as keyof TriggerMap, tKey: 'trigger_gluten',   emoji: '🌾' },
+      { key: 'dairy'    as keyof TriggerMap, tKey: 'trigger_dairy',    emoji: '🥛' },
+      { key: 'sugar'    as keyof TriggerMap, tKey: 'trigger_sugar',    emoji: '🍬' },
+      { key: 'caffeine' as keyof TriggerMap, tKey: 'trigger_caffeine', emoji: '☕' },
+      { key: 'alcohol'  as keyof TriggerMap, tKey: 'trigger_alcohol',  emoji: '🍷' },
+    ],
+  },
+  {
+    labelKey: 'triggers_lifestyle_label' as const,
+    keys: [
+      { key: 'stress'       as keyof TriggerMap, tKey: 'trigger_stress',       emoji: '😤' },
+      { key: 'poor_sleep'   as keyof TriggerMap, tKey: 'trigger_poor_sleep',   emoji: '😴' },
+      { key: 'overexertion' as keyof TriggerMap, tKey: 'trigger_overexertion', emoji: '🏃' },
+    ],
+  },
+  {
+    labelKey: 'triggers_environment_label' as const,
+    keys: [
+      { key: 'pressure_change'    as keyof TriggerMap, tKey: 'trigger_pressure_change',    emoji: '🌪️' },
+      { key: 'temperature_change' as keyof TriggerMap, tKey: 'trigger_temperature_change', emoji: '🌡️' },
+      { key: 'sun_exposure'       as keyof TriggerMap, tKey: 'trigger_sun_exposure',       emoji: '☀️' },
+    ],
+  },
 ]
 
 function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
