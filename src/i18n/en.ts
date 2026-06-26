@@ -36,7 +36,7 @@ export const en = {
     edit: "Edit",
     no_triggers_btn: 'No triggers today ✓',
     no_triggers_active: '✅ No triggers today',
-    triggers_section: 'Today's Factors',
+    triggers_section: "Today's Factors",
     triggers_food_label: '🍽 Food & Drink',
     triggers_lifestyle_label: '😓 Lifestyle',
     triggers_environment_label: '🌤 Environment',
