@@ -201,6 +201,7 @@ export const en = {
     about_evidence: 'Evidence base',
     about_evidence_val: 'MPH-informed design',
     about_disclaimer: 'Symply is not a medical device. All medical decisions should be made with your healthcare provider.',
+    cycle_tab_enabled: '💜 Cycle Tracker tab is enabled for your conditions.',
     notifications_title: 'Daily Reminder',
     notifications_sub: 'Get a daily nudge to log your symptoms.',
     notifications_enable: 'Enable notifications',

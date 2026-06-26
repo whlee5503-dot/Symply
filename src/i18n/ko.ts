@@ -197,6 +197,7 @@ export const ko: Translations = {
     about_evidence: '근거 기반',
     about_evidence_val: 'MPH 전문가 설계',
     about_disclaimer: 'Symply는 의료 기기가 아닙니다. 모든 의료적 결정은 전문 의료인과 상담하세요.',
+    cycle_tab_enabled: '💜 사이클 탭이 활성화되었습니다.',
     notifications_title: '매일 리마인더',
     notifications_sub: '매일 증상을 기록할 수 있도록 알림을 보내드립니다.',
     notifications_enable: '알림 켜기',

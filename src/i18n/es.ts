@@ -197,6 +197,7 @@ export const es: Translations = {
     about_evidence:   'Base de evidencia',
     about_evidence_val: 'Diseño basado en MPH',
     about_disclaimer: 'Symply no es un dispositivo médico. Todas las decisiones médicas deben tomarse con tu proveedor de salud.',
+    cycle_tab_enabled: '💜 La pestaña de ciclo está activada para tus condiciones.',
     notifications_title: 'Recordatorio diario',
     notifications_sub: 'Recibe un recordatorio diario para registrar tus síntomas.',
     notifications_enable: 'Activar notificaciones',

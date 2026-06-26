@@ -416,7 +416,7 @@ export default function SettingsPage() {
           </div>
           {showCycleTab && (
             <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', marginTop: '10px' }}>
-              💜 Cycle Tracker tab is enabled for your conditions.
+              {t.settings.cycle_tab_enabled}
             </p>
           )}
         </div>
