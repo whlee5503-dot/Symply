@@ -170,20 +170,32 @@ export default function HomePage() {
       </Card>
 
       <Card style={{ marginBottom: '12px' }}>
-        <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>{t.home.triggers}</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
-          {TRIGGER_KEYS.map(({ key, tKey, emoji }) => (
-            <button key={key} onClick={() => toggleTrigger(key)} style={{
-              padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
-              border: triggers[key] ? '2px solid var(--color-secondary)' : '1px solid var(--color-border)',
-              background: triggers[key] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
-              fontSize: '0.82rem', fontWeight: triggers[key] ? 600 : 400,
-              color: triggers[key] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
-            }}>
-              {emoji} {t.home[tKey as keyof typeof t.home] as string}
-            </button>
-          ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', margin: 0 }}>{t.home.triggers_section}</p>
+          <span title={t.home.triggers_tooltip} style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', cursor: 'help', borderBottom: '1px dashed var(--color-border)' }}>
+            ℹ️ WHY?
+          </span>
         </div>
+        {TRIGGER_CATEGORIES.map(({ labelKey, keys }) => (
+          <div key={labelKey} style={{ marginBottom: '10px' }}>
+            <p style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '6px', letterSpacing: '0.03em' }}>
+              {t.home[labelKey as keyof typeof t.home] as string}
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {keys.map(({ key, tKey, emoji }) => (
+                <button key={key} onClick={() => toggleTrigger(key as keyof TriggerMap)} style={{
+                  padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
+                  border: triggers[key as keyof TriggerMap] ? '2px solid var(--color-secondary)' : '1px solid var(--color-border)',
+                  background: triggers[key as keyof TriggerMap] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
+                  fontSize: '0.82rem', fontWeight: triggers[key as keyof TriggerMap] ? 600 : 400,
+                  color: triggers[key as keyof TriggerMap] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
+                }}>
+                  {emoji} {t.home[tKey as keyof typeof t.home] as string}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
         {/* 트리거 없는 날 버튼 */}
         {!anyTriggerSelected && (
           <button

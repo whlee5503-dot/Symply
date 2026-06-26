@@ -21,7 +21,7 @@ const CONTENT = {
     solutionTitle: 'Your body has a story.',
     solutionSub: 'Symply helps you tell it.',
     solutions: [
-      { emoji: '⏱️', title: '30-second daily check-in', body: 'Log pain, fatigue, sleep, triggers, and mood — even on your worst days.', badge: 'Free', color: '#059669' },
+      { emoji: '⏱️', title: '30-second daily check-in', body: 'Log pain, fatigue, sleep, mood, and today\'s factors (food, lifestyle, environment) — even on your worst days.', badge: 'Free', color: '#059669' },
       { emoji: '🤖', title: 'AI finds your patterns', body: '"On days following less than 6 hours of sleep, your pain is 40% higher." Claude AI delivers insights you can actually use.', badge: 'Pro', color: '#7c3aed' },
       { emoji: '📄', title: 'Doctor-ready report in seconds', body: 'Generate a 1-2 page clinical PDF summarizing months of symptoms. Designed by an MPH professional.', badge: 'Pro', color: '#7c3aed' },
     ],
