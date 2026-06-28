@@ -105,6 +105,7 @@ function SettingsRow({
 }
 
 export default function SettingsPage() {
+  const navigate = useNavigate()
   const { mode: theme, setMode: setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
   const { user, isPro, signOutUser } = useAuth()
