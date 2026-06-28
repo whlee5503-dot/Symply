@@ -204,6 +204,8 @@ export const en = {
     signed_in_as: 'Signed in as',
     about_guide: 'How to Use',
     about_guide_val: 'Feature guide & key terms',
+    about_feedback: 'Send Feedback',
+    about_feedback_val: 'Share your thoughts with us',
     about_title: 'About',
     about_version: 'Version',
     about_privacy: 'Privacy',

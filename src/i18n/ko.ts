@@ -201,6 +201,8 @@ export const ko: Translations = {
     signed_in_as: '로그인 중',
     about_guide: '사용 가이드',
     about_guide_val: '기능 안내 및 주요 용어',
+    about_feedback: '피드백 보내기',
+    about_feedback_val: '의견이나 개선 사항을 알려주세요',
     about_title: 'About',
     about_version: '버전',
     about_privacy: '개인정보',

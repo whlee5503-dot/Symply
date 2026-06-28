@@ -200,6 +200,8 @@ export const es: Translations = {
     signed_in_as:     'Sesión iniciada como',
     about_guide: 'Como usar',
     about_guide_val: 'Guia de funciones y terminos clave',
+    about_feedback: 'Enviar comentarios',
+    about_feedback_val: 'Comparte tus opiniones con nosotros',
     about_title:      'Acerca de',
     about_version:    'Versión',
     about_privacy:    'Privacidad',
