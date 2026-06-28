@@ -9,8 +9,7 @@ function hasCycleCondition(): boolean {
     const raw = localStorage.getItem(PROFILE_KEY)
     if (!raw) return false
     const profile = JSON.parse(raw)
-    const conditions: string[] = profile.conditions ?? []
-    return conditions.includes('PCOS') || conditions.includes('endometriosis')
+    return profile.gender === 'female'
   } catch { return false }
 }
 

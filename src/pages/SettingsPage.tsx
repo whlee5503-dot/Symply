@@ -16,6 +16,7 @@ const PROFILE_KEY = 'symply-profile'
 
 interface UserSettings {
   name: string
+  gender: 'female' | 'male' | 'other' | ''
   conditions: ChronicCondition[]
   medications: Medication[]
 }
@@ -23,9 +24,9 @@ interface UserSettings {
 function loadLocalSettings(): UserSettings {
   try {
     const raw = localStorage.getItem(PROFILE_KEY)
-    return raw ? JSON.parse(raw) : { name: '', conditions: [], medications: [] }
+    return raw ? JSON.parse(raw) : { name: '', gender: '' as const, conditions: [], medications: [] }
   } catch {
-    return { name: '', conditions: [], medications: [] }
+    return { name: '', gender: '' as const, conditions: [], medications: [] }
   }
 }
 
@@ -223,8 +224,7 @@ export default function SettingsPage() {
     )
   }
 
-  const showCycleTab = settings.conditions.includes('PCOS') ||
-    settings.conditions.includes('endometriosis')
+  const showCycleTab = settings.gender === 'female'
 
   return (
     <div style={{ padding: '20px 16px 100px', maxWidth: '480px', margin: '0 auto' }}>
@@ -388,6 +388,39 @@ export default function SettingsPage() {
       </SettingsCard>
 
       {/* MY CONDITIONS */}
+      {/* GENDER */}
+      <SectionHeader mt={20}>{t.settings.gender_title}</SectionHeader>
+      <SettingsCard>
+        <div style={{ padding: '14px 16px' }}>
+          <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginBottom: '10px' }}>
+            {t.settings.gender_sub}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {([
+              { value: 'female', label: t.settings.gender_female },
+              { value: 'male',   label: t.settings.gender_male },
+              { value: 'other',  label: t.settings.gender_other },
+            ] as const).map(({ value, label }) => (
+              <button key={value} onClick={() => updateSettings({ gender: value })} style={{
+                padding: '10px 14px', borderRadius: '10px', cursor: 'pointer', textAlign: 'left',
+                border: settings.gender === value ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border)',
+                background: settings.gender === value ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
+                color: settings.gender === value ? 'var(--color-primary)' : 'var(--color-text)',
+                fontWeight: settings.gender === value ? 700 : 400,
+                fontSize: '0.9rem',
+              }}>
+                {label}
+              </button>
+            ))}
+          </div>
+          {settings.gender === 'female' && (
+            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '10px', lineHeight: 1.5 }}>
+              {t.settings.gender_cycle_note}
+            </p>
+          )}
+        </div>
+      </SettingsCard>
+
       <SectionHeader mt={20}>{t.settings.conditions_title}</SectionHeader>
       <SettingsCard>
         <div style={{ padding: '14px 16px' }}>
