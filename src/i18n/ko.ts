@@ -377,6 +377,14 @@ export const ko: Translations = {
     5: '최고',
   },
 
+  mood_labels: {
+    1: '매우 낙음',
+    2: '낙음',
+    3: '보통',
+    4: '좋음',
+    5: '최고',
+  },
+
   common: {
     loading: '불러오는 중…',
     error: '오류가 발생했습니다.',
