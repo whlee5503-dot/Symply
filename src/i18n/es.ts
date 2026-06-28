@@ -333,6 +333,37 @@ export const es: Translations = {
         term: 'Endometriosis',
         desc: 'Una condicion en la que tejido similar al endometrio crece fuera del utero, causando dolor cronico e inflamacion.',
       },
+
+      {
+        icon: '💜',
+        term: 'Fibromialgia',
+        desc: 'Una condicion cronica que causa dolor musculoesqueletico generalizado, fatiga, problemas de sueno y dificultades cognitivas. Los sintomas suelen fluctuar segun el estres, el sueno y la actividad fisica.',
+      },
+      {
+        icon: '🫀',
+        term: 'Lupus (LES)',
+        desc: 'Una enfermedad autoinmune sistemica en la que el sistema inmunitario ataca tejido sano. Puede afectar piel, articulaciones, rinones y otros organos, con brotes y remisiones impredecibles.',
+      },
+      {
+        icon: '🦴',
+        term: 'Artritis Reumatoide (AR)',
+        desc: 'Una condicion autoinmune que causa inflamacion cronica de las articulaciones, dolor e hinchazón. A diferencia de la osteoartritis, afecta el revestimiento articular y puede danar otros sistemas del cuerpo.',
+      },
+      {
+        icon: '🪲',
+        term: 'Enfermedad de Crohn',
+        desc: 'Un tipo de enfermedad inflamatoria intestinal (EII) que puede afectar cualquier parte del tracto digestivo. Los sintomas incluyen dolor abdominal, diarrea, fatiga y perdida de peso.',
+      },
+      {
+        icon: '⚡',
+        term: 'SII (Sindrome de Intestino Irritable)',
+        desc: 'Un trastorno funcional intestinal comun que causa dolor abdominal, distension y cambios en los habitos intestinales. Los ciclos hormonales, el estres y la dieta influyen en los sintomas.',
+      },
+      {
+        icon: '😴',
+        term: 'EM/SFC (Sindrome de Fatiga Cronica)',
+        desc: 'Una enfermedad compleja y prolongada caracterizada por fatiga extrema que no mejora con el descanso, deterioro cognitivo y malestar post-esfuerzo.',
+      },
       {
         icon: '⚡',
         term: 'Brote (Flare)',

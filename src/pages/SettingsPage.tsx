@@ -612,7 +612,7 @@ export default function SettingsPage() {
       <SectionHeader mt={20}>{t.settings.about_title}</SectionHeader>
       <SettingsCard>
         <SettingsRow label="Symply"        value="Version 1.0.0 · Sprint 7" icon="💜" />
-        <SettingsRow label={t.settings.about_guide} value={t.settings.about_guide_val} icon="��" onClick={() => navigate('/guide')} />
+        <SettingsRow label={t.settings.about_guide} value={t.settings.about_guide_val} icon="📖" onClick={() => navigate('/guide')} />
         <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" />
         <SettingsRow label={t.settings.about_evidence} value={t.settings.about_evidence_val} icon="📚" />
       </SettingsCard>

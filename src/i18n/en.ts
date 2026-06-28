@@ -339,6 +339,37 @@ export const en = {
         term: 'Endometriosis',
         desc: 'A condition where tissue similar to the uterine lining grows outside the uterus, causing chronic pain and inflammation.',
       },
+
+      {
+        icon: '💜',
+        term: 'Fibromyalgia',
+        desc: 'A chronic condition causing widespread musculoskeletal pain, fatigue, sleep problems, and cognitive difficulties. Symptoms often fluctuate and can be influenced by stress, sleep, and physical activity.',
+      },
+      {
+        icon: '🫀',
+        term: 'Lupus (SLE)',
+        desc: 'A systemic autoimmune disease where the immune system attacks healthy tissue. It can affect the skin, joints, kidneys, and other organs, and is known for unpredictable flares and remissions.',
+      },
+      {
+        icon: '🦴',
+        term: 'Rheumatoid Arthritis (RA)',
+        desc: 'An autoimmune condition causing chronic joint inflammation, pain, and swelling. Unlike osteoarthritis, RA affects the joint lining and can damage other body systems over time.',
+      },
+      {
+        icon: '🪲',
+        term: "Crohn's Disease",
+        desc: 'A type of inflammatory bowel disease (IBD) that can affect any part of the digestive tract. Symptoms include abdominal pain, diarrhea, fatigue, and weight loss.',
+      },
+      {
+        icon: '⚡',
+        term: 'IBS (Irritable Bowel Syndrome)',
+        desc: 'A common functional gut disorder causing abdominal pain, bloating, and changes in bowel habits. Hormonal cycles, stress, and diet are known to influence symptoms.',
+      },
+      {
+        icon: '😴',
+        term: 'ME/CFS (Chronic Fatigue Syndrome)',
+        desc: 'A complex, long-term illness characterized by extreme fatigue that does not improve with rest, cognitive impairment (brain fog), and post-exertional malaise.',
+      },
       {
         icon: '⚡',
         term: 'Flare',
