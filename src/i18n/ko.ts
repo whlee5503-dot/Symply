@@ -239,8 +239,7 @@ export const ko: Translations = {
     back: '← 이전',
     get_started: '기록 시작하기 →',
     conditions_none: '나중에 설정 →',
-    slide_welcome_title: '당신의 증상은
-들려질 자격이 있습니다.',
+    slide_welcome_title: '당신의 증상은\n들려질 자격이 있습니다.',
     slide_welcome_body: 'Symply는 매일 30초만으로 증상을 기록하고, 패턴을 발견하고, 의사에게 명확한 근거를 제시할 수 있도록 도와줍니다.',
     slide_problem_title: '당신이 상상하는 게 아닙니다.',
     slide_problem_body: '자궁내막증이나 섬유근통 같은 질환은 진단까지 평균 7~12년이 걸립니다. 의료 가스라이팅은 실제로 존재하며 — 기록된 데이터가 그것을 바꾼 수 있습니다.',
