@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { format, subDays, differenceInDays, parseISO } from 'date-fns'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
