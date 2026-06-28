@@ -147,6 +147,7 @@ export default function SettingsPage() {
         const data = snap.data()
         const merged: UserSettings = {
           name:        data.displayName ?? user.displayName ?? '',
+          gender:      data.gender      ?? '',
           conditions:  data.conditions  ?? [],
           medications: data.medications ?? [],
         }
