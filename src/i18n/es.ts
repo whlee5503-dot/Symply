@@ -198,6 +198,8 @@ export const es: Translations = {
     upgrade_btn:      '✨ Mejorar a Pro',
     account_title:    'Cuenta',
     signed_in_as:     'Sesión iniciada como',
+    about_guide: 'Como usar',
+    about_guide_val: 'Guia de funciones y terminos clave',
     about_title:      'Acerca de',
     about_version:    'Versión',
     about_privacy:    'Privacidad',
@@ -271,6 +273,72 @@ export const es: Translations = {
     cta:      '✨ Comenzar Pro — $3.99/mes',
     loading:  '⏳ Redirigiendo al pago...',
     later:    'Quizás después',
+  },
+
+  guide: {
+    title: 'Como usar Symply',
+    intro: 'Symply te ayuda a registrar sintomas, descubrir patrones y comunicarte mejor con tu medico. Aqui tienes un resumen de cada funcion.',
+    pages_title: 'Paginas',
+    pages: [
+      {
+        icon: '🏠',
+        title: 'Inicio - Registro diario',
+        desc: 'Registra tus sintomas en aproximadamente 30 segundos. Anota dolor, fatiga, estado de animo, horas de sueno, nivel de actividad y los factores de hoy. Las escalas de dolor y fatiga incluyen descripciones de referencia para que tu registro sea consistente con el tiempo.',
+      },
+      {
+        icon: '📅',
+        title: 'Historial - Tus registros',
+        desc: 'Consulta entradas anteriores en un mapa de calor de calendario con codigos de color. Toca cualquier fecha para ver el detalle completo de ese dia.',
+      },
+      {
+        icon: '🌸',
+        title: 'Ciclo - Seguimiento menstrual',
+        desc: 'Disponible para todas las usuarias que seleccionen genero femenino. Registra el estado del periodo, flujo y sintomas relacionados con el ciclo. Estos datos se incluyen automaticamente en el analisis de IA, ya que el ciclo hormonal afecta a muchas enfermedades cronicas.',
+      },
+      {
+        icon: '��',
+        title: 'Perspectivas - Tendencias y analisis IA',
+        desc: 'Consulta graficas de tendencias de dolor, fatiga, sueno y estado de animo. Los usuarios Pro obtienen analisis de patrones con IA. Los usuarios gratuitos pueden realizar hasta 5 analisis de IA al mes.',
+      },
+      {
+        icon: '📄',
+        title: 'Informe - PDF para el medico (Pro)',
+        desc: 'Genera automaticamente un resumen clinico en PDF de 1-2 paginas a partir de meses de registros. Disenado para que tu medico lo lea en menos de 3 minutos. Se recomienda generarlo el dia antes de la consulta.',
+      },
+      {
+        icon: '⚙️',
+        title: 'Ajustes',
+        desc: 'Gestiona tu genero, enfermedades cronicas, medicacion, tema visual, idioma, recordatorios diarios y suscripcion.',
+      },
+    ],
+    terms_title: 'Terminos clave',
+    terms: [
+      {
+        icon: '📏',
+        term: 'Escala de dolor con anclajes',
+        desc: 'Cada nivel de dolor incluye una descripcion del mundo real, no solo numeros. Por ejemplo, el nivel 6 significa "tienes que parar lo que estas haciendo." Esto te ayuda a registrar de forma consistente incluso en los dias dificiles.',
+      },
+      {
+        icon: '🔍',
+        term: 'Factores de hoy',
+        desc: 'Posibles factores que pueden influir en tus sintomas, organizados en tres categorias basadas en evidencia: Comida y bebida, Estilo de vida y Entorno.',
+      },
+      {
+        icon: '🔄',
+        term: 'SOP (Sindrome de Ovario Poliquistico)',
+        desc: 'Una condicion hormonal que afecta a los ovarios, que suele causar periodos irregulares, exceso de androgenos y cambios metabolicos.',
+      },
+      {
+        icon: '🌸',
+        term: 'Endometriosis',
+        desc: 'Una condicion en la que tejido similar al endometrio crece fuera del utero, causando dolor cronico e inflamacion.',
+      },
+      {
+        icon: '⚡',
+        term: 'Brote (Flare)',
+        desc: 'Un periodo en que los sintomas de la enfermedad cronica empeoran de forma repentina. Registrar tus datos puede ayudarte a identificar que tiende a desencadenar un brote. (Las alertas predictivas estan planeadas para una actualizacion futura.)',
+      },
+    ],
   },
 
   mood_labels: {

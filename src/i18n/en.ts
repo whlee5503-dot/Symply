@@ -202,6 +202,8 @@ export const en = {
     upgrade_btn: '✨ Upgrade to Pro',
     account_title: 'Account',
     signed_in_as: 'Signed in as',
+    about_guide: 'How to Use',
+    about_guide_val: 'Feature guide & key terms',
     about_title: 'About',
     about_version: 'Version',
     about_privacy: 'Privacy',
@@ -277,6 +279,72 @@ export const en = {
     cta: '✨ Start Pro — $3.99/mo',
     loading: '⏳ Redirecting to checkout...',
     later: 'Maybe later',
+  },
+
+  guide: {
+    title: 'How to Use Symply',
+    intro: 'Symply helps you track symptoms, discover patterns, and communicate more effectively with your doctor. Here is a quick overview of each feature.',
+    pages_title: 'Pages',
+    pages: [
+      {
+        icon: '🏠',
+        title: 'Home — Daily Check-in',
+        desc: 'Log your symptoms in about 30 seconds. Record pain, fatigue, mood, sleep, activity level, and today\'s potential triggers. The pain and fatigue scales use anchor descriptions so your entries stay consistent over time.',
+      },
+      {
+        icon: '📅',
+        title: 'History — Your Records',
+        desc: 'View past entries on a color-coded calendar heatmap. Tap any date to see the full details of that day\'s log.',
+      },
+      {
+        icon: '🌸',
+        title: 'Cycle — Menstrual Tracking',
+        desc: 'Available to all users who select female gender. Log period status, flow, and cycle-related symptoms. This data is automatically included in AI analysis, since hormonal cycles affect many chronic conditions including lupus, fibromyalgia, rheumatoid arthritis, and IBS.',
+      },
+      {
+        icon: '📊',
+        title: 'Insights — Trends and AI Analysis',
+        desc: 'View trend charts for pain, fatigue, sleep, and mood. Pro users get AI-powered pattern analysis — personalized insights like "Pain tends to be 40% higher after fewer than 6 hours of sleep." Free users can run up to 5 AI analyses per month.',
+      },
+      {
+        icon: '📄',
+        title: 'Report — Doctor\'s PDF (Pro)',
+        desc: 'Automatically generate a 1-2 page clinical summary PDF from months of logged data. Designed for doctors to read in under 3 minutes. Recommended to generate the day before an appointment.',
+      },
+      {
+        icon: '⚙️',
+        title: 'Settings',
+        desc: 'Manage your gender, chronic conditions, medications, theme, language, daily reminder notifications, and subscription.',
+      },
+    ],
+    terms_title: 'Key Terms',
+    terms: [
+      {
+        icon: '📏',
+        term: 'Pain Anchor Scale',
+        desc: 'Instead of just numbers, each pain level includes a real-world description — for example, 6 means "severe enough that you have to stop what you are doing." This helps you log consistently even on difficult days.',
+      },
+      {
+        icon: '🔍',
+        term: 'Today\'s Triggers',
+        desc: 'Potential factors that may influence your symptoms, organized into three evidence-based categories: Food and Drink, Lifestyle, and Environment. Selected based on research into chronic illness.',
+      },
+      {
+        icon: '🔄',
+        term: 'PCOS (Polycystic Ovary Syndrome)',
+        desc: 'A hormonal condition affecting the ovaries, often causing irregular periods, elevated androgens, and metabolic changes.',
+      },
+      {
+        icon: '��',
+        term: 'Endometriosis',
+        desc: 'A condition where tissue similar to the uterine lining grows outside the uterus, causing chronic pain and inflammation.',
+      },
+      {
+        icon: '⚡',
+        term: 'Flare',
+        desc: 'A period when chronic illness symptoms suddenly worsen. Tracking your data over time can help you identify what tends to trigger or precede a flare. (Predictive flare alerts are planned for a future update.)',
+      },
+    ],
   },
 
   // Common

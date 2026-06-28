@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
 import CycleTrackerPage from './pages/CycleTrackerPage'
 import MockDataPage from './pages/MockDataPage'
+import GuidePage from './pages/GuidePage'
 import LandingPage from './pages/LandingPage'
 import { initNotifications } from './lib/notifications'
 import { useEffect } from 'react'
@@ -68,6 +69,7 @@ function AppRoutes() {
         <Route path="/report"   element={<ReportPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/mock"     element={<MockDataPage />} />
+        <Route path="/guide"    element={<GuidePage />} />
         <Route path="*"         element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
