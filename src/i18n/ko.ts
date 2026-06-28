@@ -99,6 +99,8 @@ export const ko: Translations = {
     ai_subtitle: 'Claude AI가 증상 데이터를 분석해 개인화된 패턴을 찾아드립니다.',
     ai_pro_subtitle: 'Claude AI가 증상 기록을 분석해 "수면 6시간 미만 시 통증 40% 상승" 같은 개인화된 인사이트를 제공합니다.',
     ai_unlock: 'AI 분석 잠금 해제',
+    ai_free_remaining: '이번 달 무료 분석 남은 횟수: {n}/5',
+    ai_free_limit_reached: '이번 달 무료 분석 5회를 모두 사용했습니다. Pro로 업그레이드하면 무제한으로 이용할 수 있습니다.',
     ai_analyze: '✨ 내 패턴 분석하기',
     ai_analyzing: '🔄 분석 중...',
     ai_reanalyze: '🔄 다시 분석',

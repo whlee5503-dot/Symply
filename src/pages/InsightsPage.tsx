@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { format, subDays, differenceInDays, parseISO } from 'date-fns'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
@@ -105,13 +105,18 @@ export default function InsightsPage() {
   const [aiError, setAiError]       = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [userConditions, setUserConditions] = useState<string[]>([])
+  const [freeCallsUsed, setFreeCallsUsed] = useState<number | null>(null)
 
-  // Firestore에서 user conditions 로드
+  // Firestore에서 user conditions + AI 호출 횟수 로드
   useEffect(() => {
     if (!user?.uid) return
     getDoc(doc(db, 'users', user.uid)).then(snap => {
       if (snap.exists()) {
         setUserConditions(snap.data().conditions ?? [])
+        const thisMonth = new Date().toISOString().slice(0, 7) // YYYY-MM
+        const savedMonth = snap.data().aiCallMonth
+        const savedCount = snap.data().aiCallCount ?? 0
+        setFreeCallsUsed(savedMonth === thisMonth ? savedCount : 0)
       }
     }).catch(() => {})
   }, [user?.uid])
@@ -135,8 +140,20 @@ export default function InsightsPage() {
 
   async function handleAnalyze() {
     if (!isPro) {
-      setShowUpgrade(true)
-      return
+      // 무료 사용자: 월 5회 제한 체크
+      const thisMonth = new Date().toISOString().slice(0, 7)
+      const used = freeCallsUsed ?? 0
+      if (used >= 5) {
+        setShowUpgrade(true)
+        return
+      }
+      // 횟수 증가 먼저
+      const userRef = doc(db, 'users', user!.uid)
+      await setDoc(userRef, {
+        aiCallCount: used + 1,
+        aiCallMonth: thisMonth,
+      }, { merge: true })
+      setFreeCallsUsed(used + 1)
     }
     setAiLoading(true)
     setAiError(null)
@@ -255,12 +272,24 @@ export default function InsightsPage() {
             <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
               {t.insights.ai_subtitle}
             </p>
+            {/* 무료 사용자 남은 횟수 표시 */}
+            {!isPro && freeCallsUsed !== null && (
+              <p style={{
+                fontSize: '0.8rem',
+                color: (freeCallsUsed ?? 0) >= 5 ? '#ef4444' : 'var(--color-text-muted)',
+                marginBottom: '12px',
+              }}>
+                {(freeCallsUsed ?? 0) >= 5
+                  ? t.insights.ai_free_limit_reached
+                  : t.insights.ai_free_remaining.replace('{n}', String(5 - (freeCallsUsed ?? 0)))}
+              </p>
+            )}
             {aiError && (
               <p style={{ fontSize: '0.82rem', color: '#ef4444', marginBottom: '12px' }}>{aiError}</p>
             )}
             <button
               onClick={handleAnalyze}
-              disabled={aiLoading}
+              disabled={aiLoading || (!isPro && (freeCallsUsed ?? 0) >= 5)}
               style={{
                 padding: '12px 24px',
                 borderRadius: '12px',

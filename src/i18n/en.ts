@@ -101,6 +101,8 @@ export const en = {
     ai_subtitle: 'Claude AI will analyze your symptom data and identify personalized patterns.',
     ai_pro_subtitle: 'Claude AI analyzes your symptom history and delivers personalized insights — like "sleep under 6h raises your pain by 40%."',
     ai_unlock: 'Unlock AI Analysis',
+    ai_free_remaining: 'Free analyses remaining this month: {n}/5',
+    ai_free_limit_reached: 'You've used all 5 free analyses this month. Upgrade to Pro for unlimited.',
     ai_analyze: '✨ Analyze My Patterns',
     ai_analyzing: '🔄 Analyzing...',
     ai_reanalyze: '🔄 Re-analyze',

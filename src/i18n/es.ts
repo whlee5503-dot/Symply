@@ -99,6 +99,8 @@ export const es: Translations = {
     ai_subtitle:     'Claude AI analizará tus datos y encontrará patrones personalizados.',
     ai_pro_subtitle: 'Claude AI analiza tu historial y ofrece insights como "dormir menos de 6h aumenta tu dolor un 40%."',
     ai_unlock:       'Desbloquear análisis de IA',
+    ai_free_remaining: 'Análisis gratuitos restantes este mes: {n}/5',
+    ai_free_limit_reached: 'Has usado los 5 análisis gratuitos de este mes. Actualiza a Pro para uso ilimitado.',
     ai_analyze:      '✨ Analizar mis patrones',
     ai_analyzing:    '🔄 Analizando...',
     ai_reanalyze:    '🔄 Re-analizar',
