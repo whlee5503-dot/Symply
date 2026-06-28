@@ -225,7 +225,7 @@ export default function InsightsPage() {
 
       {/* AI Analysis (Pro) */}
       <Card style={{ marginBottom: '16px' }}>
-        {!isPro && !aiAnalysis ? (
+        {!isPro && !aiAnalysis && (freeCallsUsed ?? 0) >= 5 ? (
           /* Pro 잠금 UI */
           <div style={{ textAlign: 'center' }}>
             <div style={{
@@ -265,7 +265,7 @@ export default function InsightsPage() {
             </button>
           </div>
         ) : !aiAnalysis ? (
-          /* Pro 유저 — 분석 전 */
+          /* Pro 유저 또는 Free 5회 미만 — 분석 전 */
           <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
             <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.ai_title}</p>
