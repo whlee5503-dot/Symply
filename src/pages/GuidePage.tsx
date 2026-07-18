@@ -62,7 +62,7 @@ export default function GuidePage() {
 
         {g.terms.map((term) => (
           <GuideCard key={term.term} icon={term.icon} title={term.term}>
-            <p style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0, whiteSpace: 'pre-line' }}>
               {term.desc}
             </p>
           </GuideCard>

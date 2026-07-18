@@ -318,10 +318,15 @@ export const es: Translations = {
       {
         icon: '📏',
         term: 'Escala de dolor con anclajes',
-        desc: 'Cada nivel de dolor incluye una descripcion del mundo real, no solo numeros. Por ejemplo, el nivel 6 significa "tienes que parar lo que estas haciendo." Esto te ayuda a registrar de forma consistente incluso en los dias dificiles.',
+        desc: 'El dolor se registra en una escala del 0 al 10. Niveles clave con descripciones:\n\n0 (Sin dolor) — Sin dolor. Completamente normal.\n2 (Leve) — Molesto pero puedes continuar.\n4 (Moderado) — Dificil concentrarse pero soportable.\n6 (Severo) — Debes parar lo que estas haciendo.\n8 (Intenso) — Dificil hablar. Dolor extremo.\n10 (Peor) — El peor dolor imaginable.\n\nPuedes seleccionar valores intermedios cuando tu experiencia este entre dos niveles.',
       },
       {
         icon: '🔍',
+        term: 'Escala de fatiga con anclajes',
+        desc: 'La fatiga se registra en una escala del 0 al 10. Niveles clave:\n\n0 (Energizado) — Completamente alerta y con energia.\n3 (Cansado) — Bajada de energia por la tarde.\n5 (Agotado) — No quieres levantarte del sofa.\n7 (Exhausto) — Incluso ducharse se siente dificil.\n10 (Colapso) — No puedes levantarte de la cama.\n\nPuedes seleccionar valores intermedios cuando tu experiencia este entre dos niveles.',
+      },
+      {
+        icon: '\uD83D\uDD0D',
         term: 'Factores de hoy',
         desc: 'Posibles factores que pueden influir en tus sintomas, organizados en tres categorias basadas en evidencia: Comida y bebida, Estilo de vida y Entorno.',
       },

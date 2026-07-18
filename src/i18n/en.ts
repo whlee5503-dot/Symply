@@ -324,10 +324,15 @@ export const en = {
       {
         icon: '📏',
         term: 'Pain Anchor Scale',
-        desc: 'Instead of just numbers, each pain level includes a real-world description — for example, 6 means "severe enough that you have to stop what you are doing." This helps you log consistently even on difficult days.',
+        desc: 'Pain is recorded on a 0-10 scale. Key levels with descriptions:\n\n0 (None) — No pain at all. Feeling completely normal.\n2 (Mild) — Noticeable but you can continue what you were doing.\n4 (Moderate) — Hard to concentrate but manageable. Like a bad headache.\n6 (Severe) — Must stop activities. Like a severe toothache.\n8 (Intense) — Hard to speak. Like kidney stones or a bad fracture.\n10 (Worst) — Like labor contractions. Consciousness fading.\n\nIntermediate values (1, 3, 5, 7, 9) can be selected when your experience falls between two anchors.',
       },
       {
         icon: '🔍',
+        term: 'Fatigue Anchor Scale',
+        desc: 'Fatigue is recorded on a 0-10 scale. Key levels with descriptions:\n\n0 (Energized) — Fully alert and energized.\n3 (Tired) — Afternoon slump feeling.\n5 (Drained) — Do not want to get off the sofa.\n7 (Exhausted) — Even showering feels hard.\n10 (Crash) — Cannot get out of bed at all.\n\nIntermediate values can be selected when your experience falls between two anchors.',
+      },
+      {
+        icon: '\uD83D\uDD0D',
         term: 'Today\'s Triggers',
         desc: 'Potential factors that may influence your symptoms, organized into three evidence-based categories: Food and Drink, Lifestyle, and Environment. Selected based on research into chronic illness.',
       },
