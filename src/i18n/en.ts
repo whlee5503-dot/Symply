@@ -343,6 +343,7 @@ export const en = {
       },
       {
         icon: '��',
+        icon: '🌸',
         term: 'Endometriosis',
         desc: 'A condition where tissue similar to the uterine lining grows outside the uterus, causing chronic pain and inflammation.',
       },
