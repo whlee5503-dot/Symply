@@ -6,7 +6,7 @@ import type { LogEntry, TriggerMap } from '../types'
 import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
-import { useNavigate } from 'react-router-dom'
+import GuideLink from '../components/ui/GuideLink'
 
 const TRIGGER_CATEGORIES = [
   {
@@ -111,23 +111,9 @@ export default function HomePage() {
 
   const anyTriggerSelected = Object.values(triggers).some(v => v)
 
-  const navigate = useNavigate()
-
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
-      {/* How to Use link */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
-        <button
-          onClick={() => navigate('/guide')}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            color: 'var(--color-primary)', fontSize: '0.78rem',
-            display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 0',
-          }}
-        >
-          📖 {t.settings.about_guide}
-        </button>
-      </div>
+      <GuideLink />
       <div style={{ marginBottom: '20px' }}>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)' }}>
           {getGreeting(t)} 💜

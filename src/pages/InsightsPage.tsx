@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
 import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
+import GuideLink from '../components/ui/GuideLink'
 import { runAnalysis, type AIAnalysis, type CycleSummary } from '../lib/analyze'
 import type { LogEntry } from '../types'
 
@@ -198,6 +199,7 @@ export default function InsightsPage() {
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
+      <GuideLink />
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.title}</h1>
       <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>
         {t.insights.subtitle_days.replace('{n}', String(totalDays))}

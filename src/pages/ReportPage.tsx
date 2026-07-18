@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
 import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
+import GuideLink from '../components/ui/GuideLink'
 import type { LogEntry } from '../types'
 import { MOOD_EMOJIS } from '../types'
 
@@ -260,6 +261,7 @@ export default function ReportPage() {
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
+      <GuideLink />
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>
         {t.report.title}
       </h1>

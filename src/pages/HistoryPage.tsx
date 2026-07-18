@@ -8,6 +8,7 @@ import CalendarHeatmap from '../components/CalendarHeatmap'
 import DayDetail from '../components/DayDetail'
 import Card from '../components/ui/Card'
 import { useLanguage } from '../contexts/LanguageContext'
+import GuideLink from '../components/ui/GuideLink'
 
 export default function HistoryPage() {
   const { user } = useAuth()
@@ -35,6 +36,7 @@ export default function HistoryPage() {
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
+      <GuideLink />
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>
         {t.history.title}
       </h1>
