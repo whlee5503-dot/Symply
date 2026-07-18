@@ -189,9 +189,6 @@ export default function HomePage() {
       <Card style={{ marginBottom: '12px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', margin: 0 }}>{t.home.triggers_section}</p>
-          <span title={t.home.triggers_tooltip} style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', cursor: 'help', borderBottom: '1px dashed var(--color-border)' }}>
-            ℹ️ WHY?
-          </span>
         </div>
         {TRIGGER_CATEGORIES.map(({ labelKey, keys }) => (
           <div key={labelKey} style={{ marginBottom: '10px' }}>
