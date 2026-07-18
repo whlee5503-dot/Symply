@@ -143,11 +143,12 @@ export const PAIN_ANCHORS: PainAnchor[] = [
 ]
 
 export const FATIGUE_ANCHORS: FatigueAnchor[] = [
-  { level: 0,  label: 'Energized',  description: 'Fully alert and energized.' },
-  { level: 3,  label: 'Tired',      description: 'Afternoon slump feeling.' },
-  { level: 5,  label: 'Drained',    description: "Don't want to get off the sofa." },
-  { level: 7,  label: 'Exhausted',  description: 'Even showering feels hard.' },
-  { level: 10, label: 'Crash',      description: 'Cannot get out of bed at all.' },
+  { level: 0,  label: 'Energized',  description: 'Fully alert. Fatigue does not interfere with daily activities.' },
+  { level: 2,  label: 'Mild',       description: 'Slightly tired but able to carry out all daily activities.' },
+  { level: 4,  label: 'Moderate',   description: 'Fatigue limits some activities. Hard to sustain physical effort.' },
+  { level: 6,  label: 'Severe',     description: 'Fatigue interferes with most activities. Work or family life affected.' },
+  { level: 8,  label: 'Intense',    description: 'Fatigue prevents most activities. Even basic tasks feel difficult.' },
+  { level: 10, label: 'Crash',      description: 'Cannot get out of bed. Fatigue is completely disabling.' },
 ]
 
 export const MOOD_EMOJIS: Record<number, { emoji: string; label: string }> = {
@@ -169,11 +170,12 @@ export const PAIN_ANCHORS_KO: PainAnchor[] = [
 ]
 
 export const FATIGUE_ANCHORS_KO: FatigueAnchor[] = [
-  { level: 0,  label: '활기참',  description: '완전히 활기차고 기민한 상태.' },
-  { level: 3,  label: '피곤함',  description: '오후에 좀 처지는 느낌.' },
-  { level: 5,  label: '기력없음', description: '소파에서 일어나기 싫음.' },
-  { level: 7,  label: '탈진',    description: '씻는 것도 힘듦.' },
-  { level: 10, label: '완전탈진', description: '침대에서 전혀 못 일어남.' },
+  { level: 0,  label: '활기참',   description: '완전히 활기참. 피로가 일상 활동에 전혀 영향을 주지 않음.' },
+  { level: 2,  label: '약한 피로', description: '약간 피곤하지만 모든 일상 활동을 수행할 수 있음.' },
+  { level: 4,  label: '보통 피로', description: '피로로 인해 일부 활동이 제한됨. 지속적인 신체 활동이 어려움.' },
+  { level: 6,  label: '심한 피로', description: '피로가 대부분의 활동을 방해함. 직장이나 가정생활에 영향을 줌.' },
+  { level: 8,  label: '극심한 피로', description: '피로로 인해 대부분의 활동이 불가능함. 기본적인 일도 힘듦.' },
+  { level: 10, label: '완전탈진',  description: '침대에서 전혀 못 일어남. 피로가 완전히 일상을 마비시킴.' },
 ]
 
 export const PAIN_ANCHORS_ES: PainAnchor[] = [
@@ -186,9 +188,10 @@ export const PAIN_ANCHORS_ES: PainAnchor[] = [
 ]
 
 export const FATIGUE_ANCHORS_ES: FatigueAnchor[] = [
-  { level: 0,  label: 'Con energía',  description: 'Completamente alerta y con energía.' },
-  { level: 3,  label: 'Cansado',      description: 'Sensación de bajón por la tarde.' },
-  { level: 5,  label: 'Agotado',      description: 'No quieres levantarte del sofá.' },
-  { level: 7,  label: 'Exhausto',     description: 'Incluso ducharse se siente difícil.' },
-  { level: 10, label: 'Sin fuerzas',  description: 'No puedes levantarte de la cama.' },
+  { level: 0,  label: 'Con energia',    description: 'Completamente alerta. La fatiga no interfiere con las actividades.' },
+  { level: 2,  label: 'Leve',           description: 'Ligeramente cansado pero capaz de realizar todas las actividades.' },
+  { level: 4,  label: 'Moderado',       description: 'La fatiga limita algunas actividades. Dificil mantener el esfuerzo.' },
+  { level: 6,  label: 'Severo',         description: 'La fatiga interfiere con la mayoria de actividades y el trabajo.' },
+  { level: 8,  label: 'Intenso',        description: 'La fatiga impide la mayoria de actividades. Incluso lo basico es dificil.' },
+  { level: 10, label: 'Sin fuerzas',    description: 'No puedes levantarte de la cama. La fatiga es completamente incapacitante.' },
 ]

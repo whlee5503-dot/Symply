@@ -329,7 +329,7 @@ export const en = {
       {
         icon: '🔍',
         term: 'Fatigue Anchor Scale',
-        desc: 'Fatigue is recorded on a 0-10 scale. Key levels with descriptions:\n\n0 (Energized) — Fully alert and energized.\n3 (Tired) — Afternoon slump feeling.\n5 (Drained) — Do not want to get off the sofa.\n7 (Exhausted) — Even showering feels hard.\n10 (Crash) — Cannot get out of bed at all.\n\nIntermediate values can be selected when your experience falls between two anchors.',
+        desc: 'Fatigue is recorded on a 0-10 scale, based on the Fatigue Severity Scale (FSS) concept — originally developed for lupus and MS patients.\n\n0 (Energized) — Fully alert. Fatigue does not interfere with daily activities.\n2 (Mild) — Slightly tired but able to carry out all daily activities.\n4 (Moderate) — Fatigue limits some activities. Hard to sustain physical effort.\n6 (Severe) — Fatigue interferes with most activities. Work or family life affected.\n8 (Intense) — Fatigue prevents most activities. Even basic tasks feel difficult.\n10 (Crash) — Cannot get out of bed. Fatigue is completely disabling.\n\nIntermediate values can be selected when your experience falls between two anchors.',
       },
       {
         icon: '\uD83D\uDD0D',

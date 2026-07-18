@@ -323,7 +323,7 @@ export const es: Translations = {
       {
         icon: '🔍',
         term: 'Escala de fatiga con anclajes',
-        desc: 'La fatiga se registra en una escala del 0 al 10. Niveles clave:\n\n0 (Energizado) — Completamente alerta y con energia.\n3 (Cansado) — Bajada de energia por la tarde.\n5 (Agotado) — No quieres levantarte del sofa.\n7 (Exhausto) — Incluso ducharse se siente dificil.\n10 (Colapso) — No puedes levantarte de la cama.\n\nPuedes seleccionar valores intermedios cuando tu experiencia este entre dos niveles.',
+        desc: 'La fatiga se registra en una escala del 0 al 10, basada en el concepto de la Escala de Severidad de Fatiga (FSS), desarrollada originalmente para pacientes con lupus y EM.\n\n0 (Con energia) — Completamente alerta. La fatiga no interfiere con las actividades.\n2 (Leve) — Ligeramente cansado pero capaz de realizar todas las actividades.\n4 (Moderado) — La fatiga limita algunas actividades.\n6 (Severo) — La fatiga interfiere con la mayoria de actividades y el trabajo.\n8 (Intenso) — La fatiga impide la mayoria de actividades.\n10 (Sin fuerzas) — No puedes levantarte de la cama.\n\nPuedes seleccionar valores intermedios cuando tu experiencia este entre dos niveles.',
       },
       {
         icon: '\uD83D\uDD0D',
