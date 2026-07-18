@@ -8,6 +8,7 @@ import CalendarHeatmap from '../components/CalendarHeatmap'
 import DayDetail from '../components/DayDetail'
 import Card from '../components/ui/Card'
 import { useLanguage } from '../contexts/LanguageContext'
+import { useNavigate } from 'react-router-dom'
 import GuideLink from '../components/ui/GuideLink'
 
 export default function HistoryPage() {
@@ -94,17 +95,19 @@ export default function HistoryPage() {
         entry={logs[selectedDate] ?? null}
       />
       {totalDays >= 7 && (
-        <div
+        <button
+          onClick={() => navigate('/insights')}
           style={{
             marginTop: '8px', padding: '12px 16px', borderRadius: '12px',
             background: 'var(--color-primary-light)',
             border: '1px solid var(--color-primary)',
             fontSize: '0.85rem', color: 'var(--color-primary)',
             fontWeight: 600, textAlign: 'center',
+            width: '100%', cursor: 'pointer',
           }}
         >
           {t.history.next_insight}
-        </div>
+        </button>
       )}
     </div>
   )
