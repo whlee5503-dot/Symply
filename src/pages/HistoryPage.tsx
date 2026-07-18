@@ -3,17 +3,18 @@ import { format, subMonths, addMonths } from 'date-fns'
 import { ko, es } from 'date-fns/locale'
 import { todayId } from '../lib/storage'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import CalendarHeatmap from '../components/CalendarHeatmap'
 import DayDetail from '../components/DayDetail'
 import Card from '../components/ui/Card'
 import { useLanguage } from '../contexts/LanguageContext'
-import { useNavigate } from 'react-router-dom'
 import GuideLink from '../components/ui/GuideLink'
 
 export default function HistoryPage() {
   const { user } = useAuth()
   const { t, language } = useLanguage()
+  const navigate = useNavigate()
   const locale = language === "ko" ? ko : language === "es" ? es : undefined
   const { logs, loading } = useFirestoreLogs(user?.uid)
   const [currentMonth, setCurrentMonth] = useState(new Date())
