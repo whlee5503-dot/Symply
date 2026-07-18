@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../contexts/ThemeContext'
 import { useLanguage, AVAILABLE_LANGS } from '../contexts/LanguageContext'
 import { useAuth } from '../contexts/AuthContext'
@@ -105,7 +104,6 @@ function SettingsRow({
 }
 
 export default function SettingsPage() {
-  const navigate = useNavigate()
   const { mode: theme, setMode: setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
   const { user, isPro, signOutUser } = useAuth()
