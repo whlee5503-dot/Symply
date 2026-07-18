@@ -615,7 +615,6 @@ export default function SettingsPage() {
         <SettingsRow label={t.settings.about_feedback} value={t.settings.about_feedback_val} icon="📬" onClick={() => { window.location.href = 'mailto:contact@phtlab.org?subject=Symply%20Feedback' }} />
         <SettingsRow label={t.settings.about_guide} value={t.settings.about_guide_val} icon="📖" onClick={() => navigate('/guide')} />
         <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" />
-        <SettingsRow label={t.settings.about_evidence} value={t.settings.about_evidence_val} icon="📚" />
       </SettingsCard>
 
       {/* ACCOUNT */}
