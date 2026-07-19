@@ -178,6 +178,47 @@ export const FATIGUE_ANCHORS_KO: FatigueAnchor[] = [
   { level: 10, label: '완전탈진',  description: '침대에서 전혀 못 일어남. 피로가 완전히 일상을 마비시킴.' },
 ]
 
+// ─── Severity Bands ────────────────────────────────────────────────────────
+// General-purpose Mild/Moderate/Severe categorization for average pain and
+// fatigue scores, based on commonly used 0-10 Numeric Rating Scale cut points
+// from the pain literature (Serlin et al. 1995; Cleeland et al.).
+// This is NOT a validated PROMIS score — real PROMIS measures use multi-item
+// questionnaires scored via IRT into T-scores (mean 50, SD 10), not a direct
+// mapping from a single 0-10 self-report. Symply's anchor scales were
+// designed with that literature (including PROMIS) as a reference point,
+// but this function only classifies Symply's own NRS-style averages.
+
+export type SeverityBand = 'none' | 'mild' | 'moderate' | 'severe'
+
+export function getSeverityBand(score: number): SeverityBand {
+  const rounded = Math.round(score)
+  if (rounded <= 0) return 'none'
+  if (rounded <= 3) return 'mild'
+  if (rounded <= 6) return 'moderate'
+  return 'severe'
+}
+
+export const SEVERITY_BAND_LABELS: Record<SeverityBand, string> = {
+  none:     'None',
+  mild:     'Mild',
+  moderate: 'Moderate',
+  severe:   'Severe',
+}
+
+export const SEVERITY_BAND_LABELS_KO: Record<SeverityBand, string> = {
+  none:     '없음',
+  mild:     '경미',
+  moderate: '보통',
+  severe:   '심함',
+}
+
+export const SEVERITY_BAND_LABELS_ES: Record<SeverityBand, string> = {
+  none:     'Ninguno',
+  mild:     'Leve',
+  moderate: 'Moderado',
+  severe:   'Severo',
+}
+
 export const PAIN_ANCHORS_ES: PainAnchor[] = [
   { level: 0,  label: 'Sin dolor',  description: 'Sin dolor. Completamente normal.',                    color: '#22c55e' },
   { level: 2,  label: 'Leve',       description: 'Molesto pero puedes continuar con tus actividades.',  color: '#86efac' },

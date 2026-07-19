@@ -8,7 +8,7 @@ import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import type { LogEntry } from '../types'
-import { MOOD_EMOJIS } from '../types'
+import { MOOD_EMOJIS, getSeverityBand, SEVERITY_BAND_LABELS } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
   const map: Record<string, string> = {
@@ -35,13 +35,6 @@ function getReportLogs(logs: Record<string, LogEntry>, days: number): LogEntry[]
     })
     .filter(Boolean)
     .reverse()
-}
-
-function getSeverityLabel(avg: number): string {
-  if (avg <= 2) return 'Mild'
-  if (avg <= 4) return 'Moderate'
-  if (avg <= 6) return 'Severe'
-  return 'Very Severe'
 }
 
 export default function ReportPage() {
@@ -125,8 +118,8 @@ export default function ReportPage() {
       y += 6
 
       const stats = [
-        { label: 'Avg Pain',    value: avgPain.toFixed(1),    sub: getSeverityLabel(avgPain) },
-        { label: 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: getSeverityLabel(avgFatigue) },
+        { label: 'Avg Pain',    value: avgPain.toFixed(1),    sub: SEVERITY_BAND_LABELS[getSeverityBand(avgPain)] },
+        { label: 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: SEVERITY_BAND_LABELS[getSeverityBand(avgFatigue)] },
         { label: 'Avg Sleep',   value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
         { label: 'Flare Days',  value: String(flareDays),     sub: `${((flareDays / totalDays) * 100).toFixed(0)}% of days` },
         { label: 'Good Days',   value: String(goodDays),      sub: `${((goodDays / totalDays) * 100).toFixed(0)}% of days` },
