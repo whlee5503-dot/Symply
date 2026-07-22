@@ -18,6 +18,7 @@ interface UserSettings {
   name: string
   gender: 'female' | 'male' | 'other' | ''
   conditions: ChronicCondition[]
+  primaryCondition?: ChronicCondition
   medications: Medication[]
 }
 
@@ -146,10 +147,11 @@ export default function SettingsPage() {
       if (snap.exists()) {
         const data = snap.data()
         const merged: UserSettings = {
-          name:        data.displayName ?? user.displayName ?? '',
-          gender:      data.gender      ?? '',
-          conditions:  data.conditions  ?? [],
-          medications: data.medications ?? [],
+          name:             data.displayName     ?? user.displayName ?? '',
+          gender:           data.gender          ?? '',
+          conditions:       data.conditions      ?? [],
+          primaryCondition: data.primaryCondition ?? undefined,
+          medications:      data.medications     ?? [],
         }
         setSettings(merged)
         saveLocalSettings(merged)
@@ -162,9 +164,10 @@ export default function SettingsPage() {
     setSaving(true)
     try {
       await updateDoc(doc(db, 'users', user.uid), {
-        displayName: updated.name,
-        conditions:  updated.conditions,
-        medications: updated.medications,
+        displayName:      updated.name,
+        conditions:       updated.conditions,
+        primaryCondition: updated.primaryCondition ?? null,
+        medications:      updated.medications,
       })
     } finally {
       setSaving(false)
@@ -182,7 +185,21 @@ export default function SettingsPage() {
     const conditions = settings.conditions.includes(c)
       ? settings.conditions.filter(x => x !== c)
       : [...settings.conditions, c]
-    updateSettings({ conditions })
+
+    let primaryCondition = settings.primaryCondition
+    if (primaryCondition && !conditions.includes(primaryCondition)) {
+      // The condition that was primary got deselected — clear it.
+      primaryCondition = undefined
+    }
+    if (!primaryCondition && conditions.length === 1) {
+      // Only one condition selected and no ambiguity — set it automatically.
+      primaryCondition = conditions[0]
+    }
+    updateSettings({ conditions, primaryCondition })
+  }
+
+  function setPrimaryCondition(c: ChronicCondition) {
+    updateSettings({ primaryCondition: c })
   }
 
   function addMedication() {
@@ -452,6 +469,42 @@ export default function SettingsPage() {
             <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', marginTop: '10px' }}>
               {t.settings.cycle_tab_enabled}
             </p>
+          )}
+
+          {settings.conditions.length > 1 && (
+            <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--color-border)' }}>
+              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>
+                {t.settings.primary_condition_title}
+              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '10px' }}>
+                {t.settings.primary_condition_sub}
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {CONDITION_OPTIONS.filter(opt => settings.conditions.includes(opt.value)).map(opt => {
+                  const isPrimary = settings.primaryCondition === opt.value
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => setPrimaryCondition(opt.value)}
+                      style={{
+                        padding: '6px 14px', borderRadius: '20px', cursor: 'pointer',
+                        border: isPrimary ? '2px solid var(--color-secondary)' : '1px solid var(--color-border)',
+                        background: isPrimary ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
+                        color: isPrimary ? 'var(--color-secondary)' : 'var(--color-text)',
+                        fontWeight: isPrimary ? 700 : 400, fontSize: '0.85rem',
+                      }}
+                    >
+                      {opt.emoji} {t.settings[('condition_' + opt.value) as keyof typeof t.settings] as string || opt.label} {isPrimary ? '★' : ''}
+                    </button>
+                  )
+                })}
+              </div>
+              {!settings.primaryCondition && (
+                <p style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '8px' }}>
+                  {t.settings.primary_condition_none}
+                </p>
+              )}
+            </div>
           )}
         </div>
       </SettingsCard>

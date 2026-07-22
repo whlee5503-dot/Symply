@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
 import AnchorSlider from '../components/ui/AnchorSlider'
 import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, PAIN_ANCHORS_ES, FATIGUE_ANCHORS_ES, MOOD_EMOJIS } from '../types'
-import type { LogEntry, TriggerMap } from '../types'
+import type { LogEntry, TriggerMap, ChronicCondition } from '../types'
+import { getTriggerPriority } from '../types'
 import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -12,11 +13,13 @@ const TRIGGER_CATEGORIES = [
   {
     labelKey: 'triggers_food_label' as const,
     keys: [
-      { key: 'gluten'   as keyof TriggerMap, tKey: 'trigger_gluten',   emoji: '🌾' },
-      { key: 'dairy'    as keyof TriggerMap, tKey: 'trigger_dairy',    emoji: '🥛' },
-      { key: 'sugar'    as keyof TriggerMap, tKey: 'trigger_sugar',    emoji: '🍬' },
-      { key: 'caffeine' as keyof TriggerMap, tKey: 'trigger_caffeine', emoji: '☕' },
-      { key: 'alcohol'  as keyof TriggerMap, tKey: 'trigger_alcohol',  emoji: '🍷' },
+      { key: 'gluten'        as keyof TriggerMap, tKey: 'trigger_gluten',        emoji: '🌾' },
+      { key: 'dairy'         as keyof TriggerMap, tKey: 'trigger_dairy',         emoji: '🥛' },
+      { key: 'sugar'         as keyof TriggerMap, tKey: 'trigger_sugar',         emoji: '🍬' },
+      { key: 'caffeine'      as keyof TriggerMap, tKey: 'trigger_caffeine',      emoji: '☕' },
+      { key: 'alcohol'       as keyof TriggerMap, tKey: 'trigger_alcohol',       emoji: '🍷' },
+      { key: 'high_fodmap'   as keyof TriggerMap, tKey: 'trigger_high_fodmap',   emoji: '🧅' },
+      { key: 'high_glycemic' as keyof TriggerMap, tKey: 'trigger_high_glycemic', emoji: '🍚' },
     ],
   },
   {
@@ -37,6 +40,32 @@ const TRIGGER_CATEGORIES = [
   },
 ]
 
+const PROFILE_KEY = 'symply-profile'
+
+function getPrimaryCondition(): ChronicCondition | undefined {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY)
+    if (!raw) return undefined
+    const profile = JSON.parse(raw)
+    return profile.primaryCondition || undefined
+  } catch { return undefined }
+}
+
+// Reorders a category's trigger keys so items with stronger evidence for the
+// user's primary condition appear first. Never removes items — all triggers
+// stay visible and loggable regardless of condition.
+function sortByRelevance<T extends { key: keyof TriggerMap }>(
+  items: T[],
+  priority: Partial<Record<keyof TriggerMap, string>>,
+): T[] {
+  const rank: Record<string, number> = { strong: 0, moderate: 1, weak: 2 }
+  return [...items].sort((a, b) => {
+    const ra = priority[a.key] ? rank[priority[a.key] as string] : 3
+    const rb = priority[b.key] ? rank[priority[b.key] as string] : 3
+    return ra - rb
+  })
+}
+
 function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
   const h = new Date().getHours()
   if (h < 12) return t.home.greeting_morning
@@ -56,13 +85,23 @@ export default function HomePage() {
   const [activity,      setActivity]      = useState<'low'|'medium'|'high'>('medium')
   const [triggers,      setTriggers]      = useState<TriggerMap>({
     gluten: false, dairy: false, sugar: false, caffeine: false,
-    alcohol: false, stress: false, poor_sleep: false, overexertion: false,
+    alcohol: false, high_fodmap: false, high_glycemic: false,
+    stress: false, poor_sleep: false, overexertion: false,
     pressure_change: false, temperature_change: false, sun_exposure: false,
   })
   const [noTriggers,    setNoTriggers]    = useState(false)
   const [note,          setNote]          = useState('')
   const [saved,         setSaved]         = useState(false)
   const [alreadyLogged, setAlreadyLogged] = useState(false)
+  const [primaryCondition, setPrimaryCondition] = useState<ChronicCondition | undefined>(getPrimaryCondition)
+
+  useEffect(() => {
+    function handleProfileUpdate() { setPrimaryCondition(getPrimaryCondition()) }
+    window.addEventListener('symply-profile-updated', handleProfileUpdate)
+    return () => window.removeEventListener('symply-profile-updated', handleProfileUpdate)
+  }, [])
+
+  const triggerPriority = getTriggerPriority(primaryCondition)
 
   useEffect(() => {
     getLog(today, user?.uid).then(existing => {
@@ -91,7 +130,8 @@ export default function HomePage() {
     setNoTriggers(true)
     setTriggers({
       gluten: false, dairy: false, sugar: false, caffeine: false,
-      alcohol: false, stress: false, poor_sleep: false, overexertion: false,
+      alcohol: false, high_fodmap: false, high_glycemic: false,
+      stress: false, poor_sleep: false, overexertion: false,
       pressure_change: false, temperature_change: false, sun_exposure: false,
     })
   }
@@ -190,23 +230,31 @@ export default function HomePage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', margin: 0 }}>{t.home.triggers_section}</p>
         </div>
+        {primaryCondition && (
+          <p style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginBottom: '10px', lineHeight: 1.4 }}>
+            {t.home.triggers_primary_hint}
+          </p>
+        )}
         {TRIGGER_CATEGORIES.map(({ labelKey, keys }) => (
           <div key={labelKey} style={{ marginBottom: '10px' }}>
             <p style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '6px', letterSpacing: '0.03em' }}>
               {t.home[labelKey as keyof typeof t.home] as string}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-              {keys.map(({ key, tKey, emoji }) => (
-                <button key={key} onClick={() => toggleTrigger(key as keyof TriggerMap)} style={{
-                  padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
-                  border: triggers[key as keyof TriggerMap] ? '2px solid var(--color-secondary)' : '1px solid var(--color-border)',
-                  background: triggers[key as keyof TriggerMap] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
-                  fontSize: '0.82rem', fontWeight: triggers[key as keyof TriggerMap] ? 600 : 400,
-                  color: triggers[key as keyof TriggerMap] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
-                }}>
-                  {emoji} {t.home[tKey as keyof typeof t.home] as string}
-                </button>
-              ))}
+              {sortByRelevance(keys, triggerPriority).map(({ key, tKey, emoji }) => {
+                const strength = triggerPriority[key as keyof TriggerMap]
+                return (
+                  <button key={key} onClick={() => toggleTrigger(key as keyof TriggerMap)} style={{
+                    padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
+                    border: triggers[key as keyof TriggerMap] ? '2px solid var(--color-secondary)' : strength === 'strong' ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                    background: triggers[key as keyof TriggerMap] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
+                    fontSize: '0.82rem', fontWeight: triggers[key as keyof TriggerMap] ? 600 : 400,
+                    color: triggers[key as keyof TriggerMap] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
+                  }}>
+                    {emoji} {t.home[tKey as keyof typeof t.home] as string}{strength === 'strong' ? ' ★' : ''}
+                  </button>
+                )
+              })}
             </div>
           </div>
         ))}

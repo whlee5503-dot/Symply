@@ -8,6 +8,7 @@ export interface UserProfile {
   plan: 'free' | 'pro'
   planExpiresAt?: Date
   conditions: ChronicCondition[]
+  primaryCondition?: ChronicCondition
   medications: Medication[]
 }
 
@@ -98,12 +99,65 @@ export interface TriggerMap {
   sugar: boolean
   caffeine: boolean
   alcohol: boolean
+  high_fodmap: boolean
+  high_glycemic: boolean
   stress: boolean
   poor_sleep: boolean
   overexertion: boolean
   pressure_change: boolean
   temperature_change: boolean
   sun_exposure: boolean
+}
+
+// ─── Trigger ↔ Condition Relevance Catalog ────────────────────────────────
+// Maps each trigger to the conditions it is clinically relevant for, with an
+// evidence-strength label. This does NOT change what gets logged (the
+// TriggerMap schema above is unchanged) — it is UI-layer metadata used to
+// reorder and highlight triggers based on the user's primary condition.
+// Evidence strength is deliberately not uniform: e.g. IBS + high_fodmap is
+// backed by ACG/NICE-level dietary guidance ("strong"), while endometriosis
+// + diet triggers remain contested in the literature ("weak"). Collapsing
+// these into one confidence level would be the same kind of overclaiming
+// avoided in the severity-band / PROMIS naming decision.
+
+export type EvidenceStrength = 'strong' | 'moderate' | 'weak'
+
+export const TRIGGER_CONDITION_RELEVANCE: Record<
+  keyof TriggerMap,
+  Partial<Record<ChronicCondition, EvidenceStrength>>
+> = {
+  gluten:              { ibs: 'moderate', crohns: 'moderate' },
+  dairy:                { ibs: 'moderate', crohns: 'moderate' },
+  sugar:                { PCOS: 'moderate' },
+  caffeine:             { ibs: 'weak', fibromyalgia: 'weak' },
+  alcohol:              { crohns: 'moderate', fibromyalgia: 'weak' },
+  high_fodmap:          { ibs: 'strong', crohns: 'moderate' },
+  high_glycemic:        { PCOS: 'moderate' },
+  stress:               {
+    PCOS: 'moderate', endometriosis: 'moderate', fibromyalgia: 'strong',
+    lupus: 'moderate', rheumatoid_arthritis: 'moderate', crohns: 'moderate',
+    ibs: 'moderate', chronic_fatigue: 'strong',
+  },
+  poor_sleep:           { fibromyalgia: 'strong', chronic_fatigue: 'strong', PCOS: 'moderate' },
+  overexertion:         { chronic_fatigue: 'strong', fibromyalgia: 'strong', lupus: 'moderate', rheumatoid_arthritis: 'moderate' },
+  pressure_change:      { fibromyalgia: 'moderate' },
+  temperature_change:   { fibromyalgia: 'moderate' },
+  sun_exposure:         { lupus: 'strong' },
+}
+
+// Returns the trigger keys most relevant to a given condition, sorted with
+// the strongest evidence first (used to reorder/highlight, not to filter —
+// all triggers always remain visible and loggable).
+export function getTriggerPriority(
+  condition: ChronicCondition | undefined,
+): Partial<Record<keyof TriggerMap, EvidenceStrength>> {
+  if (!condition) return {}
+  const result: Partial<Record<keyof TriggerMap, EvidenceStrength>> = {}
+  for (const key of Object.keys(TRIGGER_CONDITION_RELEVANCE) as (keyof TriggerMap)[]) {
+    const strength = TRIGGER_CONDITION_RELEVANCE[key][condition]
+    if (strength) result[key] = strength
+  }
+  return result
 }
 
 export interface MedicationLog {
