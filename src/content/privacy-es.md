@@ -1,6 +1,6 @@
 # Política de Privacidad de Symply
 
-**Última actualización: [FECHA A COMPLETAR AL PUBLICAR]**
+**Última actualización: 19 de agosto de 2026**
 
 Symply ("nosotros" o "la Aplicación") es una aplicación de seguimiento de síntomas crónicos
 desarrollada por PublicHealth Tech Lab, operada por Won Ho. Esta Política de Privacidad explica

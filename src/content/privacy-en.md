@@ -1,6 +1,6 @@
 # Symply Privacy Policy
 
-**Last updated: [DATE TO BE FILLED WHEN PUBLISHED]**
+**Last updated: August 19, 2026**
 
 Symply ("we," "our," or "the App") is a chronic symptom tracking application developed by
 PublicHealth Tech Lab, operated by Won Ho ("we," "us"). This Privacy Policy explains what
