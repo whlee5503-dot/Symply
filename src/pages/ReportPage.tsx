@@ -8,6 +8,7 @@ import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import type { LogEntry } from '../types'
+import { trackEvent } from '../lib/trackEvent'
 import { MOOD_EMOJIS, getSeverityBand, SEVERITY_BAND_LABELS } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
@@ -17,6 +18,8 @@ function getTriggerLabel(key: string, t: any): string {
     sugar:        t.home.trigger_sugar,
     caffeine:     t.home.trigger_caffeine,
     alcohol:      t.home.trigger_alcohol,
+    high_fodmap:  t.home.trigger_high_fodmap,
+    high_glycemic: t.home.trigger_high_glycemic,
     stress:       t.home.trigger_stress,
     poor_sleep:   t.home.trigger_poor_sleep,
     overexertion:       t.home.trigger_overexertion,
@@ -239,6 +242,7 @@ export default function ReportPage() {
       pdf.text('This report is not a medical diagnosis. Please consult your healthcare provider.', pageW / 2, 294, { align: 'center' })
 
       pdf.save(`symply-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`)
+      trackEvent('report_generated', { period, days_logged: totalDays })
     } finally {
       setGenerating(false)
     }

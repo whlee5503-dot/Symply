@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ChronicCondition } from '../types'
 import { useLanguage } from '../contexts/LanguageContext'
+import { trackEvent } from '../lib/trackEvent'
 
 const ONBOARDING_KEY = 'symply-onboarded'
 const PROFILE_KEY = 'symply-profile'
@@ -126,6 +127,7 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
       const updated = { ...existing, conditions, medications: existing.medications ?? [] }
       localStorage.setItem(PROFILE_KEY, JSON.stringify(updated))
       markOnboarded()
+      trackEvent('signup_completed', { condition_count: conditions.length })
       onComplete()
     } else {
       setStep(s => s + 1)

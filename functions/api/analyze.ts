@@ -102,9 +102,8 @@ function buildCycleSection(cycleData: CycleSummary): string {
 
 export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   try {
-    const { logs, userName, language = 'en', cycleData } = await ctx.request.json() as {
+    const { logs, language = 'en', cycleData } = await ctx.request.json() as {
       logs: Record<string, unknown>[]
-      userName: string
       language?: string
       cycleData?: CycleSummary
     }
@@ -123,7 +122,6 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
 ${langInstruction}
 Analyze the following ${logs.length} days of symptom data and provide personalized insights.
 ${cycleSection}
-Patient: ${userName}
 Data (JSON):
 ${JSON.stringify(logs, null, 2)}
 

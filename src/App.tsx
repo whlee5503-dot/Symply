@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import BottomNav from './components/BottomNav'
 import HomePage from './pages/HomePage'
@@ -13,8 +13,21 @@ import CycleTrackerPage from './pages/CycleTrackerPage'
 import MockDataPage from './pages/MockDataPage'
 import GuidePage from './pages/GuidePage'
 import LandingPage from './pages/LandingPage'
+import { lazy, Suspense } from 'react'
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 import { initNotifications } from './lib/notifications'
+import { trackEvent } from './lib/trackEvent'
 import { useEffect } from 'react'
+
+// Logs a page_view on every route change (Firebase Analytics only auto-logs
+// the first load, not client-side SPA navigation).
+function PageViewTracker() {
+  const location = useLocation()
+  useEffect(() => {
+    trackEvent('page_view', { page_path: location.pathname })
+  }, [location.pathname])
+  return null
+}
 
 function AppRoutes() {
   const { user, loading } = useAuth()
@@ -46,12 +59,18 @@ function AppRoutes() {
 
   if (!user) {
     return (
-      <Routes>
-        <Route path="/"     element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/mock" element={<MockDataPage />} />
-        <Route path="*"    element={<LandingPage />} />
-      </Routes>
+      <>
+        <PageViewTracker />
+        <Routes>
+          <Route path="/"     element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/mock" element={<MockDataPage />} />
+          <Route path="/privacy"    element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
+          <Route path="/privacy/ko" element={<Suspense fallback={null}><PrivacyPolicyPage lang="ko" /></Suspense>} />
+          <Route path="/privacy/es" element={<Suspense fallback={null}><PrivacyPolicyPage lang="es" /></Suspense>} />
+          <Route path="*"    element={<LandingPage />} />
+        </Routes>
+      </>
     )
   }
 
@@ -61,6 +80,7 @@ function AppRoutes() {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100dvh' }}>
+      <PageViewTracker />
       <Routes>
         <Route path="/"         element={<HomePage />} />
         <Route path="/history"  element={<HistoryPage />} />
@@ -70,6 +90,9 @@ function AppRoutes() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/mock"     element={<MockDataPage />} />
         <Route path="/guide"    element={<GuidePage />} />
+        <Route path="/privacy"    element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
+        <Route path="/privacy/ko" element={<Suspense fallback={null}><PrivacyPolicyPage lang="ko" /></Suspense>} />
+        <Route path="/privacy/es" element={<Suspense fallback={null}><PrivacyPolicyPage lang="es" /></Suspense>} />
         <Route path="*"         element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />

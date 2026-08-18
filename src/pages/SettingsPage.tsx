@@ -664,7 +664,10 @@ export default function SettingsPage() {
       <SettingsCard>
         <SettingsRow label="Symply"        value="Version 1.0.0 · Sprint 7" icon="💜" />
         <SettingsRow label={t.settings.about_feedback} value={t.settings.about_feedback_val} icon="📬" onClick={() => { window.location.href = 'mailto:contact@phtlab.org?subject=Symply%20Feedback' }} />
-        <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" />
+        <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" onClick={() => {
+          const suffix = language === 'ko' ? '/ko' : language === 'es' ? '/es' : ''
+          window.location.href = `/privacy${suffix}`
+        }} />
       </SettingsCard>
 
       {/* ACCOUNT */}

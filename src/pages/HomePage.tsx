@@ -4,6 +4,7 @@ import AnchorSlider from '../components/ui/AnchorSlider'
 import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, PAIN_ANCHORS_ES, FATIGUE_ANCHORS_ES, MOOD_EMOJIS } from '../types'
 import type { LogEntry, TriggerMap, ChronicCondition } from '../types'
 import { getTriggerPriority } from '../types'
+import { trackEvent } from '../lib/trackEvent'
 import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -144,6 +145,7 @@ export default function HomePage() {
       createdAt: new Date(), updatedAt: new Date(),
     }
     saveLog(entry, user?.uid)
+    trackEvent('checkin_saved', { pain, fatigue, no_triggers: noTriggers })
     setSaved(true)
     setAlreadyLogged(true)
     setTimeout(() => setSaved(false), 2500)

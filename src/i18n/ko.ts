@@ -181,7 +181,7 @@ export const ko: Translations = {
     gender_female: '♀ 여성',
     gender_male: '♂ 남성',
     gender_other: '⚧ 기타 / 밝히고 싶지 않음',
-    gender_cycle_note: '여성 사용자 전원에게 생리 주기 추적 기능이 제공됩니다. 루푸스, 섬유근통, 류마티스, IBS 등 많은 만성질환이 호르몳 주기의 영향을 받습니다.',
+    gender_cycle_note: '여성 사용자 전원에게 생리 주기 추적 기능이 제공됩니다. 루푸스, 섬유근통, 류마티스, IBS 등 많은 만성질환이 호르몬 주기의 영향을 받습니다.',
     conditions_title: '나의 질환',
     conditions_sub: '해당하는 것을 모두 선택하세요. AI 인사이트 개인화에 사용됩니다.',
     primary_condition_title: '대표 질환',
@@ -216,7 +216,7 @@ export const ko: Translations = {
     about_evidence: '근거 기반',
     about_evidence_val: 'MPH 전문가 설계',
     about_disclaimer: 'Symply는 의료 기기가 아닙니다. 모든 의료적 결정은 전문 의료인과 상담하세요.',
-    cycle_tab_enabled: '💜 사이클 탭이 활성화되었습니다. 호르몳 주기는 많은 만성질환에 영향을 줍니다.',
+    cycle_tab_enabled: '💜 사이클 탭이 활성화되었습니다. 호르몬 주기는 많은 만성질환에 영향을 줍니다.',
     notifications_title: '매일 리마인더',
     notifications_sub: '매일 증상을 기록할 수 있도록 알림을 보내드립니다.',
     notifications_enable: '알림 켜기',
@@ -227,7 +227,7 @@ export const ko: Translations = {
     sign_out_confirm: '정말 로그아웃 하시겠습니까?',
     sign_out_yes: '로그아웃',
     sign_out_cancel: '취소',
-    condition_PCOS: 'PCOS (다낙성 난소 증후군)',
+    condition_PCOS: 'PCOS (다낭성 난소 증후군)',
     condition_endometriosis: '자궁내막증',
     condition_fibromyalgia: '섬유근통',
     condition_lupus: '루푸스',
@@ -302,7 +302,7 @@ export const ko: Translations = {
       {
         icon: '🌸',
         title: '사이클 — 생리주기 추적',
-        desc: '성별을 여성으로 설정한 사용자라면 누구나 사용할 수 있습니다. 생리 여부, 출혈량, 주기 관련 증상을 기록하세요. 이 데이터는 AI 분석에 자동으로 반영됩니다. 루푸스, 섬유근통, 류마티스 관절염, 과민성 대장 증후군 등 많은 만성질환이 호르몳 주기의 영향을 받습니다.',
+        desc: '성별을 여성으로 설정한 사용자라면 누구나 사용할 수 있습니다. 생리 여부, 출혈량, 주기 관련 증상을 기록하세요. 이 데이터는 AI 분석에 자동으로 반영됩니다. 루푸스, 섬유근통, 류마티스 관절염, 과민성 대장 증후군 등 많은 만성질환이 호르몬 주기의 영향을 받습니다.',
       },
       {
         icon: '📊',
@@ -344,8 +344,8 @@ export const ko: Translations = {
       },
       {
         icon: '🔄',
-        term: 'PCOS (다낙성 난소 증후군)',
-        desc: '난소의 호르몳 불균형으로 인해 불규칙한 생리, 안드로겐 과다, 대사 변화 등이 나타나는 질환입니다.',
+        term: 'PCOS (다낭성 난소 증후군)',
+        desc: '난소의 호르몬 불균형으로 인해 불규칙한 생리, 안드로겐 과다, 대사 변화 등이 나타나는 질환입니다.',
       },
       {
         icon: '🌸',
@@ -375,7 +375,7 @@ export const ko: Translations = {
       {
         icon: '⚡',
         term: '과민성 대장 증후군 (IBS)',
-        desc: '복통, 팔묽임, 배변 변화를 일으키는 기능성 장 장애입니다. 호르몳 주기, 스트레스, 식습관이 증상에 영향을 줍니다.',
+        desc: '복통, 팽만감, 배변 변화를 일으키는 기능성 장 장애입니다. 호르몬 주기, 스트레스, 식습관이 증상에 영향을 줍니다.',
       },
       {
         icon: '😴',

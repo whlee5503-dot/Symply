@@ -10,18 +10,24 @@ import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import { runAnalysis, type AIAnalysis, type CycleSummary } from '../lib/analyze'
+import { trackEvent } from '../lib/trackEvent'
 import type { LogEntry } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
   const map: Record<string, string> = {
-    gluten:       t.home.trigger_gluten,
-    dairy:        t.home.trigger_dairy,
-    sugar:        t.home.trigger_sugar,
-    caffeine:     t.home.trigger_caffeine,
-    alcohol:      t.home.trigger_alcohol,
-    stress:       t.home.trigger_stress,
-    poor_sleep:   t.home.trigger_poor_sleep,
-    overexertion: t.home.trigger_overexertion,
+    gluten:              t.home.trigger_gluten,
+    dairy:                t.home.trigger_dairy,
+    sugar:                t.home.trigger_sugar,
+    caffeine:             t.home.trigger_caffeine,
+    alcohol:              t.home.trigger_alcohol,
+    high_fodmap:          t.home.trigger_high_fodmap,
+    high_glycemic:        t.home.trigger_high_glycemic,
+    stress:               t.home.trigger_stress,
+    poor_sleep:           t.home.trigger_poor_sleep,
+    overexertion:         t.home.trigger_overexertion,
+    pressure_change:      t.home.trigger_pressure_change,
+    temperature_change:   t.home.trigger_temperature_change,
+    sun_exposure:         t.home.trigger_sun_exposure,
   }
   return map[key] ?? key.replace('_', ' ')
 }
@@ -160,7 +166,8 @@ export default function InsightsPage() {
     setAiError(null)
     try {
       const cycleData = extractCycleSummary(logs, userConditions)
-      const analysis = await runAnalysis(logs, user?.displayName ?? 'User', language, cycleData)
+      const analysis = await runAnalysis(logs, language, cycleData)
+      trackEvent('ai_analysis_requested', { log_count: logs.length, is_pro: isPro })
       setAiAnalysis(analysis)
     } catch (e) {
       setAiError(e instanceof Error ? e.message : 'Analysis failed')
