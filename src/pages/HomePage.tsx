@@ -145,7 +145,7 @@ export default function HomePage() {
       createdAt: new Date(), updatedAt: new Date(),
     }
     saveLog(entry, user?.uid)
-    trackEvent('checkin_saved', { pain, fatigue, no_triggers: noTriggers })
+    trackEvent('checkin_saved', { has_pain: pain > 0, has_fatigue: fatigue > 0, no_triggers: noTriggers })
     setSaved(true)
     setAlreadyLogged(true)
     setTimeout(() => setSaved(false), 2500)

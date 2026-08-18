@@ -38,8 +38,11 @@ para que pueda acceder a ella desde cualquier dispositivo en el que inicie sesi�
 
 ### 1.3 Datos de uso y análisis
 Utilizamos Firebase Analytics para comprender patrones generales de uso (por ejemplo, qué
-pantallas se usan, con qué frecuencia se abre la Aplicación). Esto nos ayuda a mejorar la
-Aplicación. Estos datos se agregan y no se utilizan para crear un perfil publicitario suyo.
+pantallas se usan, con qué frecuencia se abre la Aplicación, si se completó el registro diario).
+Cuando un evento se relaciona con sus datos de salud (por ejemplo, si registró dolor o fatiga
+ese día), enviamos únicamente un indicador de sí/no a Analytics — nunca la puntuación real, la
+nota ni el detalle del desencadenante. Estos datos se agregan y no se utilizan para crear un
+perfil publicitario suyo.
 
 ### 1.4 Información de suscripción y pago
 Si se suscribe a Symply Pro, nuestro procesador de pagos, Polar, recibe su **dirección de

@@ -36,8 +36,10 @@ it from any device you sign into.
 
 ### 1.3 Usage and Analytics Data
 We use Firebase Analytics to understand general usage patterns (e.g., which screens are used,
-how often the App is opened). This helps us improve the App. This data is aggregated and is not
-used to build an advertising profile of you.
+how often the App is opened, whether a daily check-in was completed). Where an event relates to
+your health data (for example, whether you logged pain or fatigue that day), we send only a
+yes/no flag — never the actual score, note, or trigger detail — to Analytics. This data is
+aggregated and is not used to build an advertising profile of you.
 
 ### 1.4 Subscription and Payment Information
 If you subscribe to Symply Pro, our payment processor, Polar, receives your **email address**
