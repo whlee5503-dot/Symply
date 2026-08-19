@@ -264,7 +264,7 @@ export const en = {
     slide_ready_tip_android: '💡 Tip: Add Symply to your home screen. In Chrome, tap the menu (⋮) → Add to Home Screen.',
     slide_ready_tip_other: '💡 Tip: Add Symply to your home screen for the fastest access.',
     how_works: [
-      { icon: '⏱️', title: '30-second check-in', body: 'Log pain, fatigue, sleep, and triggers in under a minute.' },
+      { icon: '⏱️', title: '30-second check-in', body: 'Log pain, fatigue, sleep, and triggers in under 30 seconds.' },
       { icon: '🤖', title: 'AI finds patterns', body: 'Claude AI analyzes your data and delivers personalized insights.' },
       { icon: '📄', title: 'Doctor-ready report', body: 'Generate a clinical PDF your doctor can read in 3 minutes.' },
     ],

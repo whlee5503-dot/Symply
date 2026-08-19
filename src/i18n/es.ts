@@ -259,7 +259,7 @@ export const es: Translations = {
     slide_ready_tip_android: '💡 Consejo: En Chrome, toca el menú (⋮) → Agregar a pantalla de inicio.',
     slide_ready_tip_other: '💡 Consejo: Agrega Symply a tu pantalla de inicio para acceso más rápido.',
     how_works: [
-      { icon: '⏱️', title: 'Check-in de 30 segundos', body: 'Registra dolor, fatiga, sueño y desencadenantes en menos de un minuto.' },
+      { icon: '⏱️', title: 'Check-in de 30 segundos', body: 'Registra dolor, fatiga, sueño y desencadenantes en menos de 30 segundos.' },
       { icon: '🤖', title: 'La IA encuentra patrones', body: 'Claude AI analiza tus datos y ofrece insights personalizados.' },
       { icon: '📄', title: 'Informe para el médico', body: 'Genera un PDF clínico que tu médico puede leer en 3 minutos.' },
     ],

@@ -260,7 +260,7 @@ export const ko: Translations = {
     slide_ready_tip_android: '💡 팁: Chrome에서 메뉴(⋮) → 홈 화면에 추가를 눌러 앱처럼 설치하세요.',
     slide_ready_tip_other: '💡 팁: 브라우저 메뉴에서 홈 화면에 추가하면 더 빠르게 접근할 수 있습니다.',
     how_works: [
-      { icon: '⏱️', title: '30초 체크인', body: '통증, 피로, 수면, 트리거를 1분 이내에 기록하세요.' },
+      { icon: '⏱️', title: '30초 체크인', body: '통증, 피로, 수면, 트리거를 30초 이내에 기록하세요.' },
       { icon: '🤖', title: 'AI 패턴 발견', body: 'Claude AI가 데이터를 분석해 개인화된 인사이트를 제공합니다.' },
       { icon: '📄', title: '진료 준비 보고서', body: '의사가 3분 안에 읽을 수 있는 임상 PDF를 자동 생성합니다.' },
     ],
