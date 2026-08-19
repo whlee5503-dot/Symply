@@ -22,7 +22,7 @@ export const ko: Translations = {
     sleep: "수면",
     sleep_unit: "시간",
     activity: "활동량",
-    activity_low: "낙음",
+    activity_low: "낮음",
     activity_medium: "보통",
     activity_high: "높음",
     triggers: "트리거",
@@ -101,7 +101,7 @@ export const ko: Translations = {
     ai_title: 'AI 패턴 분석',
     ai_subtitle: 'Claude AI가 증상 데이터를 분석해 개인화된 패턴을 찾아드립니다.',
     ai_pro_subtitle: 'Claude AI가 증상 기록을 분석해 "수면 6시간 미만 시 통증 40% 상승" 같은 개인화된 인사이트를 제공합니다.',
-    ai_unlock: 'AI 분석 잌금 해제',
+    ai_unlock: 'AI 분석 잠금 해제',
     ai_free_remaining: '이번 달 무료 분석 남은 횟수: {n}/5',
     ai_free_limit_reached: '이번 달 무료 분석 5회를 모두 사용했습니다. Pro로 업그레이드하면 무제한으로 이용할 수 있습니다.',
     ai_analyze: '✨ 내 패턴 분석하기',
@@ -135,7 +135,7 @@ export const ko: Translations = {
     disclaimer: '⚠️ 이 보고서는 정보 제공 목적이며 의학적 진단이 아닙니다.',
     disclaimer_short: '이 보고서는 정보 제공 목적이며 의학적 진단이 아닙니다.',
     download: '📄 PDF 보고서 다운로드',
-    unlock: '🔒 PDF 보고서 잌금 해제 — Pro',
+    unlock: '🔒 PDF 보고서 잠금 해제 — Pro',
     generating: '⏳ PDF 생성 중...',
     days: '일',
   },
@@ -157,12 +157,12 @@ export const ko: Translations = {
     saved: '✓ 저장됨!',
     weekdays: ['일', '월', '화', '수', '목', '금', '토'],
     symptom_cramps: '생리통',
-    symptom_bloating: '복부 팩만',
+    symptom_bloating: '복부 팽만',
     symptom_headache: '두통',
     symptom_mood_swings: '기분 변화',
     symptom_breast_tenderness: '유방 압통',
     symptom_spotting: '소량 출혈',
-    symptom_clots: '혁전',
+    symptom_clots: '혈전',
     disclaimer: '생리 데이터는 안전하게 저장되며 공유되지 않습니다. 의료 기기가 아닙니다 — 의료 전문가와 상담하세요.',
   },
 
@@ -250,14 +250,14 @@ export const ko: Translations = {
     slide_welcome_title: '당신의 증상은\n들려질 자격이 있습니다.',
     slide_welcome_body: 'Symply는 매일 30초만으로 증상을 기록하고, 패턴을 발견하고, 의사에게 명확한 근거를 제시할 수 있도록 도와줍니다.',
     slide_problem_title: '당신이 상상하는 게 아닙니다.',
-    slide_problem_body: '자궁내막증이나 섬유근통 같은 질환은 진단까지 평균 7~12년이 걸립니다. 의료 가스라이팅은 실제로 존재하며 — 기록된 데이터가 그것을 바꾼 수 있습니다.',
+    slide_problem_body: '자궁내막증이나 섬유근통 같은 질환은 진단까지 평균 7~12년이 걸립니다. 의료 가스라이팅은 실제로 존재하며 — 기록된 데이터가 그것을 바꿀 수 있습니다.',
     slide_how_title: 'Symply 사용법',
     slide_conditions_title: '어떤 질환을 관리하고 있나요?',
     slide_conditions_body: '해당하는 것을 모두 선택하세요. AI 인사이트가 개인화됩니다. 나중에 언제든지 변경할 수 있습니다.',
     slide_ready_title: '준비 완료!',
     slide_ready_body: '첫 번째 체크인은 약 30초면 완료됩니다. 더 많이 기록할수록 Symply가 내 몸을 더 잘 이해합니다.',
-    slide_ready_tip_ios: '💡 팁: Safari에서 공유(Share) → 홈 화면에 추가를 눈러 앱처럼 설치하세요.',
-    slide_ready_tip_android: '💡 팁: Chrome에서 메뉴(⋮) → 홈 화면에 추가를 눈러 앱처럼 설치하세요.',
+    slide_ready_tip_ios: '💡 팁: Safari에서 공유(Share) → 홈 화면에 추가를 눌러 앱처럼 설치하세요.',
+    slide_ready_tip_android: '💡 팁: Chrome에서 메뉴(⋮) → 홈 화면에 추가를 눌러 앱처럼 설치하세요.',
     slide_ready_tip_other: '💡 팁: 브라우저 메뉴에서 홈 화면에 추가하면 더 빠르게 접근할 수 있습니다.',
     how_works: [
       { icon: '⏱️', title: '30초 체크인', body: '통증, 피로, 수면, 트리거를 1분 이내에 기록하세요.' },
@@ -286,13 +286,13 @@ export const ko: Translations = {
 
   guide: {
     title: 'Symply 사용 가이드',
-    intro: 'Symply는 증상을 기록하고, 패턴을 발견하고, 의사와 더 효과적으로 소통할 수 있도록 도움니다. 각 기능을 간단히 소개합니다.',
+    intro: 'Symply는 증상을 기록하고, 패턴을 발견하고, 의사와 더 효과적으로 소통할 수 있도록 도와드립니다. 각 기능을 간단히 소개합니다.',
     pages_title: '화면별 안내',
     pages: [
       {
         icon: '🏠',
         title: '홈 — 오늘의 체크인',
-        desc: '약 30초 안에 오늘의 증상을 기록하세요. 통증, 피로도, 기분, 수면 시간, 활동량, 오늘의 영향 요인을 입력할 수 있습니다. 통증과 피로도 쮙도에는 실제 비유 설명이 포함되어 있어 날마다 일관된 기록이 가능합니다.',
+        desc: '약 30초 안에 오늘의 증상을 기록하세요. 통증, 피로도, 기분, 수면 시간, 활동량, 오늘의 영향 요인을 입력할 수 있습니다. 통증과 피로도 척도에는 실제 비유 설명이 포함되어 있어 날마다 일관된 기록이 가능합니다.',
       },
       {
         icon: '📅',
@@ -339,11 +339,6 @@ export const ko: Translations = {
       },
       {
         icon: '🔍',
-        term: '피로 앵커 척도',
-        desc: '피로도는 0~10 척도로 기록합니다. 루푸스·MS 환자를 위해 개발된 FSS(피로 심각도 척도) 개념을 참고하여 설계되었습니다.\n\n0 (활기참) — 완전히 활기참. 피로가 일상 활동에 전혀 영향 없음.\n2 (약한 피로) — 약간 피곤하지만 모든 일상 활동 수행 가능.\n4 (보통 피로) — 피로로 인해 일부 활동이 제한됨.\n6 (심한 피로) — 피로가 대부분의 활동을 방해함. 직장·가정생활 영향.\n8 (극심한 피로) — 대부분의 활동 불가능. 기본적인 일도 힘듦.\n10 (완전탈진) — 침대에서 전혀 못 일어남. 완전히 일상이 마비됨.\n\n두 앵커 사이에 해당하면 중간 값을 선택할 수 있습니다.',
-      },
-      {
-        icon: '🔍',
         term: '오늘의 영향 요인',
         desc: '증상에 영향을 줄 수 있는 요소들을 세 가지 근거 기반 카테고리(음식 및 음료, 생활습관, 환경)로 정리했습니다. 만성질환 연구를 바탕으로 선별된 항목입니다.\n\n설정에서 대표 질환을 지정하면, 그 질환과 가장 관련 있는 요인이 먼저 표시되고 별표(★)로 표시됩니다. 근거 강도는 질환마다 다릅니다 — 예를 들어 고포드맵 식이는 IBS에서 확립된 트리거이지만, 자궁내막증의 식이 트리거는 근거가 상대적으로 약합니다. Symply는 모든 요인을 같은 확신 수준으로 다루지 않고 이 차이를 그대로 반영합니다.',
       },
@@ -360,7 +355,7 @@ export const ko: Translations = {
       {
         icon: '💜',
         term: '섬유근통 (Fibromyalgia)',
-        desc: '전신에 광범위한 근골격계 통증, 피로, 수면 장애, 인지 어려움을 일으키는 만성 질환입니다. 스트레스, 수면, 활동량에 의해 증상이 욕락가락하는 것이 특징입니다.',
+        desc: '전신에 광범위한 근골격계 통증, 피로, 수면 장애, 인지 어려움을 일으키는 만성 질환입니다. 스트레스, 수면, 활동량에 의해 증상이 오락가락하는 것이 특징입니다.',
       },
       {
         icon: '🫀',
@@ -385,7 +380,7 @@ export const ko: Translations = {
       {
         icon: '😴',
         term: '만성 피로 증후군 (ME/CFS)',
-        desc: '휴식으로 회복되지 않는 극심한 피로, 인지 장애(롼안개), 활동 후 증상 악화를 특징으로 하는 만성 질환입니다.',
+        desc: '휴식으로 회복되지 않는 극심한 피로, 인지 장애(뇌안개), 활동 후 증상 악화를 특징으로 하는 만성 질환입니다.',
       },
       {
         icon: '⚡',
@@ -396,8 +391,8 @@ export const ko: Translations = {
   },
 
   mood_labels: {
-    1: '매우 낙음',
-    2: '낙음',
+    1: '매우 나쁨',
+    2: '나쁨',
     3: '보통',
     4: '좋음',
     5: '최고',
