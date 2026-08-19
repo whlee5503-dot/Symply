@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
 import AnchorSlider from '../components/ui/AnchorSlider'
 import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, PAIN_ANCHORS_ES, FATIGUE_ANCHORS_ES, MOOD_EMOJIS } from '../types'
-import type { LogEntry, TriggerMap, ChronicCondition } from '../types'
+import type { LogEntry, TriggerMap, ChronicCondition, RelevanceDetail, EvidenceStrength } from '../types'
 import { getTriggerPriority } from '../types'
 import { trackEvent } from '../lib/trackEvent'
 import { saveLog, getLog, todayId } from '../lib/storage'
@@ -57,12 +57,12 @@ function getPrimaryCondition(): ChronicCondition | undefined {
 // stay visible and loggable regardless of condition.
 function sortByRelevance<T extends { key: keyof TriggerMap }>(
   items: T[],
-  priority: Partial<Record<keyof TriggerMap, string>>,
+  priority: Partial<Record<keyof TriggerMap, RelevanceDetail>>,
 ): T[] {
-  const rank: Record<string, number> = { strong: 0, moderate: 1, weak: 2 }
+  const rank: Record<EvidenceStrength, number> = { strong: 0, moderate: 1, weak: 2 }
   return [...items].sort((a, b) => {
-    const ra = priority[a.key] ? rank[priority[a.key] as string] : 3
-    const rb = priority[b.key] ? rank[priority[b.key] as string] : 3
+    const ra = priority[a.key] ? rank[priority[a.key]!.strength] : 3
+    const rb = priority[b.key] ? rank[priority[b.key]!.strength] : 3
     return ra - rb
   })
 }
@@ -244,7 +244,7 @@ export default function HomePage() {
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {sortByRelevance(keys, triggerPriority).map(({ key, tKey, emoji }) => {
-                const strength = triggerPriority[key as keyof TriggerMap]
+                const strength = triggerPriority[key as keyof TriggerMap]?.strength
                 return (
                   <button key={key} onClick={() => toggleTrigger(key as keyof TriggerMap)} style={{
                     padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',

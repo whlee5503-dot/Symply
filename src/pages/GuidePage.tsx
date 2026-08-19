@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
+import { TRIGGER_CONDITION_RELEVANCE, getRelevanceDetail, type TriggerMap, type ChronicCondition } from '../types'
+
+const STRENGTH_STARS: Record<string, string> = { strong: '★★★', moderate: '★★', weak: '★' }
 
 export default function GuidePage() {
   const navigate = useNavigate()
@@ -67,6 +70,49 @@ export default function GuidePage() {
             </p>
           </GuideCard>
         ))}
+
+        {/* Evidence Reference Section */}
+        <SectionTitle style={{ marginTop: '28px' }}>{g.evidence_title}</SectionTitle>
+        <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.6, marginBottom: '14px' }}>
+          {g.evidence_intro}
+        </p>
+
+        {(Object.keys(TRIGGER_CONDITION_RELEVANCE) as (keyof TriggerMap)[]).map(triggerKey => {
+          const relevance = TRIGGER_CONDITION_RELEVANCE[triggerKey]
+          const conditionKeys = Object.keys(relevance) as ChronicCondition[]
+          if (conditionKeys.length === 0) return null
+          const triggerLabel = t.home[`trigger_${triggerKey}` as keyof typeof t.home] as string
+
+          return (
+            <div key={triggerKey} style={{
+              backgroundColor: 'var(--color-surface)', borderRadius: '14px',
+              border: '1px solid var(--color-border)', padding: '12px 16px', marginBottom: '8px',
+            }}>
+              <div style={{ fontWeight: 700, fontSize: '0.85rem', marginBottom: '8px' }}>{triggerLabel}</div>
+              {conditionKeys.map(conditionKey => {
+                const detail = getRelevanceDetail(relevance[conditionKey])
+                if (!detail) return null
+                const conditionLabel = t.settings[`condition_${conditionKey}` as keyof typeof t.settings] as string
+                const noteText = detail.note
+                  ? (g[`evidence_note_${detail.note}` as keyof typeof g] as string)
+                  : null
+                return (
+                  <div key={conditionKey} style={{ marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                      <span style={{ color: 'var(--color-text)' }}>{conditionLabel}</span>
+                      <span style={{ color: 'var(--color-primary)', letterSpacing: '1px' }}>{STRENGTH_STARS[detail.strength]}</span>
+                    </div>
+                    {noteText && (
+                      <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                        {noteText}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })}
 
         {/* Disclaimer */}
         <p style={{

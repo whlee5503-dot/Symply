@@ -326,6 +326,11 @@ export const en = {
       },
     ],
     terms_title: 'Key Terms',
+    evidence_title: 'Trigger Evidence Reference',
+    evidence_intro: 'How confident is the research behind each trigger, condition by condition? ★★★ = strong evidence, ★★ = moderate, ★ = weaker/preliminary evidence. This reflects published research strength, not how much any one trigger affects you personally.',
+    evidence_note_functional_only: 'Evidence applies to functional symptoms (e.g. bloating), not measured disease activity.',
+    evidence_note_reverse_direction: 'Some research points the opposite way — associated with relief, not flares, for some people.',
+    evidence_note_self_report_only: 'Based mainly on patient self-report; controlled studies are neutral or mixed.',
     terms: [
       {
         icon: '📏',

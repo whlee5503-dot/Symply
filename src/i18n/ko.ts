@@ -321,6 +321,11 @@ export const ko: Translations = {
       },
     ],
     terms_title: '주요 용어',
+    evidence_title: '트리거 근거 참고자료',
+    evidence_intro: '각 트리거가 질환별로 얼마나 확립된 연구 근거를 갖고 있는지 보여드립니다. ★★★ = 강한 근거, ★★ = 중간 근거, ★ = 약하거나 예비 단계 근거. 이는 발표된 연구의 확립 정도를 반영할 뿐, 개인에게 실제로 얼마나 영향을 미치는지와는 다릅니다.',
+    evidence_note_functional_only: '기능성 증상(예: 팽만감)에 대한 근거이며, 실제 측정된 질병 활성도에 대한 근거는 아닙니다.',
+    evidence_note_reverse_direction: '일부 연구는 오히려 반대 방향(악화가 아닌 완화)을 시사합니다.',
+    evidence_note_self_report_only: '주로 환자 자기보고에 근거하며, 대조 연구에서는 중립적이거나 엇갈린 결과를 보입니다.',
     terms: [
       {
         icon: '📏',

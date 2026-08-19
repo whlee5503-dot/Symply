@@ -119,19 +119,46 @@ export interface TriggerMap {
 // + diet triggers remain contested in the literature ("weak"). Collapsing
 // these into one confidence level would be the same kind of overclaiming
 // avoided in the severity-band / PROMIS naming decision.
+//
+// Source-of-truth for every value below (citations, re-review conditions):
+// see docs/TRIGGER_EVIDENCE.md. Update that file whenever a value here
+// changes, so the audit trail (and grant defense material) stays accurate.
 
 export type EvidenceStrength = 'strong' | 'moderate' | 'weak'
 
+// A note captures nuance a bare strength label can't: not just "how strong"
+// but "what kind" of evidence. See docs/TRIGGER_EVIDENCE.md for the specific
+// citations behind each flagged pair.
+export type EvidenceNote =
+  | 'functional_only'   // evidence applies to functional symptoms, not measured disease activity/inflammation
+  | 'reverse_direction'  // evidence points the opposite way — associated with relief/protection, not flares
+  | 'self_report_only'   // "trigger" reflects patient self-report; controlled studies are neutral or contradict it
+
+export interface RelevanceDetail {
+  strength: EvidenceStrength
+  note?: EvidenceNote
+}
+
+// Shorthand: a bare strength string is equivalent to { strength }. Written
+// this way (rather than always requiring the object form) so most entries —
+// which have no caveat — stay as compact as before.
+export type RelevanceEntry = EvidenceStrength | RelevanceDetail
+
+export function getRelevanceDetail(entry: RelevanceEntry | undefined): RelevanceDetail | undefined {
+  if (!entry) return undefined
+  return typeof entry === 'string' ? { strength: entry } : entry
+}
+
 export const TRIGGER_CONDITION_RELEVANCE: Record<
   keyof TriggerMap,
-  Partial<Record<ChronicCondition, EvidenceStrength>>
+  Partial<Record<ChronicCondition, RelevanceEntry>>
 > = {
-  gluten:              { ibs: 'moderate', crohns: 'moderate' },
-  dairy:                { ibs: 'moderate', crohns: 'moderate' },
+  gluten:              { ibs: 'moderate', crohns: 'weak' },
+  dairy:                { ibs: 'moderate', crohns: 'weak' },
   sugar:                { PCOS: 'moderate' },
   caffeine:             { ibs: 'weak', fibromyalgia: 'weak' },
-  alcohol:              { crohns: 'moderate', fibromyalgia: 'weak' },
-  high_fodmap:          { ibs: 'strong', crohns: 'moderate' },
+  alcohol:              { crohns: 'moderate', fibromyalgia: { strength: 'weak', note: 'reverse_direction' } },
+  high_fodmap:          { ibs: 'strong', crohns: { strength: 'moderate', note: 'functional_only' } },
   high_glycemic:        { PCOS: 'moderate' },
   stress:               {
     PCOS: 'moderate', endometriosis: 'moderate', fibromyalgia: 'strong',
@@ -139,7 +166,11 @@ export const TRIGGER_CONDITION_RELEVANCE: Record<
     ibs: 'moderate', chronic_fatigue: 'strong',
   },
   poor_sleep:           { fibromyalgia: 'strong', chronic_fatigue: 'strong', PCOS: 'moderate' },
-  overexertion:         { chronic_fatigue: 'strong', fibromyalgia: 'strong', lupus: 'moderate', rheumatoid_arthritis: 'moderate' },
+  overexertion:         {
+    chronic_fatigue: 'strong', fibromyalgia: 'strong',
+    lupus: { strength: 'moderate', note: 'self_report_only' },
+    rheumatoid_arthritis: 'weak',
+  },
   pressure_change:      { fibromyalgia: 'moderate' },
   temperature_change:   { fibromyalgia: 'moderate' },
   sun_exposure:         { lupus: 'strong' },
@@ -150,12 +181,12 @@ export const TRIGGER_CONDITION_RELEVANCE: Record<
 // all triggers always remain visible and loggable).
 export function getTriggerPriority(
   condition: ChronicCondition | undefined,
-): Partial<Record<keyof TriggerMap, EvidenceStrength>> {
+): Partial<Record<keyof TriggerMap, RelevanceDetail>> {
   if (!condition) return {}
-  const result: Partial<Record<keyof TriggerMap, EvidenceStrength>> = {}
+  const result: Partial<Record<keyof TriggerMap, RelevanceDetail>> = {}
   for (const key of Object.keys(TRIGGER_CONDITION_RELEVANCE) as (keyof TriggerMap)[]) {
-    const strength = TRIGGER_CONDITION_RELEVANCE[key][condition]
-    if (strength) result[key] = strength
+    const detail = getRelevanceDetail(TRIGGER_CONDITION_RELEVANCE[key][condition])
+    if (detail) result[key] = detail
   }
   return result
 }

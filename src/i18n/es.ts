@@ -320,6 +320,11 @@ export const es: Translations = {
       },
     ],
     terms_title: 'Terminos clave',
+    evidence_title: 'Referencia de evidencia por desencadenante',
+    evidence_intro: 'Que tan solida es la investigacion detras de cada desencadenante, segun la condicion? ★★★ = evidencia solida, ★★ = moderada, ★ = evidencia mas debil o preliminar. Esto refleja la solidez de la investigacion publicada, no cuanto te afecta a ti personalmente.',
+    evidence_note_functional_only: 'La evidencia se aplica a sintomas funcionales (por ejemplo, hinchazon), no a la actividad de la enfermedad medida.',
+    evidence_note_reverse_direction: 'Algunas investigaciones apuntan en la direccion opuesta — asociadas con alivio, no con brotes, en algunas personas.',
+    evidence_note_self_report_only: 'Se basa principalmente en el autorreporte del paciente; los estudios controlados son neutrales o mixtos.',
     terms: [
       {
         icon: '📏',

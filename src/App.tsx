@@ -10,7 +10,6 @@ import SettingsPage from './pages/SettingsPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
 import CycleTrackerPage from './pages/CycleTrackerPage'
-import MockDataPage from './pages/MockDataPage'
 import GuidePage from './pages/GuidePage'
 import LandingPage from './pages/LandingPage'
 import { lazy, Suspense } from 'react'
@@ -64,7 +63,6 @@ function AppRoutes() {
         <Routes>
           <Route path="/"     element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/mock" element={<MockDataPage />} />
           <Route path="/privacy"    element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
           <Route path="/privacy/ko" element={<Suspense fallback={null}><PrivacyPolicyPage lang="ko" /></Suspense>} />
           <Route path="/privacy/es" element={<Suspense fallback={null}><PrivacyPolicyPage lang="es" /></Suspense>} />
@@ -88,7 +86,6 @@ function AppRoutes() {
         <Route path="/insights" element={<InsightsPage />} />
         <Route path="/report"   element={<ReportPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/mock"     element={<MockDataPage />} />
         <Route path="/guide"    element={<GuidePage />} />
         <Route path="/privacy"    element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
         <Route path="/privacy/ko" element={<Suspense fallback={null}><PrivacyPolicyPage lang="ko" /></Suspense>} />
