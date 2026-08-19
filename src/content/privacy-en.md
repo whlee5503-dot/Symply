@@ -26,7 +26,7 @@ solely to identify your account and keep your data linked to you across devices.
 This is the core data you enter into the App, including:
 - Daily pain and fatigue scores
 - Symptom logs and notes
-- Trigger information (diet, sleep, stress, weather, etc.)
+- Trigger information (diet, sleep, stress, environmental factors, etc.)
 - Menstrual cycle data (if you choose to log it)
 - The chronic condition(s) you select in your profile
 

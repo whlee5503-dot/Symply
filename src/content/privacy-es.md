@@ -28,7 +28,7 @@ usted en todos los dispositivos.
 Estos son los datos principales que usted introduce en la Aplicación, incluyendo:
 - Puntuaciones diarias de dolor y fatiga
 - Registros de síntomas y notas
-- Información sobre desencadenantes (dieta, sueño, estrés, clima, etc.)
+- Información sobre desencadenantes (dieta, sueño, estrés, factores ambientales, etc.)
 - Datos del ciclo menstrual (si decide registrarlos)
 - Las condiciones crónicas que selecciona en su perfil
 
