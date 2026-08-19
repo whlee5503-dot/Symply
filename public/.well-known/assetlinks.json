@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "org.phtlab.symply.twa",
+    "sha256_cert_fingerprints": ["7D:69:41:7A:91:07:26:32:15:4E:EE:78:57:98:01:8B:EF:9C:17:CA:AF:CD:DB:AF:EE:26:41:56:03:EA:FF:94"]
+  }
+}]
