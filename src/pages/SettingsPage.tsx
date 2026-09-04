@@ -107,10 +107,15 @@ function SettingsRow({
 export default function SettingsPage() {
   const { mode: theme, setMode: setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
-  const { user, isPro, signOutUser } = useAuth()
+  const { user, isPro, signOutUser, signInWithGoogle, signUpWithEmail } = useAuth()
 
   const [settings, setSettings]             = useState<UserSettings>(loadLocalSettings)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [showGuestEmailForm, setShowGuestEmailForm] = useState(false)
+  const [guestLinkEmail,    setGuestLinkEmail]    = useState('')
+  const [guestLinkPassword, setGuestLinkPassword] = useState('')
+  const [guestLinkError,    setGuestLinkError]    = useState('')
+  const [guestLinkBusy,     setGuestLinkBusy]     = useState(false)
   const [notifSettings, setNotifSettings] = useState<NotificationSettings>(() => loadNotifSettings())
   const [notifPermission, setNotifPermission] = useState<NotificationPermission | null>(
     isNotificationSupported() ? Notification.permission : null
@@ -179,6 +184,41 @@ export default function SettingsPage() {
     setSettings(updated)
     saveLocalSettings(updated)
     saveToFirestore(updated)
+  }
+
+  // 게스트(익명) 사용자가 Google로 계정을 연결한다.
+  // AuthContext의 signInWithGoogle이 이미 익명 세션이면 linkWithPopup을 쓰도록
+  // 되어 있으므로, 여기서는 그냥 호출하고 에러만 처리하면 된다.
+  async function handleGuestLinkGoogle() {
+    setGuestLinkError('')
+    setGuestLinkBusy(true)
+    try {
+      await signInWithGoogle()
+    } catch {
+      setGuestLinkError(t.settings.guest_link_error)
+    } finally {
+      setGuestLinkBusy(false)
+    }
+  }
+
+  async function handleGuestLinkEmail(e: React.FormEvent) {
+    e.preventDefault()
+    setGuestLinkError('')
+    setGuestLinkBusy(true)
+    try {
+      await signUpWithEmail(guestLinkEmail, guestLinkPassword)
+    } catch (err) {
+      const code = (err as { code?: string })?.code ?? ''
+      if (code === 'auth/email-already-in-use' || code === 'auth/credential-already-in-use') {
+        setGuestLinkError(t.settings.guest_link_email_in_use)
+      } else if (code === 'auth/weak-password') {
+        setGuestLinkError(t.settings.guest_link_weak_password)
+      } else {
+        setGuestLinkError(t.settings.guest_link_error)
+      }
+    } finally {
+      setGuestLinkBusy(false)
+    }
   }
 
   function toggleCondition(c: ChronicCondition) {
@@ -404,6 +444,104 @@ export default function SettingsPage() {
           </div>
         </div>
       </SettingsCard>
+
+      {/* GUEST → ACCOUNT LINKING */}
+      {/* 익명(게스트) 사용자에게만 표시. Google/이메일로 연결하면 AuthContext의
+          linkWithPopup/linkWithCredential이 uid를 유지한 채로 데이터를 보존한다. */}
+      {user?.isAnonymous && (
+        <>
+          <SectionHeader mt={20}>{t.settings.guest_banner_title}</SectionHeader>
+          <SettingsCard>
+            <div style={{ padding: '14px 16px' }}>
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.6, marginBottom: '14px' }}>
+                {t.settings.guest_banner_body}
+              </p>
+
+              {guestLinkError && (
+                <p style={{ fontSize: '0.8rem', color: '#ef4444', marginBottom: '10px' }}>{guestLinkError}</p>
+              )}
+
+              <button
+                onClick={handleGuestLinkGoogle}
+                disabled={guestLinkBusy}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                  padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--color-border)',
+                  background: 'var(--color-surface-2)', color: 'var(--color-text)',
+                  fontSize: '0.9rem', fontWeight: 600, cursor: guestLinkBusy ? 'default' : 'pointer',
+                  opacity: guestLinkBusy ? 0.6 : 1, marginBottom: '8px',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 48 48">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                {t.settings.guest_link_google}
+              </button>
+
+              {!showGuestEmailForm ? (
+                <button
+                  onClick={() => setShowGuestEmailForm(true)}
+                  style={{
+                    width: '100%', padding: '10px', borderRadius: '10px', border: 'none',
+                    background: 'none', color: 'var(--color-primary)',
+                    fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                  }}
+                >
+                  {t.settings.guest_link_email_toggle}
+                </button>
+              ) : (
+                <form onSubmit={handleGuestLinkEmail} style={{ marginTop: '4px' }}>
+                  <input
+                    type="email" required autoComplete="email" placeholder={t.settings.guest_link_email_label}
+                    value={guestLinkEmail} onChange={e => setGuestLinkEmail(e.target.value)}
+                    style={{
+                      width: '100%', padding: '10px 12px', borderRadius: '8px',
+                      border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
+                      color: 'var(--color-text)', fontSize: '0.88rem', boxSizing: 'border-box', marginBottom: '8px',
+                    }}
+                  />
+                  <input
+                    type="password" required autoComplete="new-password" placeholder={t.settings.guest_link_password_label}
+                    value={guestLinkPassword} onChange={e => setGuestLinkPassword(e.target.value)}
+                    style={{
+                      width: '100%', padding: '10px 12px', borderRadius: '8px',
+                      border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
+                      color: 'var(--color-text)', fontSize: '0.88rem', boxSizing: 'border-box', marginBottom: '8px',
+                    }}
+                  />
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      type="submit" disabled={guestLinkBusy}
+                      style={{
+                        flex: 1, padding: '10px', borderRadius: '8px', border: 'none',
+                        background: 'var(--color-primary)', color: '#fff',
+                        fontWeight: 700, fontSize: '0.85rem', cursor: guestLinkBusy ? 'default' : 'pointer',
+                        opacity: guestLinkBusy ? 0.7 : 1,
+                      }}
+                    >
+                      {t.settings.guest_link_submit}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setShowGuestEmailForm(false); setGuestLinkError('') }}
+                      style={{
+                        flex: 1, padding: '10px', borderRadius: '8px',
+                        border: '1px solid var(--color-border)', background: 'none',
+                        color: 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer',
+                      }}
+                    >
+                      {t.settings.guest_link_cancel}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </SettingsCard>
+        </>
+      )}
 
       {/* MY CONDITIONS */}
       {/* GENDER */}
