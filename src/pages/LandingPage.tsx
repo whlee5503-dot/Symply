@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 const CONTENT = {
@@ -9,6 +11,8 @@ const CONTENT = {
     heroSub: 'Log in 30 seconds. Discover patterns with AI. Generate a clinical report your doctor can read in 3 minutes.',
     cta: 'Continue with Google →',
     ctaSub: 'Free to start · Pro from $3.99/mo',
+    guestCta: 'Try it now — no sign-in needed',
+    guestBusy: 'Loading…',
     problemLabel: 'The Problem',
     problemTitle: 'Living with chronic illness is hard enough.',
     problemSub: 'Not being believed makes it worse.',
@@ -46,6 +50,8 @@ const CONTENT = {
     heroSub: 'Registra en 30 segundos. Descubre patrones con IA. Genera un informe clínico que tu médico puede leer en 3 minutos.',
     cta: 'Continuar con Google →',
     ctaSub: 'Gratis para empezar · Pro desde $3.99/mes',
+    guestCta: 'Pruébalo ahora — sin necesidad de cuenta',
+    guestBusy: 'Cargando…',
     problemLabel: 'El problema',
     problemTitle: 'Vivir con una enfermedad crónica ya es difícil.',
     problemSub: 'No ser creída lo hace peor.',
@@ -83,6 +89,8 @@ const CONTENT = {
     heroSub: '30초 체크인. AI로 패턴 발견. 의사가 3분 안에 읽을 수 있는 임상 보고서를 생성하세요.',
     cta: 'Google로 시작하기 →',
     ctaSub: '무료로 시작 · Pro는 월 $3.99부터',
+    guestCta: '먼저 둘러보기 — 가입 없이 바로 체험',
+    guestBusy: '불러오는 중…',
     problemLabel: '문제',
     problemTitle: '만성질환과 함께 사는 것만으로도 힘듭니다.',
     problemSub: '아무도 믿어주지 않으면 더욱 힘들어집니다.',
@@ -118,9 +126,25 @@ const CONTENT = {
 export default function LandingPage() {
   const navigate = useNavigate()
   const { language } = useLanguage()
+  const { signInAsGuest } = useAuth()
   const c = CONTENT[language]
+  const [guestBusy, setGuestBusy] = useState(false)
 
   function goToLogin() { navigate('/login') }
+
+  // 랜딩페이지에서 바로 게스트로 체험 시작. 로그인 페이지를 거치지 않고
+  // 즉시 앱 화면(온보딩)으로 진입해 "가입 전 확인"을 원하는 방문자의 이탈을 줄인다.
+  // 이후 실제 계정으로 전환 시 AuthContext의 linkWithPopup/linkWithCredential이
+  // 이 게스트 세션 동안 쌓인 데이터를 그대로 보존한다.
+  async function handleGuestTry() {
+    if (guestBusy) return
+    setGuestBusy(true)
+    try {
+      await signInAsGuest()
+    } finally {
+      setGuestBusy(false)
+    }
+  }
 
   return (
     <div style={{ minHeight: '100dvh', backgroundColor: '#faf5ff', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1e1b4b' }}>
@@ -152,6 +176,13 @@ export default function LandingPage() {
           {c.cta}
         </button>
         <p style={{ fontSize: '0.78rem', color: '#9ca3af', marginTop: '12px' }}>{c.ctaSub}</p>
+        <button
+          onClick={handleGuestTry}
+          disabled={guestBusy}
+          style={{ display: 'block', margin: '16px auto 0', padding: '4px', border: 'none', background: 'transparent', color: '#7c3aed', fontWeight: 600, fontSize: '0.88rem', textDecoration: 'underline', cursor: guestBusy ? 'default' : 'pointer', opacity: guestBusy ? 0.6 : 1 }}
+        >
+          {guestBusy ? c.guestBusy : c.guestCta}
+        </button>
       </section>
 
       {/* PROBLEM */}
