@@ -39,7 +39,13 @@ function AppRoutes() {
       lang === 'ko' ? '오늘 증상을 기록하고 패턴을 추적하세요.' : lang === 'es' ? 'Registra tus síntomas de hoy.' : 'Log your symptoms and track your patterns.'
     )
   }, [user])
-  const [onboarded, setOnboarded] = useState(() => hasOnboarded())
+  const [onboarded, setOnboarded] = useState(false)
+
+  // 로그인한 사용자(uid)가 바뀔 때마다(게스트 진입, 다른 계정으로 전환 등) 온보딩 완료 여부를
+  // 그 uid 기준으로 다시 계산한다. uid별로 저장되므로 다른 계정의 온보딩 상태를 물려받지 않는다.
+  useEffect(() => {
+    if (user) setOnboarded(hasOnboarded(user.uid))
+  }, [user?.uid])
 
   if (loading) {
     return (

@@ -814,16 +814,30 @@ export default function SettingsPage() {
         {!showSignOutConfirm ? (
           <SettingsRow
             label={t.settings.sign_out}
-            value={user?.email ?? ''}
+            value={user?.isAnonymous ? t.settings.guest_banner_title : (user?.email ?? '')}
             icon="—"
             danger
             onClick={() => setShowSignOutConfirm(true)}
           />
         ) : (
           <div style={{ padding: '16px' }}>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: '12px', textAlign: 'center' }}>
-              {t.settings.sign_out_confirm}
-            </p>
+            {user?.isAnonymous ? (
+              <div style={{
+                background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)',
+                borderRadius: '10px', padding: '12px', marginBottom: '12px',
+              }}>
+                <p style={{ fontSize: '0.85rem', color: '#ef4444', fontWeight: 700, marginBottom: '4px', textAlign: 'center' }}>
+                  ⚠️ {t.settings.sign_out_guest_title}
+                </p>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-text)', textAlign: 'center', lineHeight: 1.5 }}>
+                  {t.settings.sign_out_confirm_guest}
+                </p>
+              </div>
+            ) : (
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: '12px', textAlign: 'center' }}>
+                {t.settings.sign_out_confirm}
+              </p>
+            )}
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
                 onClick={() => setShowSignOutConfirm(false)}
@@ -840,7 +854,7 @@ export default function SettingsPage() {
                   background: '#ef4444', color: '#fff',
                   fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
                 }}
-              >{t.settings.sign_out_yes}</button>
+              >{user?.isAnonymous ? t.settings.sign_out_yes_guest : t.settings.sign_out_yes}</button>
             </div>
           </div>
         )}

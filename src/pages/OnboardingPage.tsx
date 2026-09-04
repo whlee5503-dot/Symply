@@ -1,17 +1,21 @@
 import { useState } from 'react'
 import type { ChronicCondition } from '../types'
 import { useLanguage } from '../contexts/LanguageContext'
+import { useAuth } from '../contexts/AuthContext'
 import { trackEvent } from '../lib/trackEvent'
 
-const ONBOARDING_KEY = 'symply-onboarded'
+// 온보딩 완료 여부는 브라우저 전체가 아니라 uid별로 저장한다.
+// 이렇게 하지 않으면, 이전에 이 브라우저에서 실계정으로 온보딩을 마친 적이 있을 경우
+// 새로 만든 게스트(익명) 세션이 그 플래그를 그대로 물려받아 온보딩 화면을 건너뛰는 문제가 생긴다.
+const ONBOARDING_KEY_PREFIX = 'symply-onboarded:'
 const PROFILE_KEY = 'symply-profile'
 
-export function hasOnboarded(): boolean {
-  return localStorage.getItem(ONBOARDING_KEY) === 'true'
+export function hasOnboarded(uid: string): boolean {
+  return localStorage.getItem(ONBOARDING_KEY_PREFIX + uid) === 'true'
 }
 
-function markOnboarded() {
-  localStorage.setItem(ONBOARDING_KEY, 'true')
+function markOnboarded(uid: string) {
+  localStorage.setItem(ONBOARDING_KEY_PREFIX + uid, 'true')
 }
 
 const CONDITIONS: { value: ChronicCondition; labelKey: string; emoji: string }[] = [
@@ -84,6 +88,7 @@ function HowItWorks({ steps }: { steps: { icon: string; title: string; body: str
 
 export default function OnboardingPage({ onComplete }: { onComplete: () => void }) {
   const { t } = useLanguage()
+  const { user } = useAuth()
   const o = t.onboarding
   const platform = detectPlatform()
 
@@ -126,7 +131,7 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
       })()
       const updated = { ...existing, conditions, medications: existing.medications ?? [] }
       localStorage.setItem(PROFILE_KEY, JSON.stringify(updated))
-      markOnboarded()
+      if (user) markOnboarded(user.uid)
       trackEvent('signup_completed', { condition_count: conditions.length })
       onComplete()
     } else {

@@ -141,6 +141,10 @@ export default function LandingPage() {
     setGuestBusy(true)
     try {
       await signInAsGuest()
+      // 이전에 이 브라우저에서 다른 화면(예: /settings)에 머물러 있었을 수 있으므로,
+      // 게스트 진입 시 명시적으로 홈 경로로 리셋한다. 온보딩이 필요하면 App.tsx가
+      // 경로와 무관하게 OnboardingPage를 우선 렌더링한다.
+      navigate('/', { replace: true })
     } finally {
       setGuestBusy(false)
     }
