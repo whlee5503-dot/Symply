@@ -187,7 +187,36 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
             {slide.body}
           </p>
         )}
-        {isHow && <HowItWorks steps={o.how_works} />}
+        {isHow && (
+          <>
+            <HowItWorks steps={o.how_works} />
+            <div style={{
+              marginTop: '14px',
+              backgroundColor: 'var(--color-surface-2)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '14px',
+              padding: '14px 16px',
+            }}>
+              <div style={{
+                fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)',
+                textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px',
+              }}>
+                {o.preview_label}
+              </div>
+              <div style={{
+                backgroundColor: 'var(--color-primary-light)',
+                borderRadius: '10px', padding: '10px 12px',
+              }}>
+                <p style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-primary)', margin: '0 0 4px 0', lineHeight: 1.4 }}>
+                  {o.preview_pattern}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.5 }}>
+                  {o.preview_detail}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
         {isConditions && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
             {CONDITIONS.map(c => {

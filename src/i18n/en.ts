@@ -120,9 +120,9 @@ export const en = {
 
   // ReportPage
   report: {
-    title: "Doctor's Report",
+    title: "Visit-Prep Report",
     subtitle: 'Generate a clinical summary PDF for your appointment.',
-    pro_banner_title: "Pro Feature — Doctor's Report",
+    pro_banner_title: "Pro Feature — Visit-Prep Report",
     pro_banner_body: 'Generate a clinical PDF summary your doctor can read in 3 minutes.',
     upgrade: 'Upgrade',
     period_label: 'Report Period',
@@ -282,8 +282,11 @@ export const en = {
     how_works: [
       { icon: '⏱️', title: '30-second check-in', body: 'Log pain, fatigue, sleep, and triggers in under 30 seconds.' },
       { icon: '🤖', title: 'AI finds patterns', body: 'Claude AI analyzes your data and delivers personalized insights.' },
-      { icon: '📄', title: 'Doctor-ready report', body: 'Generate a clinical PDF your doctor can read in 3 minutes.' },
+      { icon: '📄', title: 'Visit-prep report', body: 'Generate a clinical PDF your doctor can read in 3 minutes.' },
     ],
+    preview_label: 'Example insight you might see',
+    preview_pattern: 'Pain rises an average of 40% in the 2-3 days before your period',
+    preview_detail: 'A pattern commonly seen in endometriosis and PCOS. This is the kind of summary Symply prepares for you to bring to your doctor.',
   },
 
   // UpgradeModal
@@ -291,10 +294,10 @@ export const en = {
     title: 'Upgrade to Pro',
     subtitle: '{feature} is a Pro feature. Unlock all Pro features for less than a coffee a month.',
     feature_ai: 'AI Pattern Analysis',
-    feature_report: "Doctor's Report PDF",
+    feature_report: "Visit-Prep Report PDF",
     features: [
       { icon: '🤖', text: 'AI Pattern Analysis — personalized insights' },
-      { icon: '📄', text: "Doctor's Report PDF — clinical summary" },
+      { icon: '📄', text: 'Visit-Prep Report PDF — clinical summary' },
       { icon: '📊', text: 'Unlimited history & advanced charts' },
     ],
     price: '$3.99',
@@ -332,7 +335,7 @@ export const en = {
       },
       {
         icon: '📄',
-        title: 'Report — Doctor\'s PDF (Pro)',
+        title: 'Report — Visit-Prep PDF (Pro)',
         desc: 'Automatically generate a 1-2 page clinical summary PDF from months of logged data. Designed for doctors to read in under 3 minutes. Recommended to generate the day before an appointment.',
       },
       {

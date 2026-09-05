@@ -117,9 +117,9 @@ export const ko: Translations = {
   },
 
   report: {
-    title: '진료 보고서',
+    title: '진료 준비 보고서',
     subtitle: '다음 진료를 위한 임상 요약 PDF를 생성하세요.',
-    pro_banner_title: 'Pro 기능 — 진료 보고서',
+    pro_banner_title: 'Pro 기능 — 진료 준비 보고서',
     pro_banner_body: '의사가 3분 안에 읽을 수 있는 임상 요약 PDF를 생성합니다.',
     upgrade: '업그레이드',
     period_label: '보고서 기간',
@@ -280,16 +280,19 @@ export const ko: Translations = {
       { icon: '🤖', title: 'AI 패턴 발견', body: 'Claude AI가 데이터를 분석해 개인화된 인사이트를 제공합니다.' },
       { icon: '📄', title: '진료 준비 보고서', body: '의사가 3분 안에 읽을 수 있는 임상 PDF를 자동 생성합니다.' },
     ],
+    preview_label: '예시: 이런 인사이트가 나옵니다',
+    preview_pattern: '생리 2~3일 전 통증이 평균 40% 높아집니다',
+    preview_detail: '자궁내막증·PCOS에서 흔히 나타나는 월경 전 증상 패턴과 일치합니다. 이런 식으로 의사에게 전달할 핵심을 정리해드립니다.',
   },
 
   upgrade: {
     title: 'Pro로 업그레이드',
     subtitle: '{feature}는 Pro 기능입니다. 커피 한 잔 가격으로 모든 Pro 기능을 사용하세요.',
     feature_ai: 'AI 패턴 분석',
-    feature_report: '진료 보고서 PDF',
+    feature_report: '진료 준비 보고서 PDF',
     features: [
       { icon: '🤖', text: 'AI 패턴 분석 — 개인화된 인사이트' },
-      { icon: '📄', text: '진료 보고서 PDF — 임상 요약' },
+      { icon: '📄', text: '진료 준비 보고서 PDF — 임상 요약' },
       { icon: '📊', text: '무제한 기록 & 고급 차트' },
     ],
     price: '$3.99',
@@ -327,7 +330,7 @@ export const ko: Translations = {
       },
       {
         icon: '📄',
-        title: '보고서 — 진료 PDF (Pro)',
+        title: '보고서 — 진료 준비 PDF (Pro)',
         desc: '수개월의 기록을 바탕으로 1~2페이지 분량의 임상 요약 PDF를 자동 생성합니다. 의사가 3분 안에 읽을 수 있는 형식으로 설계되었습니다. 진료 전날 생성하는 것을 권장합니다.',
       },
       {

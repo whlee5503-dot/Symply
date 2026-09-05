@@ -117,9 +117,9 @@ export const es: Translations = {
   },
 
   report: {
-    title:           'Informe médico',
+    title:           'Informe para la Consulta',
     subtitle:        'Genera un resumen clínico en PDF para tu cita.',
-    pro_banner_title: 'Función Pro — Informe médico',
+    pro_banner_title: 'Función Pro — Informe para la Consulta',
     pro_banner_body: 'Genera un PDF clínico que tu médico puede leer en 3 minutos.',
     upgrade:         'Mejorar plan',
     period_label:    'Período del informe',
@@ -277,18 +277,21 @@ export const es: Translations = {
     how_works: [
       { icon: '⏱️', title: 'Check-in de 30 segundos', body: 'Registra dolor, fatiga, sueño y desencadenantes en menos de 30 segundos.' },
       { icon: '🤖', title: 'La IA encuentra patrones', body: 'Claude AI analiza tus datos y ofrece insights personalizados.' },
-      { icon: '📄', title: 'Informe para el médico', body: 'Genera un PDF clínico que tu médico puede leer en 3 minutos.' },
+      { icon: '📄', title: 'Informe para la consulta', body: 'Genera un PDF clínico que tu médico puede leer en 3 minutos.' },
     ],
+    preview_label: 'Ejemplo de insight que podrías ver',
+    preview_pattern: 'El dolor sube un 40% en promedio 2-3 días antes de tu periodo',
+    preview_detail: 'Un patrón comun en la endometriosis y el SOP. Este es el tipo de resumen que Symply prepara para llevar a tu médico.',
   },
 
   upgrade: {
     title:    'Mejorar a Pro',
     subtitle: '{feature} es una función Pro. Desbloquea todo por menos que un café al mes.',
     feature_ai:     'Análisis de IA',
-    feature_report: 'Informe médico PDF',
+    feature_report: 'Informe para la Consulta PDF',
     features: [
       { icon: '🤖', text: 'Análisis de IA — insights personalizados' },
-      { icon: '📄', text: 'Informe médico PDF — resumen clínico' },
+      { icon: '📄', text: 'Informe para la Consulta PDF — resumen clínico' },
       { icon: '📊', text: 'Historial ilimitado y gráficos avanzados' },
     ],
     price:    '$3.99',
@@ -326,7 +329,7 @@ export const es: Translations = {
       },
       {
         icon: '📄',
-        title: 'Informe - PDF para el medico (Pro)',
+        title: 'Informe - PDF para la consulta (Pro)',
         desc: 'Genera automaticamente un resumen clinico en PDF de 1-2 paginas a partir de meses de registros. Disenado para que tu medico lo lea en menos de 3 minutos. Se recomienda generarlo el dia antes de la consulta.',
       },
       {
