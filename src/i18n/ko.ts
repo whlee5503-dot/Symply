@@ -123,6 +123,8 @@ export const ko: Translations = {
     pro_banner_body: '의사가 3분 안에 읽을 수 있는 임상 요약 PDF를 생성합니다.',
     upgrade: '업그레이드',
     period_label: '보고서 기간',
+    period_7: '7일',
+    period_14: '14일',
     period_30: '30일',
     period_60: '60일',
     period_90: '90일',
@@ -216,8 +218,8 @@ export const ko: Translations = {
     guest_link_email_in_use: '이미 가입된 이메일입니다. 다른 이메일을 사용해주세요.',
     guest_link_weak_password: '비밀번호는 6자 이상이어야 합니다.',
     signed_in_as: '로그인 중',
-    about_guide: '사용 가이드',
-    about_guide_val: '기능 안내 및 주요 용어',
+    about_guide: '용어 설명',
+    about_guide_val: '통증 척도·질환·트리거 용어 풀이',
     about_feedback: '피드백 보내기',
     about_feedback_val: '의견이나 개선 사항을 알려주세요',
     about_title: 'About',
@@ -299,8 +301,8 @@ export const ko: Translations = {
   },
 
   guide: {
-    title: 'Symply 사용 가이드',
-    intro: 'Symply는 증상을 기록하고, 패턴을 발견하고, 의사와 더 효과적으로 소통할 수 있도록 도와드립니다. 각 기능을 간단히 소개합니다.',
+    title: 'Symply 용어 설명',
+    intro: '통증·피로 척도, 질환, 트리거 등 앱에서 사용하는 용어를 풀어드립니다. "고포드맵 식사"처럼 낯선 용어가 나오면 여기서 찾아보세요. 화면별 사용법도 아래에 간단히 정리했습니다.',
     pages_title: '화면별 안내',
     pages: [
       {
@@ -355,6 +357,16 @@ export const ko: Translations = {
         icon: '🔍',
         term: '오늘의 영향 요인',
         desc: '증상에 영향을 줄 수 있는 요소들을 세 가지 근거 기반 카테고리(음식 및 음료, 생활습관, 환경)로 정리했습니다. 만성질환 연구를 바탕으로 선별된 항목입니다.\n\n설정에서 대표 질환을 지정하면, 그 질환과 가장 관련 있는 요인이 먼저 표시되고 별표(★)로 표시됩니다. 근거 강도는 질환마다 다릅니다 — 예를 들어 고포드맵 식이는 IBS에서 확립된 트리거이지만, 자궁내막증의 식이 트리거는 근거가 상대적으로 약합니다. Symply는 모든 요인을 같은 확신 수준으로 다루지 않고 이 차이를 그대로 반영합니다.',
+      },
+      {
+        icon: '🥗',
+        term: '고포드맵(FODMAP) 식사',
+        desc: 'FODMAP은 장에서 잘 흡수되지 않고 발효되어 가스·팽만감·복통을 유발할 수 있는 특정 탄수화물류(마늘, 양파, 밀, 일부 과일·유제품 등)를 뜻합니다. IBS(과민성 대장 증후군)에서 특히 확립된 트리거입니다.',
+      },
+      {
+        icon: '🍚',
+        term: '고혈당지수(High GI) 식사',
+        desc: '혈당지수(GI)가 높아 혈당을 빠르게 올리는 음식(흰쌀, 흰빵, 단 음료 등)입니다. 혈당 급등락은 염증 반응이나 PCOS의 인슐린 저항성과 관련된 증상에 영향을 줄 수 있습니다.',
       },
       {
         icon: '🔄',

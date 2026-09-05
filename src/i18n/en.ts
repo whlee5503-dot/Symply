@@ -126,6 +126,8 @@ export const en = {
     pro_banner_body: 'Generate a clinical PDF summary your doctor can read in 3 minutes.',
     upgrade: 'Upgrade',
     period_label: 'Report Period',
+    period_7: '7 days',
+    period_14: '14 days',
     period_30: '30 days',
     period_60: '60 days',
     period_90: '90 days',
@@ -219,8 +221,8 @@ export const en = {
     guest_link_email_in_use: 'An account with this email already exists. Please use a different email.',
     guest_link_weak_password: 'Password should be at least 6 characters.',
     signed_in_as: 'Signed in as',
-    about_guide: 'How to Use',
-    about_guide_val: 'Feature guide & key terms',
+    about_guide: 'Glossary',
+    about_guide_val: 'Definitions for scales, conditions & triggers',
     about_feedback: 'Send Feedback',
     about_feedback_val: 'Share your thoughts with us',
     about_title: 'About',
@@ -304,8 +306,8 @@ export const en = {
   },
 
   guide: {
-    title: 'How to Use Symply',
-    intro: 'Symply helps you track symptoms, discover patterns, and communicate more effectively with your doctor. Here is a quick overview of each feature.',
+    title: 'Symply Glossary',
+    intro: 'Definitions for the pain and fatigue scales, conditions, and triggers used throughout Symply. Look here if a term such as "high FODMAP" is unfamiliar. A quick overview of each screen is included below.',
     pages_title: 'Pages',
     pages: [
       {
@@ -360,6 +362,16 @@ export const en = {
         icon: '\uD83D\uDD0D',
         term: 'Today\'s Triggers',
         desc: 'Potential factors that may influence your symptoms, organized into three evidence-based categories: Food and Drink, Lifestyle, and Environment. Selected based on research into chronic illness.\n\nIf you set a Primary Condition in Settings, factors most relevant to that condition are shown first and marked with a star. Evidence strength varies by condition — for example, high-FODMAP foods are a well-established trigger for IBS, while dietary triggers for endometriosis are less established. Symply reflects that difference rather than treating every factor as equally certain.',
+      },
+      {
+        icon: '🥗',
+        term: 'High-FODMAP Foods',
+        desc: 'FODMAPs are certain carbohydrates (found in garlic, onion, wheat, some fruits and dairy) that are poorly absorbed in the gut and can ferment, causing gas, bloating, and abdominal pain. This is a particularly well-established trigger for IBS.',
+      },
+      {
+        icon: '🍚',
+        term: 'High-Glycemic Foods',
+        desc: 'Foods with a high glycemic index (white rice, white bread, sugary drinks) raise blood sugar quickly. Rapid blood sugar swings may be linked to inflammatory symptoms and to insulin resistance in PCOS.',
       },
       {
         icon: '🔄',

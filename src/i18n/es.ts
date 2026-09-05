@@ -123,6 +123,8 @@ export const es: Translations = {
     pro_banner_body: 'Genera un PDF clínico que tu médico puede leer en 3 minutos.',
     upgrade:         'Mejorar plan',
     period_label:    'Período del informe',
+    period_7:        '7 días',
+    period_14:       '14 días',
     period_30:       '30 días',
     period_60:       '60 días',
     period_90:       '90 días',
@@ -215,8 +217,8 @@ export const es: Translations = {
     guest_link_email_in_use: 'Ya existe una cuenta con este correo. Usa uno diferente.',
     guest_link_weak_password: 'La contraseña debe tener al menos 6 caracteres.',
     signed_in_as:     'Sesión iniciada como',
-    about_guide: 'Como usar',
-    about_guide_val: 'Guia de funciones y terminos clave',
+    about_guide: 'Glosario',
+    about_guide_val: 'Definiciones de escalas, condiciones y desencadenantes',
     about_feedback: 'Enviar comentarios',
     about_feedback_val: 'Comparte tus opiniones con nosotros',
     about_title:      'Acerca de',
@@ -298,8 +300,8 @@ export const es: Translations = {
   },
 
   guide: {
-    title: 'Como usar Symply',
-    intro: 'Symply te ayuda a registrar sintomas, descubrir patrones y comunicarte mejor con tu medico. Aqui tienes un resumen de cada funcion.',
+    title: 'Glosario de Symply',
+    intro: 'Definiciones de las escalas de dolor y fatiga, las condiciones y los desencadenantes usados en Symply. Consulta aqui si un termino como "alto en FODMAP" no te resulta familiar. Abajo encontraras tambien un resumen de cada pantalla.',
     pages_title: 'Paginas',
     pages: [
       {
@@ -354,6 +356,16 @@ export const es: Translations = {
         icon: '\uD83D\uDD0D',
         term: 'Factores de hoy',
         desc: 'Posibles factores que pueden influir en tus sintomas, organizados en tres categorias basadas en evidencia: Comida y bebida, Estilo de vida y Entorno.\n\nSi eliges una Condicion principal en Ajustes, los factores mas relevantes para esa condicion aparecen primero y se marcan con una estrella. La solidez de la evidencia varia segun la condicion: por ejemplo, las comidas altas en FODMAP son un desencadenante bien establecido para el SII, mientras que los desencadenantes dieteticos en la endometriosis tienen evidencia mas limitada. Symply refleja esa diferencia en vez de tratar todos los factores con el mismo nivel de certeza.',
+      },
+      {
+        icon: '🥗',
+        term: 'Alimentos altos en FODMAP',
+        desc: 'Los FODMAP son ciertos carbohidratos (presentes en ajo, cebolla, trigo, algunas frutas y lacteos) que se absorben mal en el intestino y pueden fermentar, causando gases, hinchazon y dolor abdominal. Es un desencadenante especialmente bien establecido para el SII.',
+      },
+      {
+        icon: '🍚',
+        term: 'Alimentos de alto indice glucemico',
+        desc: 'Los alimentos con indice glucemico alto (arroz blanco, pan blanco, bebidas azucaradas) elevan el azucar en sangre rapidamente. Estos picos pueden relacionarse con sintomas inflamatorios y con la resistencia a la insulina en el SOP.',
       },
       {
         icon: '🔄',

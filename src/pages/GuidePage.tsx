@@ -49,24 +49,24 @@ export default function GuidePage() {
           {g.intro}
         </p>
 
-        {/* Pages Section */}
-        <SectionTitle>{g.pages_title}</SectionTitle>
-
-        {g.pages.map((page) => (
-          <GuideCard key={page.icon} icon={page.icon} title={page.title}>
-            <p style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>
-              {page.desc}
-            </p>
-          </GuideCard>
-        ))}
-
-        {/* Terms Section */}
-        <SectionTitle style={{ marginTop: '28px' }}>{g.terms_title}</SectionTitle>
+        {/* Terms Section (glossary — shown first) */}
+        <SectionTitle>{g.terms_title}</SectionTitle>
 
         {g.terms.map((term) => (
           <GuideCard key={term.term} icon={term.icon} title={term.term}>
             <p style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0, whiteSpace: 'pre-line' }}>
               {term.desc}
+            </p>
+          </GuideCard>
+        ))}
+
+        {/* Pages Section (how each screen works) */}
+        <SectionTitle style={{ marginTop: '28px' }}>{g.pages_title}</SectionTitle>
+
+        {g.pages.map((page) => (
+          <GuideCard key={page.icon} icon={page.icon} title={page.title}>
+            <p style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>
+              {page.desc}
             </p>
           </GuideCard>
         ))}

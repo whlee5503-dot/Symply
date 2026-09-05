@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { format, subDays } from 'date-fns'
 import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
@@ -44,12 +46,21 @@ export default function ReportPage() {
   const { user, isPro } = useAuth()
   const { t } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
-  const [period, setPeriod]         = useState<30 | 60 | 90>(30)
+  const [period, setPeriod]         = useState<7 | 14 | 30 | 60 | 90>(7)
   const [generating, setGenerating] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const chartRef = useRef<HTMLDivElement>(null)
 
   const logs      = getReportLogs(allLogs, period)
   const totalDays = logs.length
+
+  // PDF에 삽입할 통증/피로 트렌드 그래프용 데이터. 화면에 보이는 인사이트 차트와
+  // 별개로, 선택된 보고서 기간(logs)에 맞춰 화면 밖(hidden)에 그려서 캡처한다.
+  const trendData = logs.map(e => ({
+    date:    format(new Date(e.id), 'MM/dd'),
+    pain:    e.pain,
+    fatigue: e.fatigue,
+  }))
 
   const avgPain    = totalDays > 0 ? (logs.reduce((s, e) => s + e.pain, 0) / totalDays) : 0
   const avgFatigue = totalDays > 0 ? (logs.reduce((s, e) => s + e.fatigue, 0) / totalDays) : 0
@@ -79,6 +90,22 @@ export default function ReportPage() {
       const margin   = 20
       const contentW = pageW - margin * 2
       let y = margin
+
+      // 통증/피로 트렌드 그래프를 이미지로 캡처한다. 화면 밖(hidden)에 렌더링된
+      // 같은 데이터의 차트를 그대로 캡처하므로, "AI 분석 텍스트만 스크린샷"으로는
+      // 얻을 수 없는 시각 자료가 PDF에 포함된다. 캡처가 실패해도(예: 브라우저 제약)
+      // PDF 생성 자체는 계속 진행하도록 감싼다.
+      let chartImg: { data: string; w: number; h: number } | null = null
+      if (chartRef.current && totalDays > 0) {
+        try {
+          const canvas = await html2canvas(chartRef.current, { scale: 2, backgroundColor: '#ffffff' })
+          const w = contentW
+          const h = w * (canvas.height / canvas.width)
+          chartImg = { data: canvas.toDataURL('image/png'), w, h }
+        } catch {
+          chartImg = null
+        }
+      }
 
       pdf.setFillColor(124, 58, 237)
       pdf.rect(0, 0, pageW, 40, 'F')
@@ -151,6 +178,21 @@ export default function ReportPage() {
         pdf.text(s.sub, x + colW / 2, cy + 18, { align: 'center' })
       })
       y += rowH * 2 + 8
+
+      if (chartImg) {
+        if (y + chartImg.h + 20 > 270) { pdf.addPage(); y = margin }
+        pdf.setTextColor(124, 58, 237)
+        pdf.setFontSize(13)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Symptom Trend', margin, y)
+        y += 2
+        pdf.setDrawColor(124, 58, 237)
+        pdf.setLineWidth(0.5)
+        pdf.line(margin, y, margin + contentW, y)
+        y += 6
+        pdf.addImage(chartImg.data, 'PNG', margin, y, chartImg.w, chartImg.h)
+        y += chartImg.h + 8
+      }
 
       if (topTriggers.length > 0) {
         pdf.setTextColor(124, 58, 237)
@@ -258,6 +300,31 @@ export default function ReportPage() {
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
+      {/* 화면에는 보이지 않지만 실제로 렌더링되는 차트. jsPDF/html2canvas가 이걸
+          이미지로 캡처해서 PDF에 넣는다. display:none은 캡처가 안 되므로
+          position으로 화면 밖에 배치한다. */}
+      {totalDays > 0 && (
+        <div
+          ref={chartRef}
+          style={{ position: 'fixed', top: '-9999px', left: 0, width: '600px', background: '#ffffff', padding: '16px', boxSizing: 'border-box' }}
+        >
+          <div style={{ fontSize: '14px', fontWeight: 700, color: '#111827', marginBottom: '8px', fontFamily: 'Arial, sans-serif' }}>
+            Pain &amp; Fatigue — Last {period} Days
+          </div>
+          <LineChart width={568} height={220} data={trendData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+            <YAxis domain={[0, 10]} tick={{ fontSize: 10 }} />
+            <Line type="monotone" dataKey="pain"    stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} />
+            <Line type="monotone" dataKey="fatigue" stroke="#7c3aed" strokeWidth={2} dot={false} isAnimationActive={false} />
+          </LineChart>
+          <div style={{ display: 'flex', gap: '16px', marginTop: '6px', fontSize: '11px', fontFamily: 'Arial, sans-serif' }}>
+            <span style={{ color: '#ef4444' }}>● Pain</span>
+            <span style={{ color: '#7c3aed' }}>● Fatigue</span>
+          </div>
+        </div>
+      )}
+
       <GuideLink />
       <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>
         {t.report.title}
@@ -310,14 +377,15 @@ export default function ReportPage() {
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>
           {t.report.period_label}
         </p>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          {([30, 60, 90] as const).map(d => (
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          {([7, 14, 30, 60, 90] as const).map(d => (
             <button
               key={d}
               onClick={() => setPeriod(d)}
               style={{
-                flex: 1,
-                padding: '8px',
+                flex: '1 1 18%',
+                minWidth: '54px',
+                padding: '8px 4px',
                 borderRadius: '10px',
                 border: period === d ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
                 background: period === d ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
@@ -327,7 +395,7 @@ export default function ReportPage() {
                 color: period === d ? 'var(--color-primary)' : 'var(--color-text-muted)',
               }}
             >
-              {d === 30 ? t.report.period_30 : d === 60 ? t.report.period_60 : t.report.period_90}
+              {t.report[`period_${d}` as keyof typeof t.report] as string}
             </button>
           ))}
         </div>
