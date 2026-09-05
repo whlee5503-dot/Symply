@@ -284,9 +284,15 @@ export const en = {
       { icon: '🤖', title: 'AI finds patterns', body: 'Claude AI analyzes your data and delivers personalized insights.' },
       { icon: '📄', title: 'Visit-prep report', body: 'Generate a clinical PDF your doctor can read in 3 minutes.' },
     ],
-    preview_label: 'Example insight you might see',
-    preview_pattern: 'Pain rises an average of 40% in the 2-3 days before your period',
-    preview_detail: 'A pattern commonly seen in endometriosis and PCOS. This is the kind of summary Symply prepares for you to bring to your doctor.',
+    preview_demo_badge: '🎁 Example screen (not your real data)',
+    preview_summary: 'Your symptoms show clear patterns linked to your menstrual cycle, sleep, and dietary triggers.',
+    preview_pattern1_title: 'Pain peaks 2-3 days before menstruation',
+    preview_pattern1_desc: 'Pain scores are on average 40% higher in the 2-3 days before your period, consistent with premenstrual symptom patterns common in endometriosis and PCOS.',
+    preview_pattern2_title: 'Medium activity days are your best days',
+    preview_pattern2_desc: 'Days with medium activity level correlate with the lowest combined pain and fatigue scores.',
+    preview_doctor_label: 'Points to discuss with your doctor',
+    preview_doctor_point1: 'Pain consistently spikes 2-3 days before my period, suggesting premenstrual flares',
+    preview_doctor_point2: 'Medium activity days show the best overall symptom control',
   },
 
   // UpgradeModal

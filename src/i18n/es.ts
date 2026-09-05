@@ -279,9 +279,15 @@ export const es: Translations = {
       { icon: '🤖', title: 'La IA encuentra patrones', body: 'Claude AI analiza tus datos y ofrece insights personalizados.' },
       { icon: '📄', title: 'Informe para la consulta', body: 'Genera un PDF clínico que tu médico puede leer en 3 minutos.' },
     ],
-    preview_label: 'Ejemplo de insight que podrías ver',
-    preview_pattern: 'El dolor sube un 40% en promedio 2-3 días antes de tu periodo',
-    preview_detail: 'Un patrón comun en la endometriosis y el SOP. Este es el tipo de resumen que Symply prepara para llevar a tu médico.',
+    preview_demo_badge: '🎁 Pantalla de ejemplo (no son tus datos reales)',
+    preview_summary: 'Tus síntomas muestran patrones claros vinculados a tu ciclo menstrual, el sueño y los desencadenantes dietéticos.',
+    preview_pattern1_title: 'El dolor aumenta 2-3 días antes de la menstruación',
+    preview_pattern1_desc: 'Las puntuaciones de dolor son un 40% más altas en promedio en los 2-3 días previos a tu periodo, coherente con los patrones premenstruales comunes en la endometriosis y el SOP.',
+    preview_pattern2_title: 'Los días de actividad media son tus mejores días',
+    preview_pattern2_desc: 'Los días con nivel de actividad media se correlacionan con las puntuaciones combinadas más bajas de dolor y fatiga.',
+    preview_doctor_label: 'Puntos para hablar con tu médico',
+    preview_doctor_point1: 'Mi dolor aumenta consistentemente 2-3 días antes de mi periodo, lo que sugiere brotes premenstruales',
+    preview_doctor_point2: 'Los días de actividad media muestran el mejor control general de síntomas',
   },
 
   upgrade: {
