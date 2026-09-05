@@ -218,7 +218,10 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
                 {o.preview_demo_badge}
               </div>
 
-              <div style={{ marginBottom: '10px' }}>
+              <p style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', margin: '0 0 4px 0' }}>
+                {o.preview_chart_caption}
+              </p>
+              <div style={{ marginBottom: '4px' }}>
                 <ResponsiveContainer width="100%" height={100}>
                   <LineChart data={DEMO_TREND} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
                     <XAxis dataKey="d" tick={{ fontSize: 9 }} />
@@ -227,6 +230,16 @@ export default function OnboardingPage({ onComplete }: { onComplete: () => void 
                     <Line type="monotone" dataKey="fatigue" stroke="#7c3aed" strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
+              </div>
+              <div style={{ display: 'flex', gap: '14px', marginBottom: '10px', fontSize: '0.72rem' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-text-muted)' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
+                  {o.preview_legend_pain}
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-text-muted)' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#7c3aed', display: 'inline-block' }} />
+                  {o.preview_legend_fatigue}
+                </span>
               </div>
 
               <div style={{ padding: '10px', background: 'var(--color-primary-light)', borderRadius: '10px', marginBottom: '8px' }}>
