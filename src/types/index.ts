@@ -74,6 +74,23 @@ export const FLOW_COLORS: Record<0|1|2|3, string> = {
   3: '#dc2626',
 }
 
+// ─── Timing (medication / trigger timing-gap tracking) ─────────────────────
+// Deliberately coarse (4 buckets, not minutes) — enough resolution to detect
+// "same time" vs "separated by hours" absorption-interaction patterns (e.g.
+// myo-inositol vs. caffeine), without asking the user for a precise clock
+// time. Keeps the 30-second check-in fast; optional in every place it's used.
+
+export type TimeOfDay = 'morning' | 'midday' | 'evening' | 'bedtime'
+
+// Rough anchor hour per bucket, used only for estimating a gap between two
+// bucketed times. Not meant to represent an exact clock time.
+export const TIME_OF_DAY_ANCHOR_HOUR: Record<TimeOfDay, number> = {
+  morning: 8,
+  midday: 13,
+  evening: 19,
+  bedtime: 22,
+}
+
 // ─── Check-in / Log Entry ──────────────────────────────────────────────────
 
 export interface LogEntry {
@@ -84,6 +101,11 @@ export interface LogEntry {
   mood: 1 | 2 | 3 | 4 | 5
   sleep: number       // hours
   triggers: TriggerMap
+  // Sparse, optional map: only set for triggers the user chooses to
+  // time-tag (in practice, mainly caffeine and dairy — the triggers with a
+  // known absorption-interaction literature). TriggerMap itself stays
+  // untouched (no breaking change to existing boolean-only consumers).
+  triggerTimings?: Partial<Record<keyof TriggerMap, TimeOfDay>>
   activity: 'low' | 'medium' | 'high'
   medications: MedicationLog[]
   note: string
@@ -194,6 +216,7 @@ export function getTriggerPriority(
 export interface MedicationLog {
   name: string
   taken: boolean
+  timeOfDay?: TimeOfDay // optional; when set, enables timing-gap analysis (see estimatedHourGap / wasSeparated below)
 }
 
 export interface WeatherData {
@@ -321,3 +344,32 @@ export const FATIGUE_ANCHORS_ES: FatigueAnchor[] = [
   { level: 8,  label: 'Intenso',        description: 'La fatiga impide la mayoria de actividades. Incluso lo basico es dificil.' },
   { level: 10, label: 'Sin fuerzas',    description: 'No puedes levantarte de la cama. La fatiga es completamente incapacitante.' },
 ]
+
+// ─── Timing-gap analysis helpers ────────────────────────────────────────────
+// Given two time-of-day buckets, estimate the hour gap between them (used to
+// detect absorption-interaction patterns like "myo-inositol taken >=2h apart
+// from caffeine"). See simulate_timing_pattern.mjs (K-Startup project) for a
+// worked example of this being used to detect a real pattern in synthetic
+// data.
+
+export function estimatedHourGap(a: TimeOfDay, b: TimeOfDay): number {
+  return Math.abs(TIME_OF_DAY_ANCHOR_HOUR[a] - TIME_OF_DAY_ANCHOR_HOUR[b])
+}
+
+// Given one day's medication logs and trigger timings, was a given
+// medication separated from a given trigger by at least `minHours`?
+// Returns undefined if either side wasn't time-tagged that day (can't tell).
+export function wasSeparated(
+  medications: MedicationLog[],
+  medicationName: string,
+  triggerTimings: Partial<Record<keyof TriggerMap, TimeOfDay>> | undefined,
+  triggerKey: keyof TriggerMap,
+  minHours = 1,
+): boolean | undefined {
+  const med = medications.find(
+    (m) => m.name.toLowerCase() === medicationName.toLowerCase() && m.taken,
+  )
+  const triggerTime = triggerTimings?.[triggerKey]
+  if (!med?.timeOfDay || !triggerTime) return undefined
+  return estimatedHourGap(med.timeOfDay, triggerTime) >= minHours
+}

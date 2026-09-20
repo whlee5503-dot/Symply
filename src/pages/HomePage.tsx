@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
 import AnchorSlider from '../components/ui/AnchorSlider'
 import { PAIN_ANCHORS, FATIGUE_ANCHORS, PAIN_ANCHORS_KO, FATIGUE_ANCHORS_KO, PAIN_ANCHORS_ES, FATIGUE_ANCHORS_ES, MOOD_EMOJIS } from '../types'
-import type { LogEntry, TriggerMap, ChronicCondition, RelevanceDetail, EvidenceStrength } from '../types'
+import type { LogEntry, TriggerMap, ChronicCondition, RelevanceDetail, EvidenceStrength, Medication, MedicationLog, TimeOfDay } from '../types'
 import { getTriggerPriority } from '../types'
 import { trackEvent } from '../lib/trackEvent'
 import { saveLog, getLog, todayId } from '../lib/storage'
@@ -41,6 +41,13 @@ const TRIGGER_CATEGORIES = [
   },
 ]
 
+// Triggers with known absorption-interaction literature (see
+// docs/TRIGGER_EVIDENCE.md) — the ones worth asking "when?" about, since a
+// timing gap from medications/supplements is what makes the pattern
+// detectable. Deliberately a short list, not all 13 triggers, to keep the
+// 30-second check-in fast for everyone else.
+const TIMING_SENSITIVE_TRIGGERS: (keyof TriggerMap)[] = ['caffeine', 'dairy']
+
 const PROFILE_KEY = 'symply-profile'
 
 function getPrimaryCondition(): ChronicCondition | undefined {
@@ -50,6 +57,19 @@ function getPrimaryCondition(): ChronicCondition | undefined {
     const profile = JSON.parse(raw)
     return profile.primaryCondition || undefined
   } catch { return undefined }
+}
+
+// Reads the medications registered in Settings (UserProfile.medications) —
+// NOT the daily log. This lets the check-in offer "did you take these
+// today?" against a list the user already built, instead of asking them to
+// re-type medication names every day.
+function getRegisteredMedications(): Medication[] {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY)
+    if (!raw) return []
+    const profile = JSON.parse(raw)
+    return profile.medications || []
+  } catch { return [] }
 }
 
 // Reorders a category's trigger keys so items with stronger evidence for the
@@ -74,6 +94,46 @@ function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
   return t.home.greeting_evening
 }
 
+// ─── Time-of-day picker ─────────────────────────────────────────────────────
+// Small, reusable 4-bucket picker. Not wired into i18n's `t` object (no
+// existing keys for it), so labels are inlined here for the 3 supported
+// languages directly — follow-up: move into src/i18n/* if/when this pattern
+// is used elsewhere.
+const TIME_OF_DAY_OPTIONS: { key: TimeOfDay; emoji: string; label: Record<'en' | 'ko' | 'es', string> }[] = [
+  { key: 'morning', emoji: '🌅', label: { en: 'Morning', ko: '아침',   es: 'Mañana' } },
+  { key: 'midday',  emoji: '☀️', label: { en: 'Midday',  ko: '점심',   es: 'Mediodía' } },
+  { key: 'evening', emoji: '🌆', label: { en: 'Evening', ko: '저녁',   es: 'Tarde' } },
+  { key: 'bedtime', emoji: '🌙', label: { en: 'Bedtime', ko: '취침전', es: 'Antes de dormir' } },
+]
+
+function TimeOfDayButtons({
+  value, onChange, language,
+}: {
+  value?: TimeOfDay
+  onChange: (t: TimeOfDay) => void
+  language: 'en' | 'ko' | 'es'
+}) {
+  return (
+    <div style={{ display: 'flex', gap: '6px' }}>
+      {TIME_OF_DAY_OPTIONS.map(o => (
+        <button
+          key={o.key}
+          onClick={() => onChange(o.key)}
+          style={{
+            flex: 1, padding: '6px 2px', borderRadius: '8px', cursor: 'pointer',
+            border: value === o.key ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+            background: value === o.key ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
+            fontSize: '0.68rem', fontWeight: value === o.key ? 600 : 400,
+            color: value === o.key ? 'var(--color-primary)' : 'var(--color-text-muted)',
+          }}
+        >
+          {o.emoji} {o.label[language]}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export default function HomePage() {
   const today    = todayId()
   const { user } = useAuth()
@@ -90,14 +150,24 @@ export default function HomePage() {
     stress: false, poor_sleep: false, overexertion: false,
     pressure_change: false, temperature_change: false, sun_exposure: false,
   })
+  const [triggerTimings, setTriggerTimings] = useState<Partial<Record<keyof TriggerMap, TimeOfDay>>>({})
   const [noTriggers,    setNoTriggers]    = useState(false)
   const [note,          setNote]          = useState('')
   const [saved,         setSaved]         = useState(false)
   const [alreadyLogged, setAlreadyLogged] = useState(false)
   const [primaryCondition, setPrimaryCondition] = useState<ChronicCondition | undefined>(getPrimaryCondition)
 
+  // Registered medications (from Settings), plus this check-in's "taken
+  // today?" / "when?" state, keyed by the medication's id.
+  const [registeredMeds, setRegisteredMeds] = useState<Medication[]>(getRegisteredMedications)
+  const [medTaken, setMedTaken] = useState<Record<string, boolean>>({})
+  const [medTime,  setMedTime]  = useState<Record<string, TimeOfDay>>({})
+
   useEffect(() => {
-    function handleProfileUpdate() { setPrimaryCondition(getPrimaryCondition()) }
+    function handleProfileUpdate() {
+      setPrimaryCondition(getPrimaryCondition())
+      setRegisteredMeds(getRegisteredMedications())
+    }
     window.addEventListener('symply-profile-updated', handleProfileUpdate)
     return () => window.removeEventListener('symply-profile-updated', handleProfileUpdate)
   }, [])
@@ -113,13 +183,31 @@ export default function HomePage() {
         setSleep(existing.sleep)
         setActivity(existing.activity)
         setTriggers(existing.triggers)
+        setTriggerTimings(existing.triggerTimings ?? {})
         setNote(existing.note)
         setAlreadyLogged(true)
         // 저장된 트리거가 모두 false이면 noTriggers로 표시
         const anyTrigger = Object.values(existing.triggers).some(v => v)
         if (!anyTrigger) setNoTriggers(true)
+
+        // Rehydrate medication taken/time state from the saved log, matched
+        // by name against the currently-registered medication list.
+        if (existing.medications?.length) {
+          const taken: Record<string, boolean> = {}
+          const times: Record<string, TimeOfDay> = {}
+          for (const regMed of registeredMeds) {
+            const found = existing.medications.find(m => m.name === regMed.name)
+            if (found?.taken) {
+              taken[regMed.id] = true
+              if (found.timeOfDay) times[regMed.id] = found.timeOfDay
+            }
+          }
+          setMedTaken(taken)
+          setMedTime(times)
+        }
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, user?.uid])
 
   function toggleTrigger(key: keyof TriggerMap) {
@@ -135,13 +223,26 @@ export default function HomePage() {
       stress: false, poor_sleep: false, overexertion: false,
       pressure_change: false, temperature_change: false, sun_exposure: false,
     })
+    setTriggerTimings({})
+  }
+
+  function toggleMedTaken(id: string) {
+    setMedTaken(prev => ({ ...prev, [id]: !prev[id] }))
   }
 
   function handleSave() {
+    const medications: MedicationLog[] = registeredMeds
+      .filter(med => medTaken[med.id])
+      .map(med => ({ name: med.name, taken: true, timeOfDay: medTime[med.id] }))
+
+    const hasTriggerTimings = Object.keys(triggerTimings).length > 0
+
     const entry: LogEntry = {
       id: today, userId: user?.uid ?? 'local-user',
-      pain, fatigue, mood, sleep, triggers, activity,
-      medications: [], note,
+      pain, fatigue, mood, sleep, triggers,
+      triggerTimings: hasTriggerTimings ? triggerTimings : undefined,
+      activity,
+      medications, note,
       createdAt: new Date(), updatedAt: new Date(),
     }
     saveLog(entry, user?.uid)
@@ -152,6 +253,7 @@ export default function HomePage() {
   }
 
   const anyTriggerSelected = Object.values(triggers).some(v => v)
+  const activeTimingTriggers = TIMING_SENSITIVE_TRIGGERS.filter(k => triggers[k])
 
   return (
     <div style={{ padding: '20px 16px 16px', maxWidth: '480px', margin: '0 auto' }}>
@@ -276,6 +378,64 @@ export default function HomePage() {
           </button>
         )}
       </Card>
+
+      {/* Timing for absorption-sensitive triggers — only appears once one of
+          them is toggled on above. Optional; skipping it changes nothing
+          else about the check-in. */}
+      {activeTimingTriggers.length > 0 && (
+        <Card style={{ marginBottom: '12px' }}>
+          <p style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--color-text)', marginBottom: '10px' }}>
+            {language === 'ko' ? '언제 드셨나요? (선택)' : language === 'es' ? '¿Cuándo? (opcional)' : 'When? (optional)'}
+          </p>
+          {activeTimingTriggers.map(key => (
+            <div key={key} style={{ marginBottom: '8px' }}>
+              <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginBottom: '6px' }}>
+                {t.home[('trigger_' + key) as keyof typeof t.home] as string}
+              </p>
+              <TimeOfDayButtons
+                value={triggerTimings[key]}
+                onChange={(time) => setTriggerTimings(prev => ({ ...prev, [key]: time }))}
+                language={language as 'en' | 'ko' | 'es'}
+              />
+            </div>
+          ))}
+        </Card>
+      )}
+
+      {/* Today's medications — only appears if the user has registered any
+          in Settings. Reuses that list rather than asking for names again. */}
+      {registeredMeds.length > 0 && (
+        <Card style={{ marginBottom: '12px' }}>
+          <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>
+            {language === 'ko' ? '오늘 복용하셨나요?' : language === 'es' ? '¿Tomaste esto hoy?' : 'Did you take these today?'}
+          </p>
+          {registeredMeds.map(med => (
+            <div key={med.id} style={{ marginBottom: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: medTaken[med.id] ? '6px' : 0 }}>
+                <span style={{ fontSize: '0.88rem', color: 'var(--color-text)' }}>{med.name}</span>
+                <button onClick={() => toggleMedTaken(med.id)} style={{
+                  padding: '5px 12px', borderRadius: '16px', cursor: 'pointer',
+                  border: medTaken[med.id] ? '2px solid var(--color-secondary)' : '1px solid var(--color-border)',
+                  background: medTaken[med.id] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
+                  fontSize: '0.78rem', fontWeight: medTaken[med.id] ? 600 : 400,
+                  color: medTaken[med.id] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
+                }}>
+                  {medTaken[med.id]
+                    ? '✓ ' + (language === 'ko' ? '복용함' : language === 'es' ? 'Tomado' : 'Taken')
+                    : (language === 'ko' ? '복용함으로 표시' : language === 'es' ? 'Marcar tomado' : 'Mark taken')}
+                </button>
+              </div>
+              {medTaken[med.id] && (
+                <TimeOfDayButtons
+                  value={medTime[med.id]}
+                  onChange={(time) => setMedTime(prev => ({ ...prev, [med.id]: time }))}
+                  language={language as 'en' | 'ko' | 'es'}
+                />
+              )}
+            </div>
+          ))}
+        </Card>
+      )}
 
       <Card style={{ marginBottom: '20px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '8px' }}>

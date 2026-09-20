@@ -100,6 +100,32 @@ function buildCycleSection(cycleData: CycleSummary): string {
   return lines.join('\n')
 }
 
+// Mirrors buildCycleSection's approach: only fires when the data actually
+// supports it, gives the model an explicit instruction (rather than hoping
+// it notices on its own inside a large JSON blob), and — matching the same
+// honesty principle used everywhere else in this app (see
+// docs/TRIGGER_EVIDENCE.md's "don't overclaim" stance) — requires it to say
+// so explicitly when no pattern is found, instead of inventing one.
+function buildTimingSection(logs: Record<string, unknown>[]): string {
+  const hasTimingData = logs.some(log => {
+    const meds = (log as { medications?: { timeOfDay?: string }[] }).medications
+    const triggerTimings = (log as { triggerTimings?: Record<string, string> }).triggerTimings
+    return (meds?.some(m => m.timeOfDay)) || (triggerTimings && Object.keys(triggerTimings).length > 0)
+  })
+
+  if (!hasTimingData) return ''
+
+  const lines = [
+    `\nMEDICATION/TRIGGER TIMING DATA (integrate into pattern analysis):`,
+    `Some log entries include a "timeOfDay" value (morning/midday/evening/bedtime) on medications and on certain triggers (e.g. caffeine, dairy) — this records roughly WHEN each occurred that day, not just whether it happened.`,
+    ``,
+    `Check whether the GAP between a medication's timeOfDay and a trigger's timeOfDay on the same day correlates with that day's pain/fatigue scores — e.g. "taken 2+ time-buckets apart" vs. "taken in the same or an adjacent bucket". This can surface absorption-interaction patterns (e.g. certain supplements vs. caffeine or dairy) the patient may not have consciously tracked.`,
+    `If such a pattern exists, quantify it with actual numbers from the data (how many days in each group, and the average score for each) rather than a vague claim.`,
+    `If there isn't enough timing-tagged data yet, or no clear difference between the separated/together groups, state that explicitly — a small sample size is a real limitation here, name it rather than speculating.\n`,
+  ]
+  return lines.join('\n')
+}
+
 export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   try {
     const { logs, language = 'en', cycleData } = await ctx.request.json() as {
@@ -115,13 +141,14 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
     const mockAnalysis = language === 'ko' ? MOCK_ANALYSIS_KO : language === 'es' ? MOCK_ANALYSIS_ES : MOCK_ANALYSIS_EN
     const langInstruction = LANG_INSTRUCTION[language] ?? LANG_INSTRUCTION.en
     const cycleSection = cycleData ? buildCycleSection(cycleData) : ''
+    const timingSection = buildTimingSection(logs)
 
     const apiKey = ctx.env.ANTHROPIC_API_KEY
     if (apiKey) {
       const prompt = `You are a public health expert (MPH) analyzing symptom data for a chronic illness patient.
 ${langInstruction}
 Analyze the following ${logs.length} days of symptom data and provide personalized insights.
-${cycleSection}
+${cycleSection}${timingSection}
 Data (JSON):
 ${JSON.stringify(logs, null, 2)}
 
