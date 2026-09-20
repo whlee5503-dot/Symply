@@ -165,7 +165,8 @@ If you have questions about this Privacy Policy or wish to exercise your rights 
 export, deletion), please contact us at:
 
 **Email**: contact@phtlab.org
-**Developer**: PublicHealth Tech Lab (Won Ho), Daejeon, Republic of Korea
+**Developer**: PublicHealth Tech Lab (Won Ho Lee), Daejeon, Republic of Korea
+**Business Registration Number**: 646-34-01800
 
 ---
 
