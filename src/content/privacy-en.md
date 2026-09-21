@@ -116,8 +116,21 @@ countries other than your own, under the safeguards each provider maintains.
 We retain your account and symptom data for as long as your account remains active, so that
 your longitudinal symptom history remains available to you and to any doctor you choose to
 share it with. If you delete your account (see Section 7), we delete your associated data from
-our active systems, except where retention is required for legal, security, or fraud-prevention
-purposes.
+our active systems, except for the categories listed below, which we are legally required to
+retain for a specified period.
+
+If you have ever subscribed to Symply Pro, Korea's Act on Consumer Protection in Electronic
+Commerce requires us to retain certain transaction-related records for a period after account
+deletion, as shown below. This does not apply if you have never subscribed.
+
+| Record Type | Legal Basis | Retention Period |
+|---|---|---|
+| Contract or withdrawal-of-offer records | Act on Consumer Protection in Electronic Commerce, Enforcement Decree Art. 6 | 5 years |
+| Payment and service-provision records | Act on Consumer Protection in Electronic Commerce, Enforcement Decree Art. 6 | 5 years |
+| Consumer complaint or dispute-resolution records | Act on Consumer Protection in Electronic Commerce, Enforcement Decree Art. 6 | 3 years |
+
+Once the applicable period ends or the retention purpose is fulfilled, we delete the information
+without delay.
 
 ---
 
