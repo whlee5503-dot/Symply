@@ -347,15 +347,23 @@ export default function HomePage() {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {sortByRelevance(keys, triggerPriority).map(({ key, tKey, emoji }) => {
                 const strength = triggerPriority[key as keyof TriggerMap]?.strength
+                const isTimingSensitive = TIMING_SENSITIVE_TRIGGERS.includes(key as keyof TriggerMap)
                 return (
-                  <button key={key} onClick={() => toggleTrigger(key as keyof TriggerMap)} style={{
-                    padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
-                    border: triggers[key as keyof TriggerMap] ? '2px solid var(--color-secondary)' : strength === 'strong' ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
-                    background: triggers[key as keyof TriggerMap] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
-                    fontSize: '0.82rem', fontWeight: triggers[key as keyof TriggerMap] ? 600 : 400,
-                    color: triggers[key as keyof TriggerMap] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
-                  }}>
-                    {emoji} {t.home[tKey as keyof typeof t.home] as string}{strength === 'strong' ? ' ★' : ''}
+                  <button
+                    key={key}
+                    onClick={() => toggleTrigger(key as keyof TriggerMap)}
+                    title={isTimingSensitive
+                      ? (language === 'ko' ? '선택하면 시간대도 함께 기록할 수 있어요' : language === 'es' ? 'Al seleccionar, también puedes registrar la hora' : 'Selecting this also lets you log when')
+                      : undefined}
+                    style={{
+                      padding: '6px 12px', borderRadius: '20px', cursor: 'pointer',
+                      border: triggers[key as keyof TriggerMap] ? '2px solid var(--color-secondary)' : strength === 'strong' ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                      background: triggers[key as keyof TriggerMap] ? 'var(--color-secondary-light)' : 'var(--color-surface-2)',
+                      fontSize: '0.82rem', fontWeight: triggers[key as keyof TriggerMap] ? 600 : 400,
+                      color: triggers[key as keyof TriggerMap] ? 'var(--color-secondary)' : 'var(--color-text-muted)',
+                    }}
+                  >
+                    {emoji} {t.home[tKey as keyof typeof t.home] as string}{strength === 'strong' ? ' ★' : ''}{isTimingSensitive ? ' 🕐' : ''}
                   </button>
                 )
               })}
