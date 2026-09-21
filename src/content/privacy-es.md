@@ -1,6 +1,6 @@
 # Política de Privacidad de Symply
 
-**Última actualización: 19 de agosto de 2026**
+**Última actualización: 21 de septiembre de 2026**
 
 Symply ("nosotros" o "la Aplicación") es una aplicación de seguimiento de síntomas crónicos
 desarrollada por PublicHealth Tech Lab, operada por Won Ho. Esta Política de Privacidad explica
@@ -120,8 +120,22 @@ procesada en países distintos al suyo, bajo las salvaguardas que mantiene cada 
 Conservamos los datos de su cuenta y síntomas mientras su cuenta permanezca activa, de modo que
 su historial longitudinal de síntomas permanezca disponible para usted y para cualquier médico
 con quien decida compartirlo. Si elimina su cuenta (véase la Sección 7), eliminamos sus datos
-asociados de nuestros sistemas activos, excepto cuando la conservación sea requerida por
-motivos legales, de seguridad o de prevención de fraude.
+asociados de nuestros sistemas activos, excepto en las categorías indicadas a continuación, que
+estamos legalmente obligados a conservar durante un período específico.
+
+Si alguna vez se ha suscrito a Symply Pro, la Ley de Protección al Consumidor en el Comercio
+Electrónico de Corea nos exige conservar ciertos registros relacionados con la transacción
+durante un período posterior a la eliminación de la cuenta, como se muestra a continuación. Esto
+no se aplica si nunca se ha suscrito.
+
+| Tipo de registro | Base legal | Período de conservación |
+|---|---|---|
+| Registros de contrato o retiro de oferta | Ley de Protección al Consumidor en el Comercio Electrónico, Decreto de Ejecución Art. 6 | 5 años |
+| Registros de pago y prestación del servicio | Ley de Protección al Consumidor en el Comercio Electrónico, Decreto de Ejecución Art. 6 | 5 años |
+| Registros de quejas o resolución de disputas de consumidores | Ley de Protección al Consumidor en el Comercio Electrónico, Decreto de Ejecución Art. 6 | 3 años |
+
+Una vez que finalice el período aplicable o se cumpla el propósito de conservación, eliminamos
+la información sin demora.
 
 ---
 
