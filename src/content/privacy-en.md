@@ -1,6 +1,6 @@
 # Symply Privacy Policy
 
-**Last updated: September 21, 2026**
+**Last updated: September 30, 2026**
 
 Symply ("we," "our," or "the App") is a chronic symptom tracking application developed by
 PublicHealth Tech Lab, operated by Won Ho ("we," "us"). This Privacy Policy explains what
@@ -37,8 +37,10 @@ it from any device you sign into.
 ### 1.3 Usage and Analytics Data
 We use Firebase Analytics to understand general usage patterns (e.g., which screens are used,
 how often the App is opened, whether a daily check-in was completed). Where an event relates to
-your health data (for example, whether you logged pain or fatigue that day), we send only a
-yes/no flag — never the actual score, note, or trigger detail — to Analytics. This data is
+your health data, we never send the actual symptom score, note, trigger detail, condition name,
+or medication information to Analytics. We send **only yes/no flags (for example, whether you
+logged pain or fatigue that day) and aggregate counts (such as the number of entries logged or
+the number of conditions selected)**. We do not send your user ID to Analytics. This data is
 aggregated and is not used to build an advertising profile of you.
 
 ### 1.4 Subscription and Payment Information

@@ -1,6 +1,6 @@
 # Política de Privacidad de Symply
 
-**Última actualización: 21 de septiembre de 2026**
+**Última actualización: 30 de septiembre de 2026**
 
 Symply ("nosotros" o "la Aplicación") es una aplicación de seguimiento de síntomas crónicos
 desarrollada por PublicHealth Tech Lab, operada por Won Ho. Esta Política de Privacidad explica
@@ -39,9 +39,11 @@ para que pueda acceder a ella desde cualquier dispositivo en el que inicie sesi�
 ### 1.3 Datos de uso y análisis
 Utilizamos Firebase Analytics para comprender patrones generales de uso (por ejemplo, qué
 pantallas se usan, con qué frecuencia se abre la Aplicación, si se completó el registro diario).
-Cuando un evento se relaciona con sus datos de salud (por ejemplo, si registró dolor o fatiga
-ese día), enviamos únicamente un indicador de sí/no a Analytics — nunca la puntuación real, la
-nota ni el detalle del desencadenante. Estos datos se agregan y no se utilizan para crear un
+Cuando un evento se relaciona con sus datos de salud, nunca enviamos a Analytics la puntuación
+real de los síntomas, la nota, el detalle del desencadenante, el nombre de la afección ni la
+información de medicamentos. Enviamos **únicamente indicadores de sí/no (por ejemplo, si registró
+dolor o fatiga ese día) y cifras agregadas (como el número de registros o de afecciones
+seleccionadas)**. No enviamos su identificador de usuario a Analytics. Estos datos se agregan y no se utilizan para crear un
 perfil publicitario suyo.
 
 ### 1.4 Información de suscripción y pago
