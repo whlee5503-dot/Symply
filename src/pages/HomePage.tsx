@@ -9,34 +9,34 @@ import { saveLog, getLog, todayId } from '../lib/storage'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
-
+import NextVisitCard from '../components/NextVisitCard'
 const TRIGGER_CATEGORIES = [
   {
     labelKey: 'triggers_food_label' as const,
     keys: [
-      { key: 'gluten'        as keyof TriggerMap, tKey: 'trigger_gluten',        emoji: '🌾' },
-      { key: 'dairy'         as keyof TriggerMap, tKey: 'trigger_dairy',         emoji: '🥛' },
-      { key: 'sugar'         as keyof TriggerMap, tKey: 'trigger_sugar',         emoji: '🍬' },
-      { key: 'caffeine'      as keyof TriggerMap, tKey: 'trigger_caffeine',      emoji: '☕' },
-      { key: 'alcohol'       as keyof TriggerMap, tKey: 'trigger_alcohol',       emoji: '🍷' },
-      { key: 'high_fodmap'   as keyof TriggerMap, tKey: 'trigger_high_fodmap',   emoji: '🧅' },
+      { key: 'gluten' as keyof TriggerMap, tKey: 'trigger_gluten', emoji: '🌾' },
+      { key: 'dairy' as keyof TriggerMap, tKey: 'trigger_dairy', emoji: '🥛' },
+      { key: 'sugar' as keyof TriggerMap, tKey: 'trigger_sugar', emoji: '🍬' },
+      { key: 'caffeine' as keyof TriggerMap, tKey: 'trigger_caffeine', emoji: '☕' },
+      { key: 'alcohol' as keyof TriggerMap, tKey: 'trigger_alcohol', emoji: '🍷' },
+      { key: 'high_fodmap' as keyof TriggerMap, tKey: 'trigger_high_fodmap', emoji: '🧅' },
       { key: 'high_glycemic' as keyof TriggerMap, tKey: 'trigger_high_glycemic', emoji: '🍚' },
     ],
   },
   {
     labelKey: 'triggers_lifestyle_label' as const,
     keys: [
-      { key: 'stress'       as keyof TriggerMap, tKey: 'trigger_stress',       emoji: '😤' },
-      { key: 'poor_sleep'   as keyof TriggerMap, tKey: 'trigger_poor_sleep',   emoji: '😴' },
+      { key: 'stress' as keyof TriggerMap, tKey: 'trigger_stress', emoji: '😤' },
+      { key: 'poor_sleep' as keyof TriggerMap, tKey: 'trigger_poor_sleep', emoji: '😴' },
       { key: 'overexertion' as keyof TriggerMap, tKey: 'trigger_overexertion', emoji: '🏃' },
     ],
   },
   {
     labelKey: 'triggers_environment_label' as const,
     keys: [
-      { key: 'pressure_change'    as keyof TriggerMap, tKey: 'trigger_pressure_change',    emoji: '🌪️' },
+      { key: 'pressure_change' as keyof TriggerMap, tKey: 'trigger_pressure_change', emoji: '🌪️' },
       { key: 'temperature_change' as keyof TriggerMap, tKey: 'trigger_temperature_change', emoji: '🌡️' },
-      { key: 'sun_exposure'       as keyof TriggerMap, tKey: 'trigger_sun_exposure',       emoji: '☀️' },
+      { key: 'sun_exposure' as keyof TriggerMap, tKey: 'trigger_sun_exposure', emoji: '☀️' },
     ],
   },
 ]
@@ -100,9 +100,9 @@ function getGreeting(t: ReturnType<typeof useLanguage>['t']): string {
 // languages directly — follow-up: move into src/i18n/* if/when this pattern
 // is used elsewhere.
 const TIME_OF_DAY_OPTIONS: { key: TimeOfDay; emoji: string; label: Record<'en' | 'ko' | 'es', string> }[] = [
-  { key: 'morning', emoji: '🌅', label: { en: 'Morning', ko: '아침',   es: 'Mañana' } },
-  { key: 'midday',  emoji: '☀️', label: { en: 'Midday',  ko: '점심',   es: 'Mediodía' } },
-  { key: 'evening', emoji: '🌆', label: { en: 'Evening', ko: '저녁',   es: 'Tarde' } },
+  { key: 'morning', emoji: '🌅', label: { en: 'Morning', ko: '아침', es: 'Mañana' } },
+  { key: 'midday', emoji: '☀️', label: { en: 'Midday', ko: '점심', es: 'Mediodía' } },
+  { key: 'evening', emoji: '🌆', label: { en: 'Evening', ko: '저녁', es: 'Tarde' } },
   { key: 'bedtime', emoji: '🌙', label: { en: 'Bedtime', ko: '취침전', es: 'Antes de dormir' } },
 ]
 
@@ -135,25 +135,25 @@ function TimeOfDayButtons({
 }
 
 export default function HomePage() {
-  const today    = todayId()
+  const today = todayId()
   const { user } = useAuth()
   const { t, language } = useLanguage()
 
-  const [pain,          setPain]          = useState(0)
-  const [fatigue,       setFatigue]       = useState(0)
-  const [mood,          setMood]          = useState<1|2|3|4|5>(3)
-  const [sleep,         setSleep]         = useState(7)
-  const [activity,      setActivity]      = useState<'low'|'medium'|'high'>('medium')
-  const [triggers,      setTriggers]      = useState<TriggerMap>({
+  const [pain, setPain] = useState(0)
+  const [fatigue, setFatigue] = useState(0)
+  const [mood, setMood] = useState<1 | 2 | 3 | 4 | 5>(3)
+  const [sleep, setSleep] = useState(7)
+  const [activity, setActivity] = useState<'low' | 'medium' | 'high'>('medium')
+  const [triggers, setTriggers] = useState<TriggerMap>({
     gluten: false, dairy: false, sugar: false, caffeine: false,
     alcohol: false, high_fodmap: false, high_glycemic: false,
     stress: false, poor_sleep: false, overexertion: false,
     pressure_change: false, temperature_change: false, sun_exposure: false,
   })
   const [triggerTimings, setTriggerTimings] = useState<Partial<Record<keyof TriggerMap, TimeOfDay>>>({})
-  const [noTriggers,    setNoTriggers]    = useState(false)
-  const [note,          setNote]          = useState('')
-  const [saved,         setSaved]         = useState(false)
+  const [noTriggers, setNoTriggers] = useState(false)
+  const [note, setNote] = useState('')
+  const [saved, setSaved] = useState(false)
   const [alreadyLogged, setAlreadyLogged] = useState(false)
   const [primaryCondition, setPrimaryCondition] = useState<ChronicCondition | undefined>(getPrimaryCondition)
 
@@ -161,7 +161,7 @@ export default function HomePage() {
   // today?" / "when?" state, keyed by the medication's id.
   const [registeredMeds, setRegisteredMeds] = useState<Medication[]>(getRegisteredMedications)
   const [medTaken, setMedTaken] = useState<Record<string, boolean>>({})
-  const [medTime,  setMedTime]  = useState<Record<string, TimeOfDay>>({})
+  const [medTime, setMedTime] = useState<Record<string, TimeOfDay>>({})
 
   useEffect(() => {
     function handleProfileUpdate() {
@@ -287,7 +287,7 @@ export default function HomePage() {
       <Card style={{ marginBottom: '12px' }}>
         <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--color-text)', marginBottom: '10px' }}>{t.home.mood}</p>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {([1,2,3,4,5] as const).map((m) => (
+          {([1, 2, 3, 4, 5] as const).map((m) => (
             <button key={m} onClick={() => setMood(m)} style={{
               flex: 1, cursor: 'pointer', padding: '8px 4px',
               border: mood === m ? '2px solid var(--color-primary)' : '2px solid transparent',
@@ -462,7 +462,7 @@ export default function HomePage() {
           }}
         />
       </Card>
-
+      <NextVisitCard />
       <button onClick={handleSave} style={{
         width: '100%', padding: '16px', borderRadius: '14px', border: 'none',
         background: saved ? 'var(--color-success)' : 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
