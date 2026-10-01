@@ -1,8 +1,15 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "org.phtlab.symply.twa",
-        "sha256_cert_fingerprints": ["6B:9E:44:6A:28:A9:5E:91:DA:FF:4B:C0:BE:EE:E1:71:A7:71:76:1A:9A:DE:7F:9D:95:04:AA:EE:9F:14:69:C0"]
-      }
-    }]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.phtlab.symply.twa",
+      "sha256_cert_fingerprints": [
+        "6B:9E:44:6A:28:A9:5E:91:DA:FF:4B:C0:BE:EE:E1:71:A7:71:76:1A:9A:DE:7F:9D:95:04:AA:EE:9F:14:69:C0",
+        "D9:E2:42:9B:DD:6C:0E:3A:2A:F2:AA:BC:D9:A4:9E:81:54:11:AE:F2:DB:55:36:91:76:C1:A1:AE:89:1A:5C:71"
+      ]
+    }
+  }
+]
