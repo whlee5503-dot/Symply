@@ -8,7 +8,11 @@ import type { LogEntry } from '../types'
 const LOGS_KEY = 'symply-logs'
 
 export function todayId(): string {
-  return new Date().toISOString().split('T')[0]
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
 function getLocalLogs(): Record<string, LogEntry> {
@@ -48,7 +52,7 @@ export async function getLog(date: string, uid?: string): Promise<LogEntry | nul
 export async function getRecentLogs(days: number, uid?: string): Promise<LogEntry[]> {
   if (uid) {
     try {
-      const q    = query(collection(db, 'logs', uid, 'entries'), orderBy('id', 'desc'), limit(days))
+      const q = query(collection(db, 'logs', uid, 'entries'), orderBy('id', 'desc'), limit(days))
       const snap = await getDocs(q)
       if (!snap.empty) return snap.docs.map(d => d.data() as LogEntry)
     } catch { /* fall through */ }
