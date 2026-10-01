@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import NextVisitCard from '../components/NextVisitCard'
+import WeekProgressCard from '../components/WeekProgressCard'
 const TRIGGER_CATEGORIES = [
   {
     labelKey: 'triggers_food_label' as const,
@@ -276,7 +277,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
-
+      <WeekProgressCard todayLogged={alreadyLogged} />
       <Card style={{ marginBottom: '12px' }}>
         <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} anchorsKo={PAIN_ANCHORS_KO} anchorsEs={PAIN_ANCHORS_ES} />
       </Card>
