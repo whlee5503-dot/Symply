@@ -11,6 +11,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import NextVisitCard from '../components/NextVisitCard'
 import WeekProgressCard from '../components/WeekProgressCard'
+import EarlyInsightCard from '../components/EarlyInsightCard'
 const TRIGGER_CATEGORIES = [
   {
     labelKey: 'triggers_food_label' as const,
@@ -278,6 +279,7 @@ export default function HomePage() {
         )}
       </div>
       <WeekProgressCard todayLogged={alreadyLogged} />
+
       <Card style={{ marginBottom: '12px' }}>
         <AnchorSlider label={t.home.pain} value={pain} onChange={setPain} anchors={PAIN_ANCHORS} anchorsKo={PAIN_ANCHORS_KO} anchorsEs={PAIN_ANCHORS_ES} />
       </Card>
@@ -464,6 +466,8 @@ export default function HomePage() {
         />
       </Card>
       <NextVisitCard />
+      <EarlyInsightCard />
+
       <button onClick={handleSave} style={{
         width: '100%', padding: '16px', borderRadius: '14px', border: 'none',
         background: saved ? 'var(--color-success)' : 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
