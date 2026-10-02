@@ -1,3 +1,4 @@
+import { verifyFirebaseUser } from './_auth'
 interface Env {
   ANTHROPIC_API_KEY: string
 }
@@ -13,7 +14,7 @@ interface CycleSummary {
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type , Authorization',
 }
 
 export const onRequestOptions = () => new Response(null, { headers: CORS })
@@ -128,6 +129,11 @@ function buildTimingSection(logs: Record<string, unknown>[]): string {
 
 export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   try {
+    const user = await verifyFirebaseUser(ctx.request)
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401, headers: CORS })
+    }
+
     const { logs, language = 'en', cycleData } = await ctx.request.json() as {
       logs: Record<string, unknown>[]
       language?: string

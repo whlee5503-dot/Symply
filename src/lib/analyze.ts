@@ -1,3 +1,14 @@
+import { auth } from './firebase'
+
+// Returns the signed-in user's Firebase ID token as an Authorization header.
+// Returns an empty object if nobody is signed in (the server will answer 401).
+async function getAuthHeader(): Promise<Record<string, string>> {
+  const user = auth.currentUser
+  if (!user) return {}
+  const token = await user.getIdToken()
+  return { Authorization: `Bearer ${token}` }
+}
+
 export interface CycleSummary {
   hasCycleData: boolean
   menstruatingDays: string[]    // YYYY-MM-DD[]
@@ -19,9 +30,10 @@ export async function runAnalysis(
   language = 'en',
   cycleData?: CycleSummary
 ): Promise<AIAnalysis> {
+  const authHeader = await getAuthHeader()
   const res = await fetch('/api/analyze', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeader },
     body: JSON.stringify({ logs, language, cycleData }),
   })
   const data = await res.json() as { analysis?: AIAnalysis; error?: string; mock?: boolean }
