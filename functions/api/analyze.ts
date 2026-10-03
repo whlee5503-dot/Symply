@@ -200,16 +200,22 @@ Please provide your analysis in the following JSON format only (no markdown, no 
       })
 
       if (response.ok) {
-        const data = await response.json() as { content: { type: string; text: string }[] }
+        const data = await response.json() as { content: { type: string; text: string }[]; stop_reason?: string }
         const text = data.content[0]?.text ?? ''
         try {
           const analysis = JSON.parse(text)
           return Response.json({ analysis }, { headers: CORS })
         } catch {
+          console.error('Anthropic JSON parse failed', {
+            length: text.length,
+            startsWithFence: text.trimStart().startsWith('```'),
+            stopReason: data.stop_reason,
+          })
           await refund()
           return Response.json({ analysis: mockAnalysis, mock: true }, { headers: CORS })
         }
       }
+      console.error('Anthropic API error', response.status, (await response.text()).slice(0, 300))
       await refund()
     }
 
