@@ -194,7 +194,7 @@ Please provide your analysis in the following JSON format only (no markdown, no 
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
-          max_tokens: 1024,
+          max_tokens: 4096,
           messages: [{ role: 'user', content: prompt }],
         }),
       })
@@ -203,7 +203,10 @@ Please provide your analysis in the following JSON format only (no markdown, no 
         const data = await response.json() as { content: { type: string; text: string }[]; stop_reason?: string }
         const text = data.content[0]?.text ?? ''
         try {
-          const analysis = JSON.parse(text)
+          // The model sometimes wraps the JSON in a ```json fence; keep only the outermost {...}.
+          const start = text.indexOf('{')
+          const end = text.lastIndexOf('}')
+          const analysis = JSON.parse(start >= 0 && end > start ? text.slice(start, end + 1) : text)
           return Response.json({ analysis }, { headers: CORS })
         } catch {
           console.error('Anthropic JSON parse failed', {
