@@ -25,6 +25,16 @@ export interface AIAnalysis {
   mock?: boolean
 }
 
+// Thrown when the server refuses the call: 'limit' = monthly free quota used up,
+// 'busy' = another analysis for the same user is still being registered.
+export class AnalysisQuotaError extends Error {
+  reason: 'limit' | 'busy'
+  constructor(reason: 'limit' | 'busy') {
+    super(reason)
+    this.reason = reason
+  }
+}
+
 export async function runAnalysis(
   logs: unknown[],
   language = 'en',
@@ -36,6 +46,8 @@ export async function runAnalysis(
     headers: { 'Content-Type': 'application/json', ...authHeader },
     body: JSON.stringify({ logs, language, cycleData }),
   })
+  if (res.status === 429) throw new AnalysisQuotaError('limit')
+  if (res.status === 409) throw new AnalysisQuotaError('busy')
   const data = await res.json() as { analysis?: AIAnalysis; error?: string; mock?: boolean }
   if (data.error) throw new Error(data.error)
   const analysis = data.analysis ?? null

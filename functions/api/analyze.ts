@@ -1,8 +1,9 @@
 import { verifyFirebaseUser } from './_auth'
-interface Env {
+import { reserveAiCall, type FirestoreEnv } from './_firestore'
+
+interface Env extends FirestoreEnv {
   ANTHROPIC_API_KEY: string
 }
-
 interface CycleSummary {
   hasCycleData: boolean
   menstruatingDays: string[]
@@ -128,6 +129,7 @@ function buildTimingSection(logs: Record<string, unknown>[]): string {
 }
 
 export const onRequestPost: PagesFunction<Env> = async (ctx) => {
+  let refund: () => Promise<void> = async () => { }
   try {
     const user = await verifyFirebaseUser(ctx.request)
     if (!user) {
@@ -150,6 +152,15 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
     const timingSection = buildTimingSection(logs)
 
     const apiKey = ctx.env.ANTHROPIC_API_KEY
+    if (apiKey) {
+      const quota = await reserveAiCall(ctx.env, user.uid)
+      if (!quota.ok) {
+        const status = quota.reason === 'limit' ? 429 : 409
+        return Response.json({ error: quota.reason }, { status, headers: CORS })
+      }
+      refund = quota.refund
+    }
+
     if (apiKey) {
       const prompt = `You are a public health expert (MPH) analyzing symptom data for a chronic illness patient.
 ${langInstruction}
@@ -195,15 +206,18 @@ Please provide your analysis in the following JSON format only (no markdown, no 
           const analysis = JSON.parse(text)
           return Response.json({ analysis }, { headers: CORS })
         } catch {
+          await refund()
           return Response.json({ analysis: mockAnalysis, mock: true }, { headers: CORS })
         }
       }
+      await refund()
     }
 
     await new Promise(r => setTimeout(r, 1500))
     return Response.json({ analysis: mockAnalysis, mock: true }, { headers: CORS })
 
   } catch (e) {
+    await refund()
     return Response.json(
       { error: e instanceof Error ? e.message : 'Unknown error' },
       { status: 500, headers: CORS }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { format, subDays, differenceInDays, parseISO } from 'date-fns'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
@@ -9,25 +9,25 @@ import Card from '../components/ui/Card'
 import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
-import { runAnalysis, type AIAnalysis, type CycleSummary } from '../lib/analyze'
+import { runAnalysis, AnalysisQuotaError, type AIAnalysis, type CycleSummary } from '../lib/analyze'
 import { trackEvent } from '../lib/trackEvent'
 import type { LogEntry } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
   const map: Record<string, string> = {
-    gluten:              t.home.trigger_gluten,
-    dairy:                t.home.trigger_dairy,
-    sugar:                t.home.trigger_sugar,
-    caffeine:             t.home.trigger_caffeine,
-    alcohol:              t.home.trigger_alcohol,
-    high_fodmap:          t.home.trigger_high_fodmap,
-    high_glycemic:        t.home.trigger_high_glycemic,
-    stress:               t.home.trigger_stress,
-    poor_sleep:           t.home.trigger_poor_sleep,
-    overexertion:         t.home.trigger_overexertion,
-    pressure_change:      t.home.trigger_pressure_change,
-    temperature_change:   t.home.trigger_temperature_change,
-    sun_exposure:         t.home.trigger_sun_exposure,
+    gluten: t.home.trigger_gluten,
+    dairy: t.home.trigger_dairy,
+    sugar: t.home.trigger_sugar,
+    caffeine: t.home.trigger_caffeine,
+    alcohol: t.home.trigger_alcohol,
+    high_fodmap: t.home.trigger_high_fodmap,
+    high_glycemic: t.home.trigger_high_glycemic,
+    stress: t.home.trigger_stress,
+    poor_sleep: t.home.trigger_poor_sleep,
+    overexertion: t.home.trigger_overexertion,
+    pressure_change: t.home.trigger_pressure_change,
+    temperature_change: t.home.trigger_temperature_change,
+    sun_exposure: t.home.trigger_sun_exposure,
   }
   return map[key] ?? key.replace('_', ' ')
 }
@@ -108,8 +108,8 @@ export default function InsightsPage() {
   const { t, language } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null)
-  const [aiLoading, setAiLoading]   = useState(false)
-  const [aiError, setAiError]       = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [userConditions, setUserConditions] = useState<string[]>([])
   const [freeCallsUsed, setFreeCallsUsed] = useState<number | null>(null)
@@ -125,42 +125,34 @@ export default function InsightsPage() {
         const savedCount = snap.data().aiCallCount ?? 0
         setFreeCallsUsed(savedMonth === thisMonth ? savedCount : 0)
       }
-    }).catch(() => {})
+    }).catch(() => { })
   }, [user?.uid])
 
-  const logs      = Object.values(allLogs)
+  const logs = Object.values(allLogs)
   const totalDays = logs.length
 
   const chartData = useMemo(() => {
     return Array.from({ length: 30 }).map((_, i) => {
-      const date   = subDays(new Date(), 29 - i)
+      const date = subDays(new Date(), 29 - i)
       const dateId = format(date, 'yyyy-MM-dd')
-      const entry  = allLogs[dateId]
+      const entry = allLogs[dateId]
       return {
-        date:    format(date, 'MM/dd'),
-        pain:    entry?.pain    ?? null,
+        date: format(date, 'MM/dd'),
+        pain: entry?.pain ?? null,
         fatigue: entry?.fatigue ?? null,
-        sleep:   entry?.sleep   ?? null,
+        sleep: entry?.sleep ?? null,
       }
     })
   }, [allLogs])
 
   async function handleAnalyze() {
     if (!isPro) {
-      // 무료 사용자: 월 5회 제한 체크
-      const thisMonth = new Date().toISOString().slice(0, 7)
+      // 무료 사용자: 월 5회 제한 사전 확인 (최종 판단은 서버가 합니다)
       const used = freeCallsUsed ?? 0
       if (used >= 5) {
         setShowUpgrade(true)
         return
       }
-      // 횟수 증가 먼저
-      const userRef = doc(db, 'users', user!.uid)
-      await setDoc(userRef, {
-        aiCallCount: used + 1,
-        aiCallMonth: thisMonth,
-      }, { merge: true })
-      setFreeCallsUsed(used + 1)
     }
     setAiLoading(true)
     setAiError(null)
@@ -169,8 +161,29 @@ export default function InsightsPage() {
       const analysis = await runAnalysis(logs, language, cycleData)
       trackEvent('ai_analysis_requested', { log_count: logs.length, is_pro: isPro })
       setAiAnalysis(analysis)
+      if (!isPro) {
+        // The server owns the counter now; re-read it so the UI shows the real value.
+        getDoc(doc(db, 'users', user!.uid)).then(snap => {
+          const thisMonth = new Date().toISOString().slice(0, 7)
+          const data = snap.data()
+          setFreeCallsUsed(data?.aiCallMonth === thisMonth ? (data?.aiCallCount ?? 0) : 0)
+        }).catch(() => { })
+      }
     } catch (e) {
-      setAiError(e instanceof Error ? e.message : 'Analysis failed')
+      if (e instanceof AnalysisQuotaError) {
+        if (e.reason === 'limit') {
+          setFreeCallsUsed(5)
+          setShowUpgrade(true)
+        } else {
+          setAiError(
+            language === 'ko' ? '이전 분석이 아직 처리 중입니다. 잠시 후 다시 시도해 주세요.'
+              : language === 'es' ? 'Hay otro análisis en curso. Inténtalo de nuevo en un momento.'
+                : 'Another analysis is still in progress. Please try again in a moment.'
+          )
+        }
+      } else {
+        setAiError(e instanceof Error ? e.message : 'Analysis failed')
+      }
     } finally {
       setAiLoading(false)
     }
@@ -198,10 +211,10 @@ export default function InsightsPage() {
     )
   }
 
-  const avgPain      = (logs.reduce((s, e) => s + e.pain, 0) / totalDays).toFixed(1)
-  const avgFatigue   = (logs.reduce((s, e) => s + e.fatigue, 0) / totalDays).toFixed(1)
-  const avgSleep     = (logs.reduce((s, e) => s + e.sleep, 0) / totalDays).toFixed(1)
-  const goodDays     = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
+  const avgPain = (logs.reduce((s, e) => s + e.pain, 0) / totalDays).toFixed(1)
+  const avgFatigue = (logs.reduce((s, e) => s + e.fatigue, 0) / totalDays).toFixed(1)
+  const avgSleep = (logs.reduce((s, e) => s + e.sleep, 0) / totalDays).toFixed(1)
+  const goodDays = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
   const triggerStats = getTriggerStats(logs)
 
   return (
@@ -215,10 +228,10 @@ export default function InsightsPage() {
       {/* Summary stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '16px' }}>
         {[
-          { label: t.insights.avg_pain,    value: avgPain,                   emoji: '🩹', color: '#ef4444' },
-          { label: t.insights.avg_fatigue, value: avgFatigue,                 emoji: '😴', color: '#f59e0b' },
+          { label: t.insights.avg_pain, value: avgPain, emoji: '🩹', color: '#ef4444' },
+          { label: t.insights.avg_fatigue, value: avgFatigue, emoji: '😴', color: '#f59e0b' },
           { label: t.insights.avg_sleep, value: `${avgSleep}${t.common.hours}`, emoji: '🌙', color: '#3b82f6' },
-          { label: t.insights.good_days,   value: `${goodDays}/${totalDays}`, emoji: '✨', color: '#22c55e' },
+          { label: t.insights.good_days, value: `${goodDays}/${totalDays}`, emoji: '✨', color: '#22c55e' },
         ].map(({ label, value, emoji, color }) => (
           <Card key={label} padding="14px">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -408,7 +421,7 @@ export default function InsightsPage() {
             <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: 'var(--color-text-muted)' }} />
             <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.8rem' }} />
             <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
-            <Line type="monotone" dataKey="pain"    name={language === 'ko' ? '통증' : language === 'es' ? 'Dolor' : 'pain'}    stroke="#ef4444" strokeWidth={2} dot={false} connectNulls />
+            <Line type="monotone" dataKey="pain" name={language === 'ko' ? '통증' : language === 'es' ? 'Dolor' : 'pain'} stroke="#ef4444" strokeWidth={2} dot={false} connectNulls />
             <Line type="monotone" dataKey="fatigue" name={language === 'ko' ? '피로' : language === 'es' ? 'Fatiga' : 'fatigue'} stroke="#f59e0b" strokeWidth={2} dot={false} connectNulls />
           </LineChart>
         </ResponsiveContainer>
