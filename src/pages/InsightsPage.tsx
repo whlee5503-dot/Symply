@@ -405,6 +405,17 @@ export default function InsightsPage() {
             >
               {language === 'ko' ? '🔄 다시 분석' : language === 'es' ? '🔄 Reanalizar' : '🔄 Re-analyze'}
             </button>
+            {!isPro && freeCallsUsed !== null && (
+              <p style={{
+                fontSize: '0.8rem',
+                color: (freeCallsUsed ?? 0) >= 5 ? '#ef4444' : 'var(--color-text-muted)',
+                marginTop: '8px',
+              }}>
+                {(freeCallsUsed ?? 0) >= 5
+                  ? t.insights.ai_free_limit_reached
+                  : t.insights.ai_free_remaining.replace('{n}', String(5 - (freeCallsUsed ?? 0)))}
+              </p>
+            )}
           </div>
         )}
       </Card>
