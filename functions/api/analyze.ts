@@ -128,6 +128,25 @@ function buildTimingSection(logs: Record<string, unknown>[]): string {
   return lines.join('\n')
 }
 
+const LIMITED_DATA_DAYS = 14
+
+// Keeps the model honest: describe what was logged, do not diagnose or guess.
+function buildSafetySection(logCount: number): string {
+  const lines = [
+    `\nSAFETY AND HONESTY RULES (always apply):`,
+    `- Describe only what is visible in the data. Do not diagnose, and do not speculate about causes that are not in the data (for example inflammation, nerve sensitivity, depression or anxiety).`,
+    `- Do not recommend starting, stopping or changing any medication or treatment.`,
+    `- Doctor points must be factual observations about the logged values (what was recorded and how it changed), phrased as things to discuss, never as conclusions.`,
+    `- A persistently low mood score may be reported as a recorded value worth mentioning to the doctor, without naming any condition.`,
+  ]
+  if (logCount < LIMITED_DATA_DAYS) {
+    lines.push(
+      `- LIMITED DATA: only ${logCount} day(s) were logged. A few days cannot show a trend, so do not describe trends, improvement or worsening. Report the recorded values, say plainly that about ${LIMITED_DATA_DAYS - logCount} more day(s) of logging are needed before patterns can be identified, and use "neutral" severity for every pattern.`,
+    )
+  }
+  return lines.join('\n') + '\n'
+}
+
 export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   let refund: () => Promise<void> = async () => { }
   try {
@@ -150,6 +169,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
     const langInstruction = LANG_INSTRUCTION[language] ?? LANG_INSTRUCTION.en
     const cycleSection = cycleData ? buildCycleSection(cycleData) : ''
     const timingSection = buildTimingSection(logs)
+    const safetySection = buildSafetySection(logs.length)
 
     const apiKey = ctx.env.ANTHROPIC_API_KEY
     if (apiKey) {
@@ -165,7 +185,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
       const prompt = `You are a public health expert (MPH) analyzing symptom data for a chronic illness patient.
 ${langInstruction}
 Analyze the following ${logs.length} days of symptom data and provide personalized insights.
-${cycleSection}${timingSection}
+${cycleSection}${timingSection}${safetySection}
 Data (JSON):
 ${JSON.stringify(logs, null, 2)}
 
