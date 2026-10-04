@@ -3,6 +3,7 @@ import { reserveAiCall, type FirestoreEnv } from './_firestore'
 
 interface Env extends FirestoreEnv {
   ANTHROPIC_API_KEY: string
+  RELAY_SECRET?: string
 }
 interface CycleSummary {
   hasCycleData: boolean
@@ -205,19 +206,25 @@ Please provide your analysis in the following JSON format only (no markdown, no 
   "summary": "One sentence overall summary"
 }`
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
+      // When RELAY_SECRET is set, go through the relay Worker (pinned to a supported region).
+      const relaySecret = ctx.env.RELAY_SECRET
+      const response = await fetch(
+        relaySecret ? 'https://anthropic-relay-test.whlee5503.workers.dev' : 'https://api.anthropic.com/v1/messages',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            ...(relaySecret ? { 'X-Relay-Secret': relaySecret } : {}),
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 4096,
+            messages: [{ role: 'user', content: prompt }],
+          }),
         },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 4096,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      })
+      )
 
       if (response.ok) {
         const data = await response.json() as { content: { type: string; text: string }[]; stop_reason?: string }
