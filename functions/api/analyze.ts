@@ -215,11 +215,12 @@ Please provide your analysis in the following JSON format only (no markdown, no 
             stopReason: data.stop_reason,
           })
           await refund()
-          return Response.json({ analysis: mockAnalysis, mock: true }, { headers: CORS })
+          return Response.json({ error: 'ai_unavailable' }, { status: 502, headers: CORS })
         }
       }
       console.error('Anthropic API error', response.status, (await response.text()).slice(0, 300))
       await refund()
+      return Response.json({ error: 'ai_unavailable' }, { status: 502, headers: CORS })
     }
 
     await new Promise(r => setTimeout(r, 1500))
