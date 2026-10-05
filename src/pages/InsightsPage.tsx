@@ -183,9 +183,9 @@ export default function InsightsPage() {
         }
       } else if (e instanceof Error && e.message === 'ai_unavailable') {
         setAiError(
-          language === 'ko' ? '지금은 AI 분석을 할 수 없습니다. 잠시 후 다시 시도해 주세요. 무료 횟수는 차감되지 않았습니다.'
-            : language === 'es' ? 'No se puede realizar el análisis ahora. Inténtalo de nuevo en un momento. No se descontó ningún análisis gratuito.'
-              : 'AI analysis is unavailable right now. Please try again in a moment. Your free analysis was not used.'
+          language === 'ko' ? '지금은 AI 분석을 할 수 없습니다. 잠시 후 다시 시도해 주세요. 무료 횟수는 차감되지 않았습니다. 문제가 계속되면 contact@phtlab.org로 문의해 주세요.'
+            : language === 'es' ? 'No se puede realizar el análisis ahora. Inténtalo de nuevo en un momento. No se descontó ningún análisis gratuito. Si el problema continúa, escribe a contact@phtlab.org.'
+              : 'AI analysis is unavailable right now. Please try again in a moment. Your free analysis was not used. If the problem continues, email contact@phtlab.org.'
         )
       } else {
         setAiError(e instanceof Error ? e.message : 'Analysis failed')
