@@ -2,10 +2,11 @@ import { auth } from './firebase'
 
 // Returns the signed-in user's Firebase ID token as an Authorization header.
 // Returns an empty object if nobody is signed in (the server will answer 401).
-async function getAuthHeader(): Promise<Record<string, string>> {
+// Pass forceRefresh = true to fetch a fresh token instead of the cached one.
+async function getAuthHeader(forceRefresh = false): Promise<Record<string, string>> {
   const user = auth.currentUser
   if (!user) return {}
-  const token = await user.getIdToken()
+  const token = await user.getIdToken(forceRefresh)
   return { Authorization: `Bearer ${token}` }
 }
 
@@ -35,17 +36,32 @@ export class AnalysisQuotaError extends Error {
   }
 }
 
+// Thrown when the server refuses because the user is a guest (anonymous sign-in).
+export class LoginRequiredError extends Error {
+  constructor() {
+    super('login_required')
+  }
+}
+
 export async function runAnalysis(
   logs: unknown[],
   language = 'en',
   cycleData?: CycleSummary
 ): Promise<AIAnalysis> {
-  const authHeader = await getAuthHeader()
-  const res = await fetch('/api/analyze', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeader },
-    body: JSON.stringify({ logs, language, cycleData }),
-  })
+  const send = async (forceRefresh: boolean) =>
+    fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(await getAuthHeader(forceRefresh)) },
+      body: JSON.stringify({ logs, language, cycleData }),
+    })
+
+  let res = await send(false)
+  // A guest who just upgraded to a real account still holds a cached token that
+  // says "anonymous" (valid up to an hour). Refresh the token once and retry.
+  if (res.status === 403) {
+    res = await send(true)
+    if (res.status === 403) throw new LoginRequiredError()
+  }
   if (res.status === 429) throw new AnalysisQuotaError('limit')
   if (res.status === 409) throw new AnalysisQuotaError('busy')
   const data = await res.json() as { analysis?: AIAnalysis; error?: string; mock?: boolean }

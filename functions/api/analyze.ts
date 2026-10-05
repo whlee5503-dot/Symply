@@ -155,6 +155,11 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401, headers: CORS })
     }
+    // Guests (anonymous auth) get a fresh account after reinstalling, which would
+    // reset the free monthly limit. Only signed-in accounts can use AI analysis.
+    if (user.isAnonymous) {
+      return Response.json({ error: 'login_required' }, { status: 403, headers: CORS })
+    }
 
     const { logs, language = 'en', cycleData } = await ctx.request.json() as {
       logs: Record<string, unknown>[]

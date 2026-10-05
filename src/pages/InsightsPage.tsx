@@ -9,7 +9,7 @@ import Card from '../components/ui/Card'
 import UpgradeModal from '../components/UpgradeModal'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
-import { runAnalysis, AnalysisQuotaError, type AIAnalysis, type CycleSummary } from '../lib/analyze'
+import { runAnalysis, AnalysisQuotaError, LoginRequiredError, type AIAnalysis, type CycleSummary } from '../lib/analyze'
 import { trackEvent } from '../lib/trackEvent'
 import type { LogEntry } from '../types'
 
@@ -114,6 +114,13 @@ export default function InsightsPage() {
   const [userConditions, setUserConditions] = useState<string[]>([])
   const [freeCallsUsed, setFreeCallsUsed] = useState<number | null>(null)
 
+  // Guests (anonymous sign-in) cannot use AI analysis; the server enforces this too.
+  const isGuest = user?.isAnonymous === true
+  const guestNotice =
+    language === 'ko' ? 'Google이나 이메일로 로그인하면 무료 AI 분석을 월 5회 사용할 수 있습니다.'
+      : language === 'es' ? 'Inicia sesión con Google o correo electrónico para obtener 5 análisis gratuitos de IA al mes.'
+        : 'Sign in with Google or email to get 5 free AI analyses per month.'
+
   // Firestore에서 user conditions + AI 호출 횟수 로드
   useEffect(() => {
     if (!user?.uid) return
@@ -146,6 +153,10 @@ export default function InsightsPage() {
   }, [allLogs])
 
   async function handleAnalyze() {
+    if (isGuest) {
+      setAiError(guestNotice)
+      return
+    }
     if (!isPro) {
       // 무료 사용자: 월 5회 제한 사전 확인 (최종 판단은 서버가 합니다)
       const used = freeCallsUsed ?? 0
@@ -170,7 +181,9 @@ export default function InsightsPage() {
         }).catch(() => { })
       }
     } catch (e) {
-      if (e instanceof AnalysisQuotaError) {
+      if (e instanceof LoginRequiredError) {
+        setAiError(guestNotice)
+      } else if (e instanceof AnalysisQuotaError) {
         if (e.reason === 'limit') {
           setFreeCallsUsed(5)
           setShowUpgrade(true)
@@ -253,7 +266,16 @@ export default function InsightsPage() {
 
       {/* AI Analysis (Pro) */}
       <Card style={{ marginBottom: '16px' }}>
-        {!isPro && !aiAnalysis && (freeCallsUsed ?? 0) >= 5 ? (
+        {isGuest && !aiAnalysis ? (
+          /* 게스트: 로그인 안내 */
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
+            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.ai_title}</p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
+              {guestNotice}
+            </p>
+          </div>
+        ) : !isPro && !aiAnalysis && (freeCallsUsed ?? 0) >= 5 ? (
           /* Pro 잠금 UI */
           <div style={{ textAlign: 'center' }}>
             <div style={{

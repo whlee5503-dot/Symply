@@ -10,6 +10,8 @@ const JWKS = createRemoteJWKSet(
 export interface VerifiedUser {
     uid: string
     email?: string
+    // true when the user signed in as a guest (Firebase anonymous auth).
+    isAnonymous: boolean
 }
 
 // Returns the verified user from an "Authorization: Bearer <token>" header,
@@ -25,7 +27,13 @@ export async function verifyFirebaseUser(request: Request): Promise<VerifiedUser
             audience: PROJECT_ID,
         })
         if (!payload.sub) return null
-        return { uid: payload.sub, email: payload.email as string | undefined }
+        // Firebase ID tokens carry the sign-in method in the "firebase" claim.
+        const firebaseClaim = payload.firebase as { sign_in_provider?: string } | undefined
+        return {
+            uid: payload.sub,
+            email: payload.email as string | undefined,
+            isAnonymous: firebaseClaim?.sign_in_provider === 'anonymous',
+        }
     } catch {
         return null
     }
