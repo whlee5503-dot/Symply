@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import LandingSample from '../components/LandingSample'
 
 const CONTENT = {
   en: {
@@ -26,14 +27,14 @@ const CONTENT = {
     solutionSub: 'Symply helps you tell it.',
     solutions: [
       { emoji: '⏱️', title: '30-second daily check-in', body: 'Log pain, fatigue, sleep, mood, and today\'s factors (food, lifestyle, environment) — even on your worst days.', badge: 'Free', color: '#059669' },
-      { emoji: '🤖', title: 'AI finds your patterns', body: '"On days following less than 6 hours of sleep, your pain is 40% higher." Claude AI delivers insights you can actually use.', badge: 'Pro', color: '#7c3aed' },
+      { emoji: '🤖', title: 'AI finds your patterns', body: 'Example (fictional sample below): "On the days after a night with under 6 hours of sleep, average pain was 6.6, compared with 3.5 on other days." Claude AI describes patterns in your own entries.', badge: 'Free 5/mo + Pro', color: '#7c3aed' },
       { emoji: '📄', title: 'Visit-prep report in seconds', body: 'Generate a 1-2 page clinical PDF summarizing months of symptoms.', badge: 'Pro', color: '#7c3aed' },
     ],
     pricingLabel: 'Pricing',
     pricingTitle: 'Less than a coffee a month.',
     pricingSub: 'No ads. No data sales. Ever.',
-    freeFeatures: ['✓ Unlimited symptom logging', '✓ Calendar heatmap', '✓ Trend charts', '✓ Pattern Insights (preview)', '✓ Daily check-in reminders'],
-    proFeatures: ['✓ Everything in Free', '✓ AI Pattern Analysis', '✓ Visit-Prep Report PDF', '✓ Priority support'],
+    freeFeatures: ['✓ Unlimited symptom logging', '✓ Calendar heatmap', '✓ Trend charts', '✓ Pattern Insights (preview)', '✓ AI Pattern Analysis: 5 per month (sign-in required)', '✓ Daily check-in reminders'],
+    proFeatures: ['✓ Everything in Free', '✓ AI Pattern Analysis: generous monthly allowance', '✓ Visit-Prep Report PDF', '✓ Priority support'],
     proSave: 'or $29.99/year — save 37%',
     startFree: 'Continue with Google',
     startPro: '✨ Start Pro',
@@ -65,14 +66,14 @@ const CONTENT = {
     solutionSub: 'Symply te ayuda a contarla.',
     solutions: [
       { emoji: '⏱️', title: 'Check-in diario de 30 segundos', body: 'Registra dolor, fatiga, sueño, desencadenantes y ánimo — incluso en tus peores días.', badge: 'Gratis', color: '#059669' },
-      { emoji: '🤖', title: 'La IA encuentra tus patrones', body: '"Los días con menos de 6h de sueño, tu dolor es un 40% mayor." Claude AI entrega insights que puedes usar.', badge: 'Pro', color: '#7c3aed' },
+      { emoji: '🤖', title: 'La IA encuentra tus patrones', body: 'Ejemplo (muestra ficticia más abajo): "Los días después de una noche con menos de 6 h de sueño, el dolor promedio fue 6.6, frente a 3.5 en los demás días." Claude AI describe patrones en tus propios registros.', badge: 'Gratis 5/mes + Pro', color: '#7c3aed' },
       { emoji: '📄', title: 'Informe para la consulta en segundos', body: 'Genera un PDF clínico de 1-2 páginas resumiendo meses de síntomas. Diseñado por un profesional de salud pública.', badge: 'Pro', color: '#7c3aed' },
     ],
     pricingLabel: 'Precios',
     pricingTitle: 'Menos que un café al mes.',
     pricingSub: 'Sin anuncios. Sin venta de datos.',
-    freeFeatures: ['✓ Registro ilimitado de síntomas', '✓ Mapa de calor del calendario', '✓ Gráficos de tendencias', '✓ Insights de patrones (vista previa)', '✓ Recordatorios diarios'],
-    proFeatures: ['✓ Todo lo del plan gratuito', '✓ Análisis de IA', '✓ Informe para la Consulta PDF', '✓ Soporte prioritario'],
+    freeFeatures: ['✓ Registro ilimitado de síntomas', '✓ Mapa de calor del calendario', '✓ Gráficos de tendencias', '✓ Insights de patrones (vista previa)', '✓ Análisis de IA: 5 al mes (requiere iniciar sesión)', '✓ Recordatorios diarios'],
+    proFeatures: ['✓ Todo lo del plan gratuito', '✓ Análisis de IA: amplio uso mensual', '✓ Informe para la Consulta PDF', '✓ Soporte prioritario'],
     proSave: 'o $29.99/año — ahorra 37%',
     startFree: 'Continuar con Google',
     startPro: '✨ Comenzar Pro',
@@ -104,14 +105,14 @@ const CONTENT = {
     solutionSub: 'Symply가 그 이야기를 전달합니다.',
     solutions: [
       { emoji: '⏱️', title: '30초 일일 체크인', body: '통증, 피로, 수면, 트리거, 기분을 가장 힘든 날에도 기록하세요.', badge: '무료', color: '#059669' },
-      { emoji: '🤖', title: 'AI가 패턴을 찾습니다', body: '"수면 6시간 미만인 날 다음 날 통증이 40% 높아집니다." Claude AI가 실제로 사용할 수 있는 인사이트를 제공합니다.', badge: 'Pro', color: '#7c3aed' },
+      { emoji: '🤖', title: 'AI가 패턴을 찾습니다', body: '예시(아래 가상 샘플): "수면이 6시간 미만이었던 밤의 다음 날, 평균 통증은 6.6으로 나머지 날(3.5)보다 높았습니다." Claude AI가 내 기록에서 나타난 패턴을 설명해 줍니다.', badge: '무료 월 5회 + Pro', color: '#7c3aed' },
       { emoji: '📄', title: '몇 초 만에 진료 준비 보고서 생성', body: '수개월의 증상을 요약한 1~2페이지 임상 PDF를 생성합니다.', badge: 'Pro', color: '#7c3aed' },
     ],
     pricingLabel: '가격',
     pricingTitle: '한 달에 커피 한 잔보다 저렴합니다.',
     pricingSub: '광고 없음. 데이터 판매 없음.',
-    freeFeatures: ['✓ 무제한 증상 기록', '✓ 달력 히트맵', '✓ 트렌드 차트', '✓ 패턴 인사이트 (미리보기)', '✓ 매일 체크인 리마인더'],
-    proFeatures: ['✓ 무료 기능 전체', '✓ AI 패턴 분석', '✓ 진료 준비 보고서 PDF', '✓ 우선 지원'],
+    freeFeatures: ['✓ 무제한 증상 기록', '✓ 달력 히트맵', '✓ 트렌드 차트', '✓ 패턴 인사이트 (미리보기)', '✓ AI 패턴 분석: 월 5회 (로그인 필요)', '✓ 매일 체크인 리마인더'],
+    proFeatures: ['✓ 무료 기능 전체', '✓ AI 패턴 분석: 넉넉한 월 사용량', '✓ 진료 준비 보고서 PDF', '✓ 우선 지원'],
     proSave: '또는 $29.99/년 — 37% 절약',
     startFree: 'Google로 시작하기',
     startPro: '✨ Pro 시작하기',
@@ -173,7 +174,7 @@ export default function LandingPage() {
           {c.badge}
         </div>
         <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', fontWeight: 800, lineHeight: 1.2, color: '#1e1b4b', marginBottom: '20px' }}>
-          {c.hero1}<br/><span style={{ color: '#7c3aed' }}>{c.hero2}</span>
+          {c.hero1}<br /><span style={{ color: '#7c3aed' }}>{c.hero2}</span>
         </h1>
         <p style={{ fontSize: '1.05rem', color: '#6b7280', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto 32px' }}>{c.heroSub}</p>
         <button onClick={goToLogin} style={{ padding: '16px 40px', borderRadius: '14px', border: 'none', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 20px rgba(124,58,237,0.3)' }}>
@@ -194,7 +195,7 @@ export default function LandingPage() {
         <div style={{ maxWidth: '680px', margin: '0 auto' }}>
           <p style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>{c.problemLabel}</p>
           <h2 style={{ textAlign: 'center', fontSize: '1.6rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '40px', lineHeight: 1.3 }}>
-            {c.problemTitle}<br/><span style={{ color: '#7c3aed' }}>{c.problemSub}</span>
+            {c.problemTitle}<br /><span style={{ color: '#7c3aed' }}>{c.problemSub}</span>
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
             {c.problems.map((item, i) => (
@@ -213,7 +214,7 @@ export default function LandingPage() {
         <div style={{ maxWidth: '680px', margin: '0 auto' }}>
           <p style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>{c.solutionLabel}</p>
           <h2 style={{ textAlign: 'center', fontSize: '1.6rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '40px' }}>
-            {c.solutionTitle}<br/><span style={{ color: '#7c3aed' }}>{c.solutionSub}</span>
+            {c.solutionTitle}<br /><span style={{ color: '#7c3aed' }}>{c.solutionSub}</span>
           </h2>
           {c.solutions.map((item, i) => (
             <div key={i} style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', padding: '24px', borderRadius: '16px', background: '#fff', border: '1px solid #ede9fe', marginBottom: '12px', boxShadow: '0 2px 8px rgba(124,58,237,0.06)' }}>
@@ -229,6 +230,9 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* SAMPLE REPORT (fictional data, no AI call) */}
+      <LandingSample language={language} onCta={goToLogin} />
 
       {/* PRICING */}
       <section style={{ background: '#fff', padding: '56px 24px' }}>
