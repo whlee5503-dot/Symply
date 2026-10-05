@@ -173,3 +173,19 @@ export async function reserveAiCall(env: FirestoreEnv, uid: string): Promise<Quo
     }
     return { ok: true, refund }
 }
+// Called only by the server after a Polar payment has been verified.
+// The browser must never write plan; Firestore security rules will enforce that.
+export async function activatePro(env: FirestoreEnv, uid: string): Promise<void> {
+    const docName = `${DOC_ROOT}/users/${encodeURIComponent(uid)}`
+    const res = await commitWrite(env, {
+        update: {
+            name: docName,
+            fields: {
+                plan: { stringValue: PRO_PLAN },
+                planActivatedAt: { stringValue: new Date().toISOString() },
+            },
+        },
+        updateMask: { fieldPaths: ['plan', 'planActivatedAt'] },
+    })
+    if (!res.ok) throw new Error(`Firestore write failed: ${res.status}`)
+}

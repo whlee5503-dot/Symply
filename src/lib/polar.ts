@@ -1,6 +1,14 @@
-import { doc, updateDoc } from 'firebase/firestore'
-import { db } from './firebase'
+import { auth } from './firebase'
 import { isRunningInTWA } from './platform'
+
+// Returns the signed-in user's Firebase ID token as an Authorization header.
+// The checkout and verification endpoints require it.
+async function getAuthHeader(): Promise<Record<string, string>> {
+  const user = auth.currentUser
+  if (!user) return {}
+  const token = await user.getIdToken()
+  return { Authorization: `Bearer ${token}` }
+}
 
 /**
  * Polar checkout URL을 생성하고 이동합니다.
@@ -10,14 +18,17 @@ import { isRunningInTWA } from './platform'
  * 요건 대상이 아니므로, Play Store로 배포된 TWA(Android 앱) 안에서는 결제
  * 페이지를 앱 내부가 아니라 별도 브라우저 탭에서 열어 "앱 내 결제"가 되지
  * 않도록 합니다. 일반 웹/PWA 사용자는 기존과 동일하게 같은 탭에서 이동합니다.
+ *
+ * The email is no longer sent from the browser: the server reads it from the
+ * verified token. The parameter is kept so existing callers keep compiling.
  */
-export async function startCheckout(userEmail: string): Promise<void> {
+export async function startCheckout(_userEmail?: string): Promise<void> {
   const successUrl = `${window.location.origin}/settings?checkout_success=true&checkout_id={CHECKOUT_ID}`
 
   const res = await fetch('/api/create-checkout', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ successUrl, userEmail }),
+    headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
+    body: JSON.stringify({ successUrl }),
   })
 
   const data = await res.json() as { url?: string; error?: string }
@@ -36,31 +47,23 @@ export async function startCheckout(userEmail: string): Promise<void> {
 }
 
 /**
- * 결제 완료 후 checkout_id로 구독을 검증하고
- * Firestore의 plan을 'pro'로 업데이트합니다.
+ * 결제 완료 후 checkout_id로 구독을 검증합니다.
+ * plan = 'pro' 는 서버가 직접 Firestore에 기록합니다 (브라우저는 쓰지 않음).
+ * The uid parameter is kept so existing callers keep compiling.
  */
 export async function verifyAndActivatePro(
   checkoutId: string,
-  uid: string
+  _uid?: string
 ): Promise<boolean> {
   try {
     const res = await fetch('/api/verify-subscription', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
       body: JSON.stringify({ checkoutId }),
     })
 
-    const data = await res.json() as { ok: boolean; status?: string }
-
-    if (data.ok) {
-      // Firestore plan 업데이트
-      await updateDoc(doc(db, 'users', uid), {
-        plan: 'pro',
-        planActivatedAt: new Date().toISOString(),
-      })
-      return true
-    }
-    return false
+    const data = await res.json() as { ok?: boolean; status?: string }
+    return data.ok === true
   } catch {
     return false
   }
