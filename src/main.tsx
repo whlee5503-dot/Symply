@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import { LanguageProvider } from './contexts/LanguageContext'
 import App from './App'
 import './index.css'
+import './lib/platform'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

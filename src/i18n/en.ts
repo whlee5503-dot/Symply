@@ -1,11 +1,11 @@
 export const en = {
   // BottomNav
   nav: {
-    home:     'Home',
-    history:  'History',
-    cycle:    'Cycle',
+    home: 'Home',
+    history: 'History',
+    cycle: 'Cycle',
     insights: 'Insights',
-    report:   'Report',
+    report: 'Report',
     settings: 'Settings',
   },
 
@@ -50,9 +50,9 @@ export const en = {
     trigger_high_glycemic: 'High-glycemic meal',
     trigger_stress: 'Stress',
     trigger_poor_sleep: 'Poor sleep',
-    trigger_pressure_change:    'Pressure Change',
+    trigger_pressure_change: 'Pressure Change',
     trigger_temperature_change: 'Temperature Change',
-    trigger_sun_exposure:       'Sun Exposure',
+    trigger_sun_exposure: 'Sun Exposure',
     trigger_overexertion: 'Overdid it',
     triggers_primary_hint: 'Factors marked with ★ have the strongest evidence for your primary condition. All factors still count toward your log either way.',
     no_meds: "No medications set. Add them in Settings.",
@@ -122,8 +122,8 @@ export const en = {
   report: {
     title: "Visit-Prep Report",
     subtitle: 'Generate a clinical summary PDF for your appointment.',
-    pro_banner_title: "Pro Feature — Visit-Prep Report",
-    pro_banner_body: 'Generate a clinical PDF summary your doctor can read in 3 minutes.',
+    pro_banner_title: 'Visit-prep report — free up to 14 days',
+    pro_banner_body: 'Reports covering up to 14 days are free. 30-, 60- and 90-day reports are available with Pro.',
     upgrade: 'Upgrade',
     period_label: 'Report Period',
     period_7: '7 days',
@@ -140,7 +140,7 @@ export const en = {
     disclaimer: '⚠️ This report is for informational purposes only and does not constitute medical advice.',
     disclaimer_short: 'This report is for informational purposes only and does not constitute medical advice.',
     download: '📄 Download PDF Report',
-    unlock: '🔒 Unlock PDF Report — Pro',
+    unlock: '🔒 Reports for this period are a Pro feature',
     generating: '⏳ Generating PDF...',
     days: 'days',
   },
@@ -340,11 +340,11 @@ export const en = {
       {
         icon: '📊',
         title: 'Insights — Trends and AI Analysis',
-        desc: 'View trend charts for pain, fatigue, sleep, and mood. Pro users get AI-powered pattern analysis — personalized insights like "Pain tends to be 40% higher after fewer than 6 hours of sleep." Free users can run up to 5 AI analyses per month.',
+        desc: `View trend charts for pain, fatigue, sleep, and mood. Signed-in users can run an AI pattern analysis, up to 5 per month on the free plan. It describes patterns in your own entries and is not a diagnosis.`,
       },
       {
         icon: '📄',
-        title: 'Report — Visit-Prep PDF (Pro)',
+        title: 'Report — Visit-Prep PDF',
         desc: 'Automatically generate a 1-2 page clinical summary PDF from months of logged data. Designed for doctors to read in under 3 minutes. Recommended to generate the day before an appointment.',
       },
       {

@@ -2,11 +2,11 @@ import type { Translations } from './en'
 
 export const ko: Translations = {
   nav: {
-    home:     '홈',
-    history:  '기록',
-    cycle:    '사이클',
+    home: '홈',
+    history: '기록',
+    cycle: '사이클',
     insights: '인사이트',
-    report:   '보고서',
+    report: '보고서',
     settings: '설정',
   },
 
@@ -50,9 +50,9 @@ export const ko: Translations = {
     trigger_high_glycemic: '고혈당지수 식사',
     trigger_stress: '스트레스',
     trigger_poor_sleep: '수면 부족',
-    trigger_pressure_change:    '기압 변화',
+    trigger_pressure_change: '기압 변화',
     trigger_temperature_change: '기온 변화',
-    trigger_sun_exposure:       '햇빛 노출',
+    trigger_sun_exposure: '햇빛 노출',
     trigger_overexertion: '과활동',
     triggers_primary_hint: '★ 표시는 대표 질환과 근거가 가장 강한 요인입니다. 표시 여부와 관계없이 모든 요인은 기록에 동일하게 반영됩니다.',
     no_meds: "등록된 약이 없습니다. 설정에서 추가하세요.",
@@ -119,8 +119,8 @@ export const ko: Translations = {
   report: {
     title: '진료 준비 보고서',
     subtitle: '다음 진료를 위한 임상 요약 PDF를 생성하세요.',
-    pro_banner_title: 'Pro 기능 — 진료 준비 보고서',
-    pro_banner_body: '의사가 3분 안에 읽을 수 있는 임상 요약 PDF를 생성합니다.',
+    pro_banner_title: '진료 준비 보고서 — 14일까지 무료',
+    pro_banner_body: '14일 이내 보고서는 무료입니다. 30일·60일·90일 보고서는 Pro에서 만들 수 있습니다.',
     upgrade: '업그레이드',
     period_label: '보고서 기간',
     period_7: '7일',
@@ -137,7 +137,7 @@ export const ko: Translations = {
     disclaimer: '⚠️ 이 보고서는 정보 제공 목적이며 의학적 진단이 아닙니다.',
     disclaimer_short: '이 보고서는 정보 제공 목적이며 의학적 진단이 아닙니다.',
     download: '📄 PDF 보고서 다운로드',
-    unlock: '🔒 PDF 보고서 잠금 해제 — Pro',
+    unlock: '🔒 이 기간의 보고서는 Pro 기능입니다',
     generating: '⏳ PDF 생성 중...',
     days: '일',
   },
@@ -335,11 +335,11 @@ export const ko: Translations = {
       {
         icon: '📊',
         title: '인사이트 — 트렌드 및 AI 분석',
-        desc: '통증, 피로도, 수면, 기분의 트렌드 차트를 확인하세요. Pro 사용자는 AI 기반 패턴 분석을 이용할 수 있습니다. 무료 사용자는 월 5회까지 AI 분석을 이용할 수 있습니다.',
+        desc: '통증, 피로도, 수면, 기분의 트렌드 차트를 확인하세요. 로그인한 사용자는 AI 패턴 분석을 이용할 수 있습니다(무료 플랜은 월 5회). 분석은 내 기록에서 나타난 패턴을 설명할 뿐 진단이 아닙니다.',
       },
       {
         icon: '📄',
-        title: '보고서 — 진료 준비 PDF (Pro)',
+        title: '보고서 — 진료 준비 PDF',
         desc: '수개월의 기록을 바탕으로 1~2페이지 분량의 임상 요약 PDF를 자동 생성합니다. 의사가 3분 안에 읽을 수 있는 형식으로 설계되었습니다. 진료 전날 생성하는 것을 권장합니다.',
       },
       {

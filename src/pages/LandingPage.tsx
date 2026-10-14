@@ -3,6 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import LandingSample from '../components/LandingSample'
+import { isRunningInTWA } from '../lib/platform'
 
 const CONTENT = {
   en: {
@@ -12,6 +13,7 @@ const CONTENT = {
     heroSub: 'Log in 30 seconds. Discover patterns with AI. Generate a clinical report your doctor can read in 3 minutes.',
     cta: 'Continue with Google →',
     ctaSub: 'Free to start · Pro from $3.99/mo',
+    ctaSubFree: 'Free to start',
     guestCta: 'Try it now — no sign-in needed',
     guestBusy: 'Loading…',
     problemLabel: 'The Problem',
@@ -51,6 +53,7 @@ const CONTENT = {
     heroSub: 'Registra en 30 segundos. Descubre patrones con IA. Genera un informe clínico que tu médico puede leer en 3 minutos.',
     cta: 'Continuar con Google →',
     ctaSub: 'Gratis para empezar · Pro desde $3.99/mes',
+    ctaSubFree: 'Gratis para empezar',
     guestCta: 'Pruébalo ahora — sin necesidad de cuenta',
     guestBusy: 'Cargando…',
     problemLabel: 'El problema',
@@ -90,6 +93,7 @@ const CONTENT = {
     heroSub: '30초 체크인. AI로 패턴 발견. 의사가 3분 안에 읽을 수 있는 임상 보고서를 생성하세요.',
     cta: 'Google로 시작하기 →',
     ctaSub: '무료로 시작 · Pro는 월 $3.99부터',
+    ctaSubFree: '무료로 시작',
     guestCta: '먼저 둘러보기 — 가입 없이 바로 체험',
     guestBusy: '불러오는 중…',
     problemLabel: '문제',
@@ -129,6 +133,8 @@ export default function LandingPage() {
   const { language } = useLanguage()
   const { signInAsGuest } = useAuth()
   const c = CONTENT[language]
+  // Play Store builds must not show pricing or Pro offers (Play payments policy).
+  const inPlayApp = isRunningInTWA()
   const [guestBusy, setGuestBusy] = useState(false)
 
   function goToLogin() { navigate('/login') }
@@ -180,7 +186,7 @@ export default function LandingPage() {
         <button onClick={goToLogin} style={{ padding: '16px 40px', borderRadius: '14px', border: 'none', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 20px rgba(124,58,237,0.3)' }}>
           {c.cta}
         </button>
-        <p style={{ fontSize: '0.78rem', color: '#9ca3af', marginTop: '12px' }}>{c.ctaSub}</p>
+        <p style={{ fontSize: '0.78rem', color: '#9ca3af', marginTop: '12px' }}>{inPlayApp ? c.ctaSubFree : c.ctaSub}</p>
         <button
           onClick={handleGuestTry}
           disabled={guestBusy}
@@ -222,7 +228,9 @@ export default function LandingPage() {
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                   <span style={{ fontWeight: 700, fontSize: '0.95rem', color: '#1e1b4b' }}>{item.title}</span>
-                  <span style={{ padding: '2px 8px', borderRadius: '10px', fontSize: '0.68rem', fontWeight: 700, color: '#fff', background: item.color }}>{item.badge}</span>
+                  {(!inPlayApp || i === 0) && (
+                    <span style={{ padding: '2px 8px', borderRadius: '10px', fontSize: '0.68rem', fontWeight: 700, color: '#fff', background: item.color }}>{item.badge}</span>
+                  )}
                 </div>
                 <p style={{ fontSize: '0.85rem', color: '#6b7280', lineHeight: 1.6, margin: 0 }}>{item.body}</p>
               </div>
@@ -234,39 +242,41 @@ export default function LandingPage() {
       {/* SAMPLE REPORT (fictional data, no AI call) */}
       <LandingSample language={language} onCta={goToLogin} />
 
-      {/* PRICING */}
-      <section style={{ background: '#fff', padding: '56px 24px' }}>
-        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
-          <p style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>{c.pricingLabel}</p>
-          <h2 style={{ textAlign: 'center', fontSize: '1.6rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '8px' }}>{c.pricingTitle}</h2>
-          <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '0.9rem', marginBottom: '36px' }}>{c.pricingSub}</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-            <div style={{ padding: '28px', borderRadius: '18px', border: '1.5px solid #ede9fe', background: '#faf5ff' }}>
-              <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1e1b4b', marginBottom: '4px' }}>Free</div>
-              <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '16px' }}>$0</div>
-              {c.freeFeatures.map((f, i) => <div key={i} style={{ fontSize: '0.83rem', color: '#6b7280', marginBottom: '8px' }}>{f}</div>)}
-              <button onClick={goToLogin} style={{ width: '100%', marginTop: '20px', padding: '12px', borderRadius: '10px', border: '1.5px solid #7c3aed', background: 'transparent', color: '#7c3aed', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-                {c.startFree}
-              </button>
-            </div>
-            <div style={{ padding: '28px', borderRadius: '18px', border: '2px solid #7c3aed', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', position: 'relative' }}>
-              <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', padding: '3px 14px', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                MOST POPULAR
+      {/* PRICING (hidden in the Play app: Play payments policy) */}
+      {!inPlayApp && (
+        <section style={{ background: '#fff', padding: '56px 24px' }}>
+          <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+            <p style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>{c.pricingLabel}</p>
+            <h2 style={{ textAlign: 'center', fontSize: '1.6rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '8px' }}>{c.pricingTitle}</h2>
+            <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '0.9rem', marginBottom: '36px' }}>{c.pricingSub}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              <div style={{ padding: '28px', borderRadius: '18px', border: '1.5px solid #ede9fe', background: '#faf5ff' }}>
+                <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1e1b4b', marginBottom: '4px' }}>Free</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '16px' }}>$0</div>
+                {c.freeFeatures.map((f, i) => <div key={i} style={{ fontSize: '0.83rem', color: '#6b7280', marginBottom: '8px' }}>{f}</div>)}
+                <button onClick={goToLogin} style={{ width: '100%', marginTop: '20px', padding: '12px', borderRadius: '10px', border: '1.5px solid #7c3aed', background: 'transparent', color: '#7c3aed', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+                  {c.startFree}
+                </button>
               </div>
-              <div style={{ fontWeight: 700, fontSize: '1rem', color: '#7c3aed', marginBottom: '4px' }}>Pro</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b' }}>$3.99</span>
-                <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>/month</span>
+              <div style={{ padding: '28px', borderRadius: '18px', border: '2px solid #7c3aed', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', padding: '3px 14px', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                  MOST POPULAR
+                </div>
+                <div style={{ fontWeight: 700, fontSize: '1rem', color: '#7c3aed', marginBottom: '4px' }}>Pro</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b' }}>$3.99</span>
+                  <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>/month</span>
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#7c3aed', marginBottom: '16px', fontWeight: 600 }}>{c.proSave}</div>
+                {c.proFeatures.map((f, i) => <div key={i} style={{ fontSize: '0.83rem', color: '#4b5563', marginBottom: '8px' }}>{f}</div>)}
+                <button onClick={goToLogin} style={{ width: '100%', marginTop: '20px', padding: '12px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+                  {c.startPro}
+                </button>
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#7c3aed', marginBottom: '16px', fontWeight: 600 }}>{c.proSave}</div>
-              {c.proFeatures.map((f, i) => <div key={i} style={{ fontSize: '0.83rem', color: '#4b5563', marginBottom: '8px' }}>{f}</div>)}
-              <button onClick={goToLogin} style={{ width: '100%', marginTop: '20px', padding: '12px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-                {c.startPro}
-              </button>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* BUILT BY */}
       <section style={{ padding: '48px 24px', textAlign: 'center' }}>

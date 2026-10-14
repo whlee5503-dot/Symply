@@ -11,6 +11,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import { runAnalysis, AnalysisQuotaError, LoginRequiredError, type AIAnalysis, type CycleSummary } from '../lib/analyze'
 import { trackEvent } from '../lib/trackEvent'
+import { isRunningInTWA } from '../lib/platform'
 import type { LogEntry } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
@@ -120,6 +121,14 @@ export default function InsightsPage() {
     language === 'ko' ? 'Google이나 이메일로 로그인하면 무료 AI 분석을 월 5회 사용할 수 있습니다.'
       : language === 'es' ? 'Inicia sesión con Google o correo electrónico para obtener 5 análisis gratuitos de IA al mes.'
         : 'Sign in with Google or email to get 5 free AI analyses per month.'
+
+  // Play Store builds must not point to Pro or any web checkout (Play payments policy).
+  const inPlayApp = isRunningInTWA()
+  const limitText = inPlayApp
+    ? (language === 'ko' ? '이번 달 무료 분석 5회를 모두 사용했습니다. 다음 달에 다시 사용할 수 있습니다.'
+      : language === 'es' ? 'Has usado los 5 análisis gratuitos de este mes. Podrás usar más el próximo mes.'
+        : "You've used all 5 free analyses this month. More will be available next month.")
+    : t.insights.ai_free_limit_reached
 
   // Firestore에서 user conditions + AI 호출 횟수 로드
   useEffect(() => {
@@ -275,6 +284,15 @@ export default function InsightsPage() {
               {guestNotice}
             </p>
           </div>
+        ) : !isPro && !aiAnalysis && (freeCallsUsed ?? 0) >= 5 && inPlayApp ? (
+          /* Play 앱: 결제 안내 없이 한도 안내만 */
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🤖</p>
+            <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>{t.insights.ai_title}</p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
+              {limitText}
+            </p>
+          </div>
         ) : !isPro && !aiAnalysis && (freeCallsUsed ?? 0) >= 5 ? (
           /* Pro 잠금 UI */
           <div style={{ textAlign: 'center' }}>
@@ -330,7 +348,7 @@ export default function InsightsPage() {
                 marginBottom: '12px',
               }}>
                 {(freeCallsUsed ?? 0) >= 5
-                  ? t.insights.ai_free_limit_reached
+                  ? limitText
                   : t.insights.ai_free_remaining.replace('{n}', String(5 - (freeCallsUsed ?? 0)))}
               </p>
             )}
@@ -440,7 +458,7 @@ export default function InsightsPage() {
                 marginTop: '8px',
               }}>
                 {(freeCallsUsed ?? 0) >= 5
-                  ? t.insights.ai_free_limit_reached
+                  ? limitText
                   : t.insights.ai_free_remaining.replace('{n}', String(5 - (freeCallsUsed ?? 0)))}
               </p>
             )}

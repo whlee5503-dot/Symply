@@ -6,6 +6,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { verifyAndActivatePro } from '../lib/polar'
 import UpgradeModal from '../components/UpgradeModal'
+import { isRunningInTWA } from '../lib/platform'
 import type { ChronicCondition, Medication } from '../types'
 import {
   loadNotifSettings, requestPermission, applyNotifSettings,
@@ -37,21 +38,21 @@ function saveLocalSettings(s: UserSettings) {
 }
 
 const CONDITION_OPTIONS: { value: ChronicCondition; label: string; emoji: string }[] = [
-  { value: 'PCOS',                 label: 'PCOS',                    emoji: '🔄' },
-  { value: 'endometriosis',        label: 'Endometriosis',           emoji: '🌸' },
-  { value: 'fibromyalgia',         label: 'Fibromyalgia',            emoji: '💜' },
-  { value: 'lupus',                label: 'Lupus',                   emoji: '🫀' },
-  { value: 'rheumatoid_arthritis', label: 'Rheumatoid Arthritis',    emoji: '🦴' },
-  { value: 'crohns',               label: "Crohn's Disease",         emoji: '🫁' },
-  { value: 'ibs',                  label: 'IBS',                     emoji: '⚡' },
-  { value: 'chronic_fatigue',      label: 'Chronic Fatigue (ME/CFS)',emoji: '😴' },
-  { value: 'other',                label: 'Other',                   emoji: '➕' },
+  { value: 'PCOS', label: 'PCOS', emoji: '🔄' },
+  { value: 'endometriosis', label: 'Endometriosis', emoji: '🌸' },
+  { value: 'fibromyalgia', label: 'Fibromyalgia', emoji: '💜' },
+  { value: 'lupus', label: 'Lupus', emoji: '🫀' },
+  { value: 'rheumatoid_arthritis', label: 'Rheumatoid Arthritis', emoji: '🦴' },
+  { value: 'crohns', label: "Crohn's Disease", emoji: '🫁' },
+  { value: 'ibs', label: 'IBS', emoji: '⚡' },
+  { value: 'chronic_fatigue', label: 'Chronic Fatigue (ME/CFS)', emoji: '😴' },
+  { value: 'other', label: 'Other', emoji: '➕' },
 ]
 
 const FREQ_LABELS: Record<Medication['frequency'], string> = {
-  daily:     'Daily',
+  daily: 'Daily',
   as_needed: 'As needed',
-  weekly:    'Weekly',
+  weekly: 'Weekly',
 }
 
 function SectionHeader({ children, mt }: { children: React.ReactNode; mt?: number }) {
@@ -109,29 +110,29 @@ export default function SettingsPage() {
   const { language, setLanguage, t } = useLanguage()
   const { user, isPro, signOutUser, signInWithGoogle, signUpWithEmail } = useAuth()
 
-  const [settings, setSettings]             = useState<UserSettings>(loadLocalSettings)
+  const [settings, setSettings] = useState<UserSettings>(loadLocalSettings)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
   const [showGuestEmailForm, setShowGuestEmailForm] = useState(false)
-  const [guestLinkEmail,    setGuestLinkEmail]    = useState('')
+  const [guestLinkEmail, setGuestLinkEmail] = useState('')
   const [guestLinkPassword, setGuestLinkPassword] = useState('')
-  const [guestLinkError,    setGuestLinkError]    = useState('')
-  const [guestLinkBusy,     setGuestLinkBusy]     = useState(false)
+  const [guestLinkError, setGuestLinkError] = useState('')
+  const [guestLinkBusy, setGuestLinkBusy] = useState(false)
   const [notifSettings, setNotifSettings] = useState<NotificationSettings>(() => loadNotifSettings())
   const [notifPermission, setNotifPermission] = useState<NotificationPermission | null>(
     isNotificationSupported() ? Notification.permission : null
   )
-  const [showMedForm, setShowMedForm]       = useState(false)
-  const [medName, setMedName]               = useState('')
-  const [medFreq, setMedFreq]               = useState<Medication['frequency']>('daily')
-  const [saving, setSaving]                 = useState(false)
-  const [showUpgrade, setShowUpgrade]       = useState(false)
-  const [proActivated, setProActivated]     = useState(false)
-  const [verifying, setVerifying]           = useState(false)
+  const [showMedForm, setShowMedForm] = useState(false)
+  const [medName, setMedName] = useState('')
+  const [medFreq, setMedFreq] = useState<Medication['frequency']>('daily')
+  const [saving, setSaving] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
+  const [proActivated, setProActivated] = useState(false)
+  const [verifying, setVerifying] = useState(false)
 
   // 결제 완료 후 리턴 처리
   useEffect(() => {
-    const params     = new URLSearchParams(window.location.search)
-    const success    = params.get('checkout_success')
+    const params = new URLSearchParams(window.location.search)
+    const success = params.get('checkout_success')
     const checkoutId = params.get('checkout_id')
     if (success === 'true' && checkoutId && user) {
       setVerifying(true)
@@ -152,11 +153,11 @@ export default function SettingsPage() {
       if (snap.exists()) {
         const data = snap.data()
         const merged: UserSettings = {
-          name:             data.displayName     ?? user.displayName ?? '',
-          gender:           data.gender          ?? '',
-          conditions:       data.conditions      ?? [],
+          name: data.displayName ?? user.displayName ?? '',
+          gender: data.gender ?? '',
+          conditions: data.conditions ?? [],
           primaryCondition: data.primaryCondition ?? undefined,
-          medications:      data.medications     ?? [],
+          medications: data.medications ?? [],
         }
         setSettings(merged)
         saveLocalSettings(merged)
@@ -169,10 +170,10 @@ export default function SettingsPage() {
     setSaving(true)
     try {
       await updateDoc(doc(db, 'users', user.uid), {
-        displayName:      updated.name,
-        conditions:       updated.conditions,
+        displayName: updated.name,
+        conditions: updated.conditions,
         primaryCondition: updated.primaryCondition ?? null,
-        medications:      updated.medications,
+        medications: updated.medications,
       })
     } finally {
       setSaving(false)
@@ -350,14 +351,16 @@ export default function SettingsPage() {
                   {t.settings.plan_free}
                 </div>
               </div>
-              <button
-                onClick={() => setShowUpgrade(true)}
-                style={{
-                  padding: '8px 16px', borderRadius: '10px', border: 'none',
-                  background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
-                  color: '#fff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                }}
-              >{t.settings.upgrade_btn}</button>
+              {!isRunningInTWA() && (
+                <button
+                  onClick={() => setShowUpgrade(true)}
+                  style={{
+                    padding: '8px 16px', borderRadius: '10px', border: 'none',
+                    background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
+                    color: '#fff', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
+                  }}
+                >{t.settings.upgrade_btn}</button>
+              )}
             </div>
           </div>
         )}
@@ -473,10 +476,10 @@ export default function SettingsPage() {
                 }}
               >
                 <svg width="18" height="18" viewBox="0 0 48 48">
-                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
                 </svg>
                 {t.settings.guest_link_google}
               </button>
@@ -554,8 +557,8 @@ export default function SettingsPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {([
               { value: 'female', label: t.settings.gender_female },
-              { value: 'male',   label: t.settings.gender_male },
-              { value: 'other',  label: t.settings.gender_other },
+              { value: 'male', label: t.settings.gender_male },
+              { value: 'other', label: t.settings.gender_other },
             ] as const).map(({ value, label }) => (
               <button key={value} onClick={() => updateSettings({ gender: value })} style={{
                 padding: '10px 14px', borderRadius: '10px', cursor: 'pointer', textAlign: 'left',
@@ -800,7 +803,7 @@ export default function SettingsPage() {
       {/* ABOUT */}
       <SectionHeader mt={20}>{t.settings.about_title}</SectionHeader>
       <SettingsCard>
-        <SettingsRow label="Symply"        value="Version 1.0.0 · Sprint 7" icon="💜" />
+        <SettingsRow label="Symply" value="Version 1.0.0 · Sprint 7" icon="💜" />
         <SettingsRow label={t.settings.about_feedback} value={t.settings.about_feedback_val} icon="📬" onClick={() => { window.location.href = 'mailto:contact@phtlab.org?subject=Symply%20Feedback' }} />
         <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" onClick={() => {
           const suffix = language === 'ko' ? '/ko' : language === 'es' ? '/es' : ''

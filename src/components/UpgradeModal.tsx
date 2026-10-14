@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { startCheckout } from '../lib/polar'
 import { useLanguage } from '../contexts/LanguageContext'
+import { isRunningInTWA } from '../lib/platform'
 
 interface Props {
   onClose: () => void
@@ -12,7 +13,7 @@ export default function UpgradeModal({ onClose, userEmail, feature }: Props) {
   const { t } = useLanguage()
   const u = t.upgrade
   const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const featureText = feature === 'ai' ? u.feature_ai : u.feature_report
   const subtitle = u.subtitle.replace('{feature}', featureText)
@@ -27,6 +28,9 @@ export default function UpgradeModal({ onClose, userEmail, feature }: Props) {
       setLoading(false)
     }
   }
+
+  // Play Store builds must not show or open any web checkout (Play payments policy).
+  if (isRunningInTWA()) return null
 
   return (
     <div

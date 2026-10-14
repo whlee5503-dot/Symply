@@ -7,6 +7,7 @@ import { useFirestoreLogs } from '../hooks/useFirestoreLogs'
 import { useAuth } from '../contexts/AuthContext'
 import Card from '../components/ui/Card'
 import UpgradeModal from '../components/UpgradeModal'
+import { isRunningInTWA } from '../lib/platform'
 import { useLanguage } from '../contexts/LanguageContext'
 import GuideLink from '../components/ui/GuideLink'
 import type { LogEntry } from '../types'
@@ -15,19 +16,19 @@ import { MOOD_EMOJIS, getSeverityBand, SEVERITY_BAND_LABELS } from '../types'
 
 function getTriggerLabel(key: string, t: any): string {
   const map: Record<string, string> = {
-    gluten:       t.home.trigger_gluten,
-    dairy:        t.home.trigger_dairy,
-    sugar:        t.home.trigger_sugar,
-    caffeine:     t.home.trigger_caffeine,
-    alcohol:      t.home.trigger_alcohol,
-    high_fodmap:  t.home.trigger_high_fodmap,
+    gluten: t.home.trigger_gluten,
+    dairy: t.home.trigger_dairy,
+    sugar: t.home.trigger_sugar,
+    caffeine: t.home.trigger_caffeine,
+    alcohol: t.home.trigger_alcohol,
+    high_fodmap: t.home.trigger_high_fodmap,
     high_glycemic: t.home.trigger_high_glycemic,
-    stress:       t.home.trigger_stress,
-    poor_sleep:   t.home.trigger_poor_sleep,
-    overexertion:       t.home.trigger_overexertion,
-    pressure_change:    t.home.trigger_pressure_change,
+    stress: t.home.trigger_stress,
+    poor_sleep: t.home.trigger_poor_sleep,
+    overexertion: t.home.trigger_overexertion,
+    pressure_change: t.home.trigger_pressure_change,
     temperature_change: t.home.trigger_temperature_change,
-    sun_exposure:       t.home.trigger_sun_exposure,
+    sun_exposure: t.home.trigger_sun_exposure,
   }
   return map[key] ?? key.replace('_', ' ')
 }
@@ -44,29 +45,36 @@ function getReportLogs(logs: Record<string, LogEntry>, days: number): LogEntry[]
 
 export default function ReportPage() {
   const { user, isPro } = useAuth()
+
+  // Free users can build a report for up to this many days; longer periods are Pro.
+  // Set to 0 to keep the whole report Pro-only.
+  const FREE_REPORT_MAX_DAYS = 14
+  // Play Store builds must not show or open any web checkout (Play payments policy).
+  const inPlayApp = isRunningInTWA()
+  const isLockedPeriod = (days: number) => !isPro && days > FREE_REPORT_MAX_DAYS
   const { t } = useLanguage()
   const { logs: allLogs, loading } = useFirestoreLogs(user?.uid)
-  const [period, setPeriod]         = useState<7 | 14 | 30 | 60 | 90>(7)
+  const [period, setPeriod] = useState<7 | 14 | 30 | 60 | 90>(7)
   const [generating, setGenerating] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const chartRef = useRef<HTMLDivElement>(null)
 
-  const logs      = getReportLogs(allLogs, period)
+  const logs = getReportLogs(allLogs, period)
   const totalDays = logs.length
 
   // PDF에 삽입할 통증/피로 트렌드 그래프용 데이터. 화면에 보이는 인사이트 차트와
   // 별개로, 선택된 보고서 기간(logs)에 맞춰 화면 밖(hidden)에 그려서 캡처한다.
   const trendData = logs.map(e => ({
-    date:    format(new Date(e.id), 'MM/dd'),
-    pain:    e.pain,
+    date: format(new Date(e.id), 'MM/dd'),
+    pain: e.pain,
     fatigue: e.fatigue,
   }))
 
-  const avgPain    = totalDays > 0 ? (logs.reduce((s, e) => s + e.pain, 0) / totalDays) : 0
+  const avgPain = totalDays > 0 ? (logs.reduce((s, e) => s + e.pain, 0) / totalDays) : 0
   const avgFatigue = totalDays > 0 ? (logs.reduce((s, e) => s + e.fatigue, 0) / totalDays) : 0
-  const avgSleep   = totalDays > 0 ? (logs.reduce((s, e) => s + e.sleep, 0) / totalDays) : 0
-  const flareDays  = logs.filter(e => (e.pain + e.fatigue) / 2 >= 6).length
-  const goodDays   = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
+  const avgSleep = totalDays > 0 ? (logs.reduce((s, e) => s + e.sleep, 0) / totalDays) : 0
+  const flareDays = logs.filter(e => (e.pain + e.fatigue) / 2 >= 6).length
+  const goodDays = logs.filter(e => (e.pain + e.fatigue) / 2 <= 2).length
 
   const triggerCounts: Record<string, number> = {}
   logs.forEach(e => {
@@ -79,15 +87,16 @@ export default function ReportPage() {
     .slice(0, 5)
 
   async function generatePDF() {
-    if (!isPro) {
-      setShowUpgrade(true)
+    if (isLockedPeriod(period)) {
+      // On the web, offer the upgrade; in the Play app, never open a checkout.
+      if (!inPlayApp) setShowUpgrade(true)
       return
     }
     setGenerating(true)
     try {
-      const pdf      = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-      const pageW    = 210
-      const margin   = 20
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+      const pageW = 210
+      const margin = 20
       const contentW = pageW - margin * 2
       let y = margin
 
@@ -148,12 +157,12 @@ export default function ReportPage() {
       y += 6
 
       const stats = [
-        { label: 'Avg Pain',    value: avgPain.toFixed(1),    sub: SEVERITY_BAND_LABELS[getSeverityBand(avgPain)] },
+        { label: 'Avg Pain', value: avgPain.toFixed(1), sub: SEVERITY_BAND_LABELS[getSeverityBand(avgPain)] },
         { label: 'Avg Fatigue', value: avgFatigue.toFixed(1), sub: SEVERITY_BAND_LABELS[getSeverityBand(avgFatigue)] },
-        { label: 'Avg Sleep',   value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
-        { label: 'Flare Days',  value: String(flareDays),     sub: `${((flareDays / totalDays) * 100).toFixed(0)}% of days` },
-        { label: 'Good Days',   value: String(goodDays),      sub: `${((goodDays / totalDays) * 100).toFixed(0)}% of days` },
-        { label: 'Days Logged', value: String(totalDays),     sub: `of last ${period}` },
+        { label: 'Avg Sleep', value: `${avgSleep.toFixed(1)}h`, sub: 'per night' },
+        { label: 'Flare Days', value: String(flareDays), sub: `${((flareDays / totalDays) * 100).toFixed(0)}% of days` },
+        { label: 'Good Days', value: String(goodDays), sub: `${((goodDays / totalDays) * 100).toFixed(0)}% of days` },
+        { label: 'Days Logged', value: String(totalDays), sub: `of last ${period}` },
       ]
 
       const colW = contentW / 3
@@ -161,8 +170,8 @@ export default function ReportPage() {
       stats.forEach((s, i) => {
         const col = i % 3
         const row = Math.floor(i / 3)
-        const x   = margin + col * colW
-        const cy  = y + row * rowH
+        const x = margin + col * colW
+        const cy = y + row * rowH
         pdf.setFillColor(245, 243, 255)
         pdf.roundedRect(x + 1, cy, colW - 2, rowH - 2, 3, 3, 'F')
         pdf.setTextColor(124, 58, 237)
@@ -205,7 +214,7 @@ export default function ReportPage() {
         y += 6
 
         topTriggers.forEach(([key, count]) => {
-          const pct   = count / totalDays
+          const pct = count / totalDays
           const label = key.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
           pdf.setTextColor(50, 50, 50)
           pdf.setFontSize(9)
@@ -239,11 +248,11 @@ export default function ReportPage() {
         pdf.setFontSize(8)
         pdf.setFont('helvetica', 'bold')
         const cols = [
-          { label: 'Date',     x: margin + 2 },
-          { label: 'Pain',     x: margin + 32 },
-          { label: 'Fatigue',  x: margin + 48 },
-          { label: 'Sleep',    x: margin + 68 },
-          { label: 'Mood',     x: margin + 86 },
+          { label: 'Date', x: margin + 2 },
+          { label: 'Pain', x: margin + 32 },
+          { label: 'Fatigue', x: margin + 48 },
+          { label: 'Sleep', x: margin + 68 },
+          { label: 'Mood', x: margin + 86 },
           { label: 'Activity', x: margin + 102 },
           { label: 'Triggers', x: margin + 124 },
         ]
@@ -264,11 +273,11 @@ export default function ReportPage() {
           pdf.setFontSize(7.5)
           pdf.setFont('helvetica', 'normal')
           pdf.text(format(new Date(entry.id), 'MMM d, yyyy'), cols[0].x, y + 4)
-          pdf.text(String(entry.pain),    cols[1].x, y + 4)
+          pdf.text(String(entry.pain), cols[1].x, y + 4)
           pdf.text(String(entry.fatigue), cols[2].x, y + 4)
-          pdf.text(`${entry.sleep}h`,     cols[3].x, y + 4)
+          pdf.text(`${entry.sleep}h`, cols[3].x, y + 4)
           pdf.text(MOOD_EMOJIS[entry.mood].label, cols[4].x, y + 4)
-          pdf.text(entry.activity,        cols[5].x, y + 4)
+          pdf.text(entry.activity, cols[5].x, y + 4)
           pdf.text(activeTriggers || '—', cols[6].x, y + 4, { maxWidth: 50 })
           y += 7
         })
@@ -315,7 +324,7 @@ export default function ReportPage() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" tick={{ fontSize: 10 }} />
             <YAxis domain={[0, 10]} tick={{ fontSize: 10 }} />
-            <Line type="monotone" dataKey="pain"    stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} />
+            <Line type="monotone" dataKey="pain" stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} />
             <Line type="monotone" dataKey="fatigue" stroke="#7c3aed" strokeWidth={2} dot={false} isAnimationActive={false} />
           </LineChart>
           <div style={{ display: 'flex', gap: '16px', marginTop: '6px', fontSize: '11px', fontFamily: 'Arial, sans-serif' }}>
@@ -334,7 +343,7 @@ export default function ReportPage() {
       </p>
 
       {/* Pro 잠금 배너 (Free 유저용) */}
-      {!isPro && (
+      {!isPro && !inPlayApp && (
         <div style={{
           padding: '14px 16px',
           borderRadius: '14px',
@@ -381,6 +390,7 @@ export default function ReportPage() {
           {([7, 14, 30, 60, 90] as const).map(d => (
             <button
               key={d}
+              disabled={isLockedPeriod(d) && inPlayApp}
               onClick={() => setPeriod(d)}
               style={{
                 flex: '1 1 18%',
@@ -391,11 +401,14 @@ export default function ReportPage() {
                 background: period === d ? 'var(--color-primary-light)' : 'var(--color-surface-2)',
                 cursor: 'pointer',
                 fontWeight: period === d ? 700 : 400,
+                opacity: isLockedPeriod(d) && inPlayApp ? 0.45 : 1,
+                pointerEvents: isLockedPeriod(d) && inPlayApp ? 'none' : 'auto',
                 fontSize: '0.85rem',
                 color: period === d ? 'var(--color-primary)' : 'var(--color-text-muted)',
               }}
             >
               {t.report[`period_${d}` as keyof typeof t.report] as string}
+              {isLockedPeriod(d) && !inPlayApp ? ' 🔒' : ''}
             </button>
           ))}
         </div>
@@ -417,8 +430,8 @@ export default function ReportPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '12px' }}>
               {[
                 { label: t.report.days_logged, value: totalDays },
-                { label: t.report.avg_pain,    value: avgPain.toFixed(1) },
-                { label: t.report.flare_days,  value: flareDays },
+                { label: t.report.avg_pain, value: avgPain.toFixed(1) },
+                { label: t.report.flare_days, value: flareDays },
               ].map(({ label, value }) => (
                 <div key={label} style={{ textAlign: 'center', padding: '10px', background: 'var(--color-surface-2)', borderRadius: '10px' }}>
                   <div style={{ fontWeight: 700, fontSize: '1.3rem', color: 'var(--color-primary)' }}>{value}</div>
@@ -474,7 +487,7 @@ export default function ReportPage() {
       >
         {generating
           ? '⏳ Generating PDF...'
-          : isPro
+          : !isLockedPeriod(period)
             ? t.report.download
             : t.report.unlock}
       </button>
