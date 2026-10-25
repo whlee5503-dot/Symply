@@ -112,6 +112,36 @@ export default function SettingsPage() {
 
   const [settings, setSettings] = useState<UserSettings>(loadLocalSettings)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteBusy, setDeleteBusy] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
+  // Asks the server to delete all data and the Auth account, then signs out right away
+  // (AuthContext would otherwise re-create the users document for a still-signed-in user).
+  const handleDeleteAccount = async () => {
+    if (!user || deleteBusy) return
+    setDeleteBusy(true)
+    setDeleteError('')
+    try {
+      const token = await user.getIdToken()
+      const res = await fetch('/api/delete-account', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error(`delete failed: ${res.status}`)
+      try {
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith('symply'))
+          .forEach((k) => localStorage.removeItem(k))
+      } catch {
+        // Storage may be unavailable; the server-side data is already gone.
+      }
+      await signOutUser()
+    } catch {
+      setDeleteError(t.settings.delete_account_error)
+      setDeleteBusy(false)
+    }
+  }
   const [showGuestEmailForm, setShowGuestEmailForm] = useState(false)
   const [guestLinkEmail, setGuestLinkEmail] = useState('')
   const [guestLinkPassword, setGuestLinkPassword] = useState('')
@@ -858,6 +888,64 @@ export default function SettingsPage() {
                   fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
                 }}
               >{user?.isAnonymous ? t.settings.sign_out_yes_guest : t.settings.sign_out_yes}</button>
+            </div>
+          </div>
+        )}
+      </SettingsCard>
+
+      <div style={{ height: '12px' }} />
+      <SettingsCard>
+        {!showDeleteConfirm ? (
+          <SettingsRow
+            label={t.settings.delete_account}
+            value={t.settings.delete_account_hint}
+            icon="—"
+            danger
+            onClick={() => { setDeleteError(''); setShowDeleteConfirm(true) }}
+          />
+        ) : (
+          <div style={{ padding: '16px' }}>
+            <div style={{
+              background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)',
+              borderRadius: '10px', padding: '12px', marginBottom: '12px',
+            }}>
+              <p style={{ fontSize: '0.85rem', color: '#ef4444', fontWeight: 700, marginBottom: '4px', textAlign: 'center' }}>
+                ⚠️ {t.settings.delete_account_title}
+              </p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-text)', textAlign: 'center', lineHeight: 1.5 }}>
+                {t.settings.delete_account_confirm}
+              </p>
+              {isPro && !isRunningInTWA() && (
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-text)', textAlign: 'center', lineHeight: 1.5, marginTop: '8px' }}>
+                  {t.settings.delete_account_pro_note}
+                </p>
+              )}
+            </div>
+            {deleteError && (
+              <p role="alert" style={{ fontSize: '0.82rem', color: '#ef4444', textAlign: 'center', marginBottom: '12px' }}>
+                {deleteError}
+              </p>
+            )}
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                disabled={deleteBusy}
+                onClick={() => setShowDeleteConfirm(false)}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: '10px',
+                  border: '1px solid var(--color-border)', background: 'none',
+                  color: 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer',
+                }}
+              >{t.settings.sign_out_cancel}</button>
+              <button
+                disabled={deleteBusy}
+                onClick={handleDeleteAccount}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: '10px', border: 'none',
+                  background: '#ef4444', color: '#fff',
+                  fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
+                  opacity: deleteBusy ? 0.6 : 1,
+                }}
+              >{deleteBusy ? t.settings.delete_account_busy : t.settings.delete_account_yes}</button>
             </div>
           </div>
         )}
