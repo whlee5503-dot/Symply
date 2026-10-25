@@ -1,6 +1,6 @@
 # Política de Privacidad de Symply
 
-**Última actualización: 30 de septiembre de 2026**
+**Última actualización: 25 de octubre de 2026**
 
 Symply ("nosotros" o "la Aplicación") es una aplicación de seguimiento de síntomas crónicos
 desarrollada por PublicHealth Tech Lab, operada por Won Ho. Esta Política de Privacidad explica
@@ -146,8 +146,7 @@ la información sin demora.
 Usted puede:
 - **Acceder** a sus datos en cualquier momento dentro de la Aplicación
 - **Exportar** sus registros de síntomas (por ejemplo, como un informe en PDF para su médico)
-- **Eliminar su cuenta y datos** contactándonos en el correo electrónico indicado abajo, o
-  mediante la opción de eliminación de cuenta dentro de la aplicación, si está disponible
+- **Eliminar su cuenta y datos** desde la app en **Ajustes → Eliminar cuenta**, o, si no puede usar la app, solicitándolo en el correo electrónico indicado abajo. Consulte los pasos en la [guía de eliminación de cuenta y datos](/delete-account/es)
 - **Optar por no usar el análisis de IA** simplemente no solicitándolo — registrar síntomas no
   requiere usar la función de análisis de IA
 
