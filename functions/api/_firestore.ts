@@ -42,7 +42,7 @@ async function getAccessToken(env: FirestoreEnv): Promise<string> {
     const claims = base64url(
         JSON.stringify({
             iss: sa.client_email,
-            scope: 'https://www.googleapis.com/auth/datastore',
+            scope: 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/identitytoolkit',
             aud: 'https://oauth2.googleapis.com/token',
             iat: now,
             exp: now + 3600,
@@ -188,4 +188,55 @@ export async function activatePro(env: FirestoreEnv, uid: string): Promise<void>
         updateMask: { fieldPaths: ['plan', 'planActivatedAt'] },
     })
     if (!res.ok) throw new Error(`Firestore write failed: ${res.status}`)
+}
+
+// Deletes every document under logs/{uid}/entries and the users/{uid} document.
+// Safe to call again: documents that are already gone are simply skipped.
+export async function deleteUserData(env: FirestoreEnv, uid: string): Promise<void> {
+    const entriesUrl = `${BASE}/logs/${encodeURIComponent(uid)}/entries`
+
+    // Each pass lists up to 300 entries and deletes them; stop when none are left.
+    for (let pass = 0; pass < 100; pass++) {
+        const token = await getAccessToken(env)
+        const listRes = await fetch(`${entriesUrl}?pageSize=300`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        if (listRes.status === 404) break
+        if (!listRes.ok) throw new Error(`Firestore list failed: ${listRes.status}`)
+
+        const list = (await listRes.json()) as { documents?: { name: string }[] }
+        const docs = list.documents ?? []
+        if (docs.length === 0) break
+
+        const batchRes = await fetch(`${BASE}:commit`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ writes: docs.map((d) => ({ delete: d.name })) }),
+        })
+        if (!batchRes.ok) throw new Error(`Firestore batch delete failed: ${batchRes.status}`)
+    }
+
+    const userRes = await commitWrite(env, {
+        delete: `${DOC_ROOT}/users/${encodeURIComponent(uid)}`,
+    })
+    if (!userRes.ok) throw new Error(`Firestore user delete failed: ${userRes.status}`)
+}
+
+// Deletes the Firebase Authentication account itself.
+export async function deleteAuthUser(env: FirestoreEnv, uid: string): Promise<void> {
+    const token = await getAccessToken(env)
+    const res = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/projects/${PROJECT_ID}/accounts:delete`,
+        {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ localId: uid }),
+        },
+    )
+    if (res.ok) return
+
+    const body = await res.text()
+    // Already deleted on an earlier attempt: treat as success.
+    if (body.includes('USER_NOT_FOUND')) return
+    throw new Error(`Auth delete failed: ${res.status} ${body.slice(0, 200)}`)
 }
