@@ -14,6 +14,7 @@ import GuidePage from './pages/GuidePage'
 import LandingPage from './pages/LandingPage'
 import { lazy, Suspense } from 'react'
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
+const DeleteAccountPage = lazy(() => import('./pages/DeleteAccountPage'))
 import { initNotifications } from './lib/notifications'
 import { trackEvent } from './lib/trackEvent'
 import { useEffect } from 'react'
@@ -67,12 +68,15 @@ function AppRoutes() {
       <>
         <PageViewTracker />
         <Routes>
-          <Route path="/"     element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/privacy"    element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
+          <Route path="/privacy" element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
           <Route path="/privacy/ko" element={<Suspense fallback={null}><PrivacyPolicyPage lang="ko" /></Suspense>} />
           <Route path="/privacy/es" element={<Suspense fallback={null}><PrivacyPolicyPage lang="es" /></Suspense>} />
-          <Route path="*"    element={<LandingPage />} />
+          <Route path="/delete-account" element={<Suspense fallback={null}><DeleteAccountPage lang="en" /></Suspense>} />
+          <Route path="/delete-account/ko" element={<Suspense fallback={null}><DeleteAccountPage lang="ko" /></Suspense>} />
+          <Route path="/delete-account/es" element={<Suspense fallback={null}><DeleteAccountPage lang="es" /></Suspense>} />
+          <Route path="*" element={<LandingPage />} />
         </Routes>
       </>
     )
@@ -86,17 +90,20 @@ function AppRoutes() {
     <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100dvh' }}>
       <PageViewTracker />
       <Routes>
-        <Route path="/"         element={<HomePage />} />
-        <Route path="/history"  element={<HistoryPage />} />
-        <Route path="/cycle"    element={<CycleTrackerPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/history" element={<HistoryPage />} />
+        <Route path="/cycle" element={<CycleTrackerPage />} />
         <Route path="/insights" element={<InsightsPage />} />
-        <Route path="/report"   element={<ReportPage />} />
+        <Route path="/report" element={<ReportPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/guide"    element={<GuidePage />} />
-        <Route path="/privacy"    element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
+        <Route path="/guide" element={<GuidePage />} />
+        <Route path="/privacy" element={<Suspense fallback={null}><PrivacyPolicyPage lang="en" /></Suspense>} />
         <Route path="/privacy/ko" element={<Suspense fallback={null}><PrivacyPolicyPage lang="ko" /></Suspense>} />
         <Route path="/privacy/es" element={<Suspense fallback={null}><PrivacyPolicyPage lang="es" /></Suspense>} />
-        <Route path="*"         element={<Navigate to="/" replace />} />
+        <Route path="/delete-account" element={<Suspense fallback={null}><DeleteAccountPage lang="en" /></Suspense>} />
+        <Route path="/delete-account/ko" element={<Suspense fallback={null}><DeleteAccountPage lang="ko" /></Suspense>} />
+        <Route path="/delete-account/es" element={<Suspense fallback={null}><DeleteAccountPage lang="es" /></Suspense>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
       <div className="bottom-nav-spacer" />
