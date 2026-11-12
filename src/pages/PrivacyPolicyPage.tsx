@@ -1,4 +1,4 @@
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown'; import remarkGfm from 'remark-gfm'
 import { Link } from 'react-router-dom'
 import enContent from '../content/privacy-en.md?raw'
 import koContent from '../content/privacy-ko.md?raw'
@@ -7,8 +7,8 @@ import esContent from '../content/privacy-es.md?raw'
 type Lang = 'en' | 'ko' | 'es'
 
 const CONTENT: Record<Lang, string> = { en: enContent, ko: koContent, es: esContent }
-const LABELS:  Record<Lang, string> = { en: 'English', ko: '한국어', es: 'Español' }
-const PATHS:   Record<Lang, string> = { en: '/privacy', ko: '/privacy/ko', es: '/privacy/es' }
+const LABELS: Record<Lang, string> = { en: 'English', ko: '한국어', es: 'Español' }
+const PATHS: Record<Lang, string> = { en: '/privacy', ko: '/privacy/ko', es: '/privacy/es' }
 
 export default function PrivacyPolicyPage({ lang }: { lang: Lang }) {
   return (
@@ -32,12 +32,12 @@ export default function PrivacyPolicyPage({ lang }: { lang: Lang }) {
           ))}
         </div>
 
-        <ReactMarkdown
+        <ReactMarkdown remarkPlugins={[remarkGfm]}
           components={{
             h1: p => <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-text)', marginBottom: '6px' }} {...p} />,
             h2: p => <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-text)', marginTop: '28px', marginBottom: '10px' }} {...p} />,
             h3: p => <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--color-text)', marginTop: '18px', marginBottom: '6px' }} {...p} />,
-            p:  p => <p  style={{ fontSize: '0.9rem', color: 'var(--color-text)', lineHeight: 1.7, marginBottom: '12px' }} {...p} />,
+            p: p => <p style={{ fontSize: '0.9rem', color: 'var(--color-text)', lineHeight: 1.7, marginBottom: '12px' }} {...p} />,
             ul: p => <ul style={{ fontSize: '0.9rem', color: 'var(--color-text)', lineHeight: 1.7, marginBottom: '12px', paddingLeft: '20px' }} {...p} />,
             li: p => <li style={{ marginBottom: '4px' }} {...p} />,
             strong: p => <strong style={{ fontWeight: 700 }} {...p} />,
