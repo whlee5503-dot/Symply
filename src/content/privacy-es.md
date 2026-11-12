@@ -1,6 +1,6 @@
 # Política de Privacidad de Symply
 
-**Última actualización: 25 de octubre de 2026**
+**Última actualización: 12 de noviembre de 2026**
 
 Symply ("nosotros" o "la Aplicación") es una aplicación de seguimiento de síntomas crónicos
 desarrollada por PublicHealth Tech Lab, operada por Won Ho. Esta Política de Privacidad explica
@@ -48,7 +48,7 @@ perfil publicitario suyo.
 
 ### 1.4 Información de suscripción y pago
 Si se suscribe a Symply Pro, nuestro procesador de pagos, Polar, recibe su **dirección de
-correo electrónico** para procesar la transacción. **No recibimos ni almacenamos los datos de
+correo electrónico y su identificador de usuario (UID)** para procesar la transacción. **No recibimos ni almacenamos los datos de
 su tarjeta de pago** — estos son gestionados enteramente por Polar.
 
 ---
@@ -98,20 +98,22 @@ procesador de datos para el propósito específico descrito:
 |---|---|---|
 | **Google Firebase** (Authentication, Firestore, Analytics) | Inicio de sesión, almacenamiento en la nube de sus registros, análisis de uso | Nombre, correo electrónico, foto de perfil, registros de síntomas, eventos de uso |
 | **Anthropic (API de Claude)** | Análisis de patrones de síntomas generado por IA | Registros de síntomas (procesamiento transitorio, véase Sección 3) |
-| **Polar** | Procesamiento de suscripciones/pagos | Dirección de correo electrónico (solo para el pago) |
+| **Polar** | Procesamiento de suscripciones/pagos | Dirección de correo electrónico, identificador de usuario (UID) (solo para el pago) |
+| **Cloudflare** (Pages, Workers) | Alojamiento del sitio web, ejecución de funciones del servidor y retransmisión de solicitudes de análisis con IA | Información de conexión (como la dirección IP) y datos enviados al usar el servicio (los registros de síntomas pasan por aquí cuando se solicita un análisis con IA) |
 
 Cada uno de estos proveedores tiene su propia política de privacidad que rige cómo manejan los
 datos en nuestro nombre:
 - Google/Firebase: https://firebase.google.com/support/privacy
 - Anthropic: https://www.anthropic.com/legal/privacy
 - Polar: https://polar.sh/legal/privacy
+- Cloudflare: https://www.cloudflare.com/privacypolicy/
 
 ---
 
 ## 5. Transferencias internacionales de datos
 
 Symply se desarrolla en la República de Corea, pero nuestros proveedores de servicios (Google
-Firebase, Anthropic, Polar) procesan datos en servidores que pueden estar ubicados fuera de
+Firebase, Anthropic, Polar, Cloudflare) procesan datos en servidores que pueden estar ubicados fuera de
 Corea, incluido Estados Unidos. Al usar Symply, usted entiende que su información puede ser
 procesada en países distintos al suyo, bajo las salvaguardas que mantiene cada proveedor.
 

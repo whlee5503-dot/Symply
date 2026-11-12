@@ -1,6 +1,6 @@
 # Symply 개인정보처리방침
 
-**최종 수정일: 2026년 10월 25일**
+**최종 수정일: 2026년 11월 12일**
 
 Symply(이하 "본 앱")는 PublicHealth Tech Lab(대표 원호, 이하 "회사")가 개발·운영하는 만성질환
 증상 추적 애플리케이션입니다. 본 개인정보처리방침은 회사가 어떤 정보를 수집하고, 어떻게
@@ -44,7 +44,7 @@ Analytics에 전송하지 않습니다. 이는 앱 개선 목적으로만 사용
 사용되지 않습니다.
 
 ### 1.4 구독·결제 정보
-Symply Pro 구독 시, 결제 처리업체 Polar가 결제 처리를 위해 **이메일 주소**를 제공받습니다.
+Symply Pro 구독 시, 결제 처리업체 Polar가 결제 처리와 구독 확인을 위해 **이메일 주소와 사용자 고유 식별자(UID)**를 제공받습니다.
 **카드 정보 등 결제 수단 정보는 회사가 직접 수집·보관하지 않으며**, Polar가 전적으로 처리합니다.
 
 ---
@@ -90,19 +90,21 @@ Anthropic의 API를 통해 전송된 데이터 처리 방식에 대한 자세한
 |---|---|---|
 | **Google Firebase** (Authentication, Firestore, Analytics) | 로그인, 기록 클라우드 저장, 이용 통계 | 이름, 이메일, 프로필 사진, 증상 기록, 이용 이벤트 |
 | **Anthropic (Claude API)** | AI 기반 증상 패턴 분석 | 증상 기록 (제3항 참조, 일시적 처리) |
-| **Polar** | 구독·결제 처리 | 이메일 주소(결제 시에만) |
+| **Polar** | 구독·결제 처리 | 이메일 주소, 사용자 고유 식별자(UID)(결제 시에만) |
+| **Cloudflare** (Pages, Workers) | 웹사이트 호스팅, 서버 기능 실행, AI 분석 요청 중계 | 접속 정보(IP 주소 등), 서비스 이용 시 전송되는 데이터(증상 기록은 AI 분석 요청 시 경유) |
 
 각 수탁업체는 자체 개인정보처리방침을 보유하고 있습니다:
 - Google/Firebase: https://firebase.google.com/support/privacy
 - Anthropic: https://www.anthropic.com/legal/privacy
 - Polar: https://polar.sh/legal/privacy
+- Cloudflare: https://www.cloudflare.com/privacypolicy/
 
 ---
 
 ## 5. 개인정보의 국외 이전
 
 Symply는 대한민국에서 개발되었으나, 서비스 제공을 위해 이용하는 업체(Google Firebase,
-Anthropic, Polar)는 미국 등 대한민국 외 지역에 소재한 서버에서 데이터를 처리할 수 있습니다.
+Anthropic, Polar, Cloudflare)는 미국 등 대한민국 외 지역에 소재한 서버에서 데이터를 처리할 수 있습니다.
 본 앱을 이용함으로써 이용자는 각 업체가 유지하는 안전조치 하에 정보가 국외에서 처리될 수
 있음에 동의하는 것으로 간주됩니다.
 
