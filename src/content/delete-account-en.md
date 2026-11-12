@@ -17,7 +17,7 @@ If you cannot sign in to the app, email **contact@phtlab.org**.
 
 - Subject: Account deletion request
 - To verify it is you, send the email from **the address you used to sign up for Symply**.
-- Once we confirm the request, we delete the account without undue delay and reply with the result.
+- We delete the account and reply with the result within 10 days of receiving your request. If we are required by law to keep any information, we will tell you that and why.
 
 Guest accounts cannot be verified by email, so please delete them inside the app.
 
@@ -43,7 +43,7 @@ We do not hold card or other payment details ourselves; they are processed by ou
 
 - Deleted data cannot be restored.
 - **A Pro subscription is not cancelled automatically when you delete your account.** To cancel it, email contact@phtlab.org.
-- Data sent for an AI pattern analysis is processed only temporarily to produce the analysis; see section 3 of the Privacy Policy.
+- Data sent for an AI pattern analysis is transmitted to Anthropic to produce the analysis and is not kept permanently beyond standard short-term operational and safety logs; see section 3 of the Privacy Policy.
 - Usage statistics for improving the service are collected only in aggregate form and do not include your user ID.
 
 Contact: contact@phtlab.org

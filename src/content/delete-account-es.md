@@ -17,7 +17,7 @@ Si no puedes iniciar sesión en la app, escribe a **contact@phtlab.org**.
 
 - Asunto: Solicitud de eliminación de cuenta
 - Para verificar tu identidad, envía el correo desde **la dirección con la que te registraste en Symply**.
-- Cuando confirmemos la solicitud, eliminaremos la cuenta sin demora indebida y te responderemos con el resultado.
+- Eliminaremos la cuenta y te responderemos con el resultado en un plazo de 10 días desde que recibamos tu solicitud. Si la ley nos obliga a conservar alguna información, te lo indicaremos junto con el motivo.
 
 Las cuentas de invitado no se pueden verificar por correo, así que elimínalas dentro de la app.
 
@@ -43,7 +43,7 @@ No almacenamos datos de tarjeta ni otros medios de pago; los procesa nuestro pro
 
 - Los datos eliminados no se pueden restaurar.
 - **La suscripción Pro no se cancela automáticamente al eliminar la cuenta.** Para cancelarla, escribe a contact@phtlab.org.
-- Los datos enviados para un análisis de patrones con IA se procesan solo de forma temporal; consulta la sección 3 de la Política de Privacidad.
+- Los datos enviados para un análisis de patrones con IA se transmiten a Anthropic para generar el análisis y no se conservan de forma permanente más allá de los registros operativos y de seguridad estándar de corta duración; consulta la sección 3 de la Política de Privacidad.
 - Las estadísticas de uso para mejorar el servicio se recopilan solo de forma agregada y no incluyen tu ID de usuario.
 
 Contacto: contact@phtlab.org
