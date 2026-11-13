@@ -364,7 +364,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               <span style={{
-                marginLeft: 'system', padding: '3px 10px', borderRadius: '10px',
+                marginLeft: 'auto', padding: '3px 10px', borderRadius: '10px',
                 background: 'var(--color-primary-light)', color: 'var(--color-primary)',
                 fontSize: '0.72rem', fontWeight: 700,
               }}>ACTIVE</span>
@@ -378,7 +378,7 @@ export default function SettingsPage() {
                   {t.settings.plan_free}
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                  {t.settings.plan_free}
+                  {t.settings.plan_free_sub}
                 </div>
               </div>
               {!isRunningInTWA() && (
@@ -421,7 +421,7 @@ export default function SettingsPage() {
           <input
             value={settings.name}
             onChange={e => updateSettings({ name: e.target.value })}
-            placeholder={t.settings.language_sub}
+            placeholder={t.settings.display_name_placeholder}
             style={{
               width: '100%', padding: '8px 12px', borderRadius: '8px',
               border: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
@@ -833,7 +833,7 @@ export default function SettingsPage() {
       {/* ABOUT */}
       <SectionHeader mt={20}>{t.settings.about_title}</SectionHeader>
       <SettingsCard>
-        <SettingsRow label="Symply" value="Version 1.0.0 · Sprint 7" icon="💜" />
+        <SettingsRow label="Symply" value="Version 1.0.0" icon="💜" />
         <SettingsRow label={t.settings.about_feedback} value={t.settings.about_feedback_val} icon="📬" onClick={() => { window.location.href = 'mailto:contact@phtlab.org?subject=Symply%20Feedback' }} />
         <SettingsRow label={t.settings.about_privacy} value={t.settings.about_privacy_val} icon="🔒" onClick={() => {
           const suffix = language === 'ko' ? '/ko' : language === 'es' ? '/es' : ''
