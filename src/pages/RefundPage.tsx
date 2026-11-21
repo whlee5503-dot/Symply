@@ -43,6 +43,7 @@ export default function RefundPage({ lang }: { lang: Lang }) {
                         ol: p => <ol style={{ fontSize: '0.9rem', color: 'var(--color-text)', lineHeight: 1.7, marginBottom: '12px', paddingLeft: '20px' }} {...p} />,
                         li: p => <li style={{ marginBottom: '4px' }} {...p} />,
                         strong: p => <strong style={{ fontWeight: 700 }} {...p} />,
+                        a: p => <a style={{ color: 'var(--color-secondary)', textDecoration: 'underline', textUnderlineOffset: '3px', fontWeight: 600 }} {...p} />,
                     }}
                 >
                     {CONTENT[lang]}
