@@ -1,6 +1,6 @@
 # Política de Privacidad de Symply
 
-**Última actualización: 12 de noviembre de 2026**
+**Última actualización: 21 de noviembre de 2026**
 
 Symply ("nosotros" o "la Aplicación") es una aplicación de seguimiento de síntomas crónicos
 desarrollada por PublicHealth Tech Lab, operada por Won Ho. Esta Política de Privacidad explica
@@ -48,7 +48,7 @@ perfil publicitario suyo.
 
 ### 1.4 Información de suscripción y pago
 Si se suscribe a Symply Pro, nuestro procesador de pagos, Polar, recibe su **dirección de
-correo electrónico y su identificador de usuario (UID)** para procesar la transacción. **No recibimos ni almacenamos los datos de
+correo electrónico y su identificador de usuario (UID)** para procesar la transacción y verificar la suscripción, y su **dirección IP** para determinar su moneda local y el país de los impuestos al pagar. No almacenamos esta dirección IP; solo la transmitimos al crear el pago. **No recibimos ni almacenamos los datos de
 su tarjeta de pago** — estos son gestionados enteramente por Polar.
 
 ---
@@ -98,7 +98,7 @@ procesador de datos para el propósito específico descrito:
 |---|---|---|
 | **Google Firebase** (Authentication, Firestore, Analytics) | Inicio de sesión, almacenamiento en la nube de sus registros, análisis de uso | Nombre, correo electrónico, foto de perfil, registros de síntomas, eventos de uso |
 | **Anthropic (API de Claude)** | Análisis de patrones de síntomas generado por IA | Registros de síntomas (procesamiento transitorio, véase Sección 3) |
-| **Polar** | Procesamiento de suscripciones/pagos | Dirección de correo electrónico, identificador de usuario (UID) (solo para el pago) |
+| **Polar** | Procesamiento de suscripciones/pagos | Dirección de correo electrónico, identificador de usuario (UID), dirección IP (solo para el pago) |
 | **Cloudflare** (Pages, Workers) | Alojamiento del sitio web, ejecución de funciones del servidor y retransmisión de solicitudes de análisis con IA | Información de conexión (como la dirección IP) y datos enviados al usar el servicio (los registros de síntomas pasan por aquí cuando se solicita un análisis con IA) |
 
 Cada uno de estos proveedores tiene su propia política de privacidad que rige cómo manejan los

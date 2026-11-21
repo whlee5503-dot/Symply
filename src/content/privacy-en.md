@@ -1,6 +1,6 @@
 # Symply Privacy Policy
 
-**Last updated: November 12, 2026**
+**Last updated: November 21, 2026**
 
 Symply ("we," "our," or "the App") is a chronic symptom tracking application developed by
 PublicHealth Tech Lab, operated by Won Ho ("we," "us"). This Privacy Policy explains what
@@ -45,7 +45,7 @@ aggregated and is not used to build an advertising profile of you.
 
 ### 1.4 Subscription and Payment Information
 If you subscribe to Symply Pro, our payment processor, Polar, receives your **email address and user ID (UID)**
-to process the transaction. **We do not receive or store your payment card details** — these
+to process the transaction and verify your subscription, and your **IP address** so it can determine your local currency and tax country at checkout. We do not store this IP address; we only pass it along when creating the checkout. **We do not receive or store your payment card details** — these
 are handled entirely by Polar.
 
 ---
@@ -94,7 +94,7 @@ for the specific purpose described:
 |---|---|---|
 | **Google Firebase** (Authentication, Firestore, Analytics) | Sign-in, cloud storage of your logs, usage analytics | Name, email, profile photo, symptom logs, usage events |
 | **Anthropic (Claude API)** | AI-generated symptom pattern analysis | Symptom logs (transient processing, see Section 3) |
-| **Polar** | Subscription/payment processing | Email address, user ID (UID) (for checkout only) |
+| **Polar** | Subscription/payment processing | Email address, user ID (UID), IP address (for checkout only) |
 | **Cloudflare** (Pages, Workers) | Website hosting, running server functions, relaying AI analysis requests | Connection information (such as IP address) and data sent when using the service (symptom logs pass through when an AI analysis is requested) |
 
 Each of these providers has its own privacy policy governing how they handle data on our
