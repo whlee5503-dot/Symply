@@ -839,6 +839,12 @@ export default function SettingsPage() {
           const suffix = language === 'ko' ? '/ko' : language === 'es' ? '/es' : ''
           window.location.href = `/privacy${suffix}`
         }} />
+        {!isRunningInTWA() && (
+          <SettingsRow label={t.settings.about_refund} value={t.settings.about_refund_val} icon="💳" onClick={() => {
+            const suffix = language === 'ko' ? '/ko' : language === 'es' ? '/es' : ''
+            window.location.href = `/refund${suffix}`
+          }} />
+        )}
       </SettingsCard>
 
       {/* ACCOUNT */}

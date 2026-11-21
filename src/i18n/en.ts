@@ -229,6 +229,8 @@ export const en = {
     about_version: 'Version',
     about_privacy: 'Privacy',
     about_privacy_val: 'No ads. No data sales. Ever.',
+    about_refund: 'Refunds & cancellation',
+    about_refund_val: 'Full refund within 7 days',
     about_evidence: 'Evidence base',
     about_evidence_val: 'MPH-informed design',
     about_disclaimer: 'Symply is not a medical device. All medical decisions should be made with your healthcare provider.',

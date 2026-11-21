@@ -298,7 +298,7 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer style={{ padding: '24px', textAlign: 'center', borderTop: '1px solid #ede9fe', background: '#faf5ff' }}>
         <p style={{ fontSize: '0.78rem', color: '#9ca3af' }}>
-          {c.footer} · <a href="mailto:contact@phtlab.org" style={{ color: '#7c3aed', textDecoration: 'none' }}>Contact</a>
+          {c.footer} · {!isRunningInTWA() && (<><a href={language === 'ko' ? '/refund/ko' : language === 'es' ? '/refund/es' : '/refund'} style={{ color: '#7c3aed', textDecoration: 'none' }}>{language === 'ko' ? '환불·해지' : language === 'es' ? 'Reembolsos' : 'Refunds'}</a> · </>)}<a href="mailto:contact@phtlab.org" style={{ color: '#7c3aed', textDecoration: 'none' }}>Contact</a>
         </p>
       </footer>
     </div>

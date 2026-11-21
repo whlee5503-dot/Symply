@@ -15,6 +15,7 @@ import LandingPage from './pages/LandingPage'
 import { lazy, Suspense } from 'react'
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const DeleteAccountPage = lazy(() => import('./pages/DeleteAccountPage'))
+const RefundPage = lazy(() => import('./pages/RefundPage'))
 import { initNotifications } from './lib/notifications'
 import { trackEvent } from './lib/trackEvent'
 import { useEffect } from 'react'
@@ -76,6 +77,9 @@ function AppRoutes() {
           <Route path="/delete-account" element={<Suspense fallback={null}><DeleteAccountPage lang="en" /></Suspense>} />
           <Route path="/delete-account/ko" element={<Suspense fallback={null}><DeleteAccountPage lang="ko" /></Suspense>} />
           <Route path="/delete-account/es" element={<Suspense fallback={null}><DeleteAccountPage lang="es" /></Suspense>} />
+          <Route path="/refund" element={<Suspense fallback={null}><RefundPage lang="en" /></Suspense>} />
+          <Route path="/refund/ko" element={<Suspense fallback={null}><RefundPage lang="ko" /></Suspense>} />
+          <Route path="/refund/es" element={<Suspense fallback={null}><RefundPage lang="es" /></Suspense>} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </>
@@ -103,6 +107,9 @@ function AppRoutes() {
         <Route path="/delete-account" element={<Suspense fallback={null}><DeleteAccountPage lang="en" /></Suspense>} />
         <Route path="/delete-account/ko" element={<Suspense fallback={null}><DeleteAccountPage lang="ko" /></Suspense>} />
         <Route path="/delete-account/es" element={<Suspense fallback={null}><DeleteAccountPage lang="es" /></Suspense>} />
+        <Route path="/refund" element={<Suspense fallback={null}><RefundPage lang="en" /></Suspense>} />
+        <Route path="/refund/ko" element={<Suspense fallback={null}><RefundPage lang="ko" /></Suspense>} />
+        <Route path="/refund/es" element={<Suspense fallback={null}><RefundPage lang="es" /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
