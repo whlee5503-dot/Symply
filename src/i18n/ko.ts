@@ -304,13 +304,12 @@ export const ko: Translations = {
 
   upgrade: {
     title: 'Pro로 업그레이드',
-    subtitle: '{feature}는 Pro 기능입니다. 커피 한 잔 가격으로 모든 Pro 기능을 사용하세요.',
+    subtitle: 'Pro로 AI 분석을 월 20회까지 이용하고, 30·60·90일 진료 준비 보고서 PDF를 만들 수 있어요.',
     feature_ai: 'AI 패턴 분석',
     feature_report: '진료 준비 보고서 PDF',
     features: [
-      { icon: '🤖', text: 'AI 패턴 분석 — 개인화된 인사이트' },
-      { icon: '📄', text: '진료 준비 보고서 PDF — 임상 요약' },
-      { icon: '📊', text: '무제한 기록 & 고급 차트' },
+      { icon: '🤖', text: 'AI 패턴 분석 월 20회 — 개인화된 인사이트' },
+      { icon: '📄', text: '30·60·90일 진료 준비 보고서 PDF — 임상 요약' },
     ],
     price: '4,900원',
     per_month: '/ 월',

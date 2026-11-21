@@ -303,13 +303,12 @@ export const es: Translations = {
 
   upgrade: {
     title: 'Mejorar a Pro',
-    subtitle: '{feature} es una función Pro. Desbloquea todo por menos que un café al mes.',
+    subtitle: 'Mejora a Pro para hasta 20 análisis de IA al mes e informes PDF para la consulta de 30/60/90 días.',
     feature_ai: 'Análisis de IA',
     feature_report: 'Informe para la Consulta PDF',
     features: [
-      { icon: '🤖', text: 'Análisis de IA — insights personalizados' },
-      { icon: '📄', text: 'Informe para la Consulta PDF — resumen clínico' },
-      { icon: '📊', text: 'Historial ilimitado y gráficos avanzados' },
+      { icon: '🤖', text: 'Análisis de IA, 20 al mes — insights personalizados' },
+      { icon: '📄', text: 'Informe para la Consulta PDF de 30/60/90 días — resumen clínico' },
     ],
     price: '$3.99',
     per_month: '/ mes',

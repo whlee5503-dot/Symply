@@ -309,13 +309,12 @@ export const en = {
   // UpgradeModal
   upgrade: {
     title: 'Upgrade to Pro',
-    subtitle: '{feature} is a Pro feature. Unlock all Pro features for less than a coffee a month.',
+    subtitle: 'Upgrade to Pro for up to 20 AI analyses a month and 30/60/90-day visit-prep PDF reports.',
     feature_ai: 'AI Pattern Analysis',
     feature_report: "Visit-Prep Report PDF",
     features: [
-      { icon: '🤖', text: 'AI Pattern Analysis — personalized insights' },
-      { icon: '📄', text: 'Visit-Prep Report PDF — clinical summary' },
-      { icon: '📊', text: 'Unlimited history & advanced charts' },
+      { icon: '🤖', text: 'AI Pattern Analysis, 20 per month — personalized insights' },
+      { icon: '📄', text: '30/60/90-day Visit-Prep Report PDF — clinical summary' },
     ],
     price: '$3.99',
     per_month: '/ month',
