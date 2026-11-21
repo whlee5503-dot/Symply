@@ -38,6 +38,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       })
     }
 
+    const clientIp = context.request.headers.get('CF-Connecting-IP')
     const { successUrl } = await context.request.json() as {
       successUrl: string
     }
@@ -55,6 +56,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         ...(user.email ? { customer_email: user.email } : {}),
         // verify-subscription checks that this uid matches the signed-in user.
         metadata: { uid: user.uid },
+        // Lets Polar pick the buyer's local currency (e.g. KRW in Korea).
+        ...(clientIp ? { customer_ip_address: clientIp } : {}),
       }),
     })
 
