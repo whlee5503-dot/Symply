@@ -319,7 +319,7 @@ export const en = {
     ],
     price: '$3.99',
     per_month: '/ month',
-    annual: 'or $29.99/year · Cancel anytime',
+    annual: 'Cancel anytime',
     cta: '✨ Start Pro — $3.99/mo',
     loading: '⏳ Redirecting to checkout...',
     later: 'Maybe later',

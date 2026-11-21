@@ -313,7 +313,7 @@ export const es: Translations = {
     ],
     price: '$3.99',
     per_month: '/ mes',
-    annual: 'o $29.99/año · Cancela cuando quieras',
+    annual: 'Cancela cuando quieras',
     cta: '✨ Comenzar Pro — $3.99/mes',
     loading: '⏳ Redirigiendo al pago...',
     later: 'Quizás después',

@@ -37,7 +37,7 @@ const CONTENT = {
     pricingSub: 'No ads. No data sales. Ever.',
     freeFeatures: ['✓ Unlimited symptom logging', '✓ Calendar heatmap', '✓ Trend charts', '✓ Pattern Insights (preview)', '✓ AI Pattern Analysis: 5 per month (sign-in required)', '✓ Visit-Prep Report PDF: up to 14 days', '✓ Daily check-in reminders'],
     proFeatures: ['✓ Everything in Free', '✓ AI Pattern Analysis: generous monthly allowance', '✓ Visit-Prep Report PDF: 30, 60 and 90 days', '✓ Priority support'],
-    proSave: 'or $29.99/year — save 37%',
+    proSave: '', proPrice: '$3.99', proPeriod: '/month',
     startFree: 'Get started free',
     startPro: '✨ Start Pro',
     builtBy: 'Built by a <b>public health professional (MPH)</b> who believes chronic illness patients deserve to be heard. No ads. No data sales.',
@@ -77,7 +77,7 @@ const CONTENT = {
     pricingSub: 'Sin anuncios. Sin venta de datos.',
     freeFeatures: ['✓ Registro ilimitado de síntomas', '✓ Mapa de calor del calendario', '✓ Gráficos de tendencias', '✓ Insights de patrones (vista previa)', '✓ Análisis de IA: 5 al mes (requiere iniciar sesión)', '✓ Informe para la consulta en PDF: hasta 14 días', '✓ Recordatorios diarios'],
     proFeatures: ['✓ Todo lo del plan gratuito', '✓ Análisis de IA: amplio uso mensual', '✓ Informe para la consulta en PDF: 30, 60 y 90 días', '✓ Soporte prioritario'],
-    proSave: 'o $29.99/año — ahorra 37%',
+    proSave: '', proPrice: '$3.99', proPeriod: '/mes',
     startFree: 'Empezar gratis',
     startPro: '✨ Comenzar Pro',
     builtBy: 'Creado por un <b>profesional de salud pública (MPH)</b> que cree que los pacientes crónicos merecen ser escuchados. Sin anuncios. Sin venta de datos.',
@@ -92,7 +92,7 @@ const CONTENT = {
     hero2: '당신의 고통을 증명하세요.',
     heroSub: '30초 체크인. AI로 패턴 발견. 의사가 3분 안에 읽을 수 있는 임상 보고서를 생성하세요.',
     cta: '무료로 시작하기 →',
-    ctaSub: '무료로 시작 · Pro는 월 $3.99부터',
+    ctaSub: '무료로 시작 · Pro는 월 4,900원부터',
     ctaSubFree: '무료로 시작',
     guestCta: '먼저 둘러보기 — 가입 없이 바로 체험',
     guestBusy: '불러오는 중…',
@@ -117,12 +117,12 @@ const CONTENT = {
     pricingSub: '광고 없음. 데이터 판매 없음.',
     freeFeatures: ['✓ 무제한 증상 기록', '✓ 달력 히트맵', '✓ 트렌드 차트', '✓ 패턴 인사이트 (미리보기)', '✓ AI 패턴 분석: 월 5회 (로그인 필요)', '✓ 진료 준비 보고서 PDF: 14일까지', '✓ 매일 체크인 리마인더'],
     proFeatures: ['✓ 무료 기능 전체', '✓ AI 패턴 분석: 넉넉한 월 사용량', '✓ 진료 준비 보고서 PDF: 30·60·90일', '✓ 우선 지원'],
-    proSave: '또는 $29.99/년 — 37% 절약',
+    proSave: '', proPrice: '4,900원', proPeriod: '/월',
     startFree: '무료로 시작하기',
     startPro: '✨ Pro 시작하기',
     builtBy: '<b>공중보건 전문가(MPH)</b>가 만성질환 환자들이 마땅히 들을 자격이 있다는 신념으로 만들었습니다. 광고 없음. 데이터 판매 없음.',
     finalTitle: '오늘부터 기록을 시작하세요.',
-    finalSub: '무료로 시작. 신용카드 불필요. 언제든 취소 가능.',
+    finalSub: '무료로 시작. 신용카드 불필요. 언제든 해지 가능.',
     footer: '© 2026 Symply · 광고 없음 · 데이터 판매 없음',
     signIn: '시작하기',
   }
@@ -264,8 +264,8 @@ export default function LandingPage() {
                 </div>
                 <div style={{ fontWeight: 700, fontSize: '1rem', color: '#7c3aed', marginBottom: '4px' }}>Pro</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b' }}>$3.99</span>
-                  <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>/month</span>
+                  <span style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b' }}>{c.proPrice}</span>
+                  <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>{c.proPeriod}</span>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#7c3aed', marginBottom: '16px', fontWeight: 600 }}>{c.proSave}</div>
                 {c.proFeatures.map((f, i) => <div key={i} style={{ fontSize: '0.83rem', color: '#4b5563', marginBottom: '8px' }}>{f}</div>)}
