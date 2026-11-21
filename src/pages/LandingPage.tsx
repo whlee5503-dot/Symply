@@ -252,7 +252,7 @@ export default function LandingPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
               <div style={{ padding: '28px', borderRadius: '18px', border: '1.5px solid #ede9fe', background: '#faf5ff' }}>
                 <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1e1b4b', marginBottom: '4px' }}>Free</div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '16px' }}>$0</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '16px' }}>{c.freePrice}</div>
                 {c.freeFeatures.map((f, i) => <div key={i} style={{ fontSize: '0.83rem', color: '#6b7280', marginBottom: '8px' }}>{f}</div>)}
                 <button onClick={goToLogin} style={{ width: '100%', marginTop: '20px', padding: '12px', borderRadius: '10px', border: '1.5px solid #7c3aed', background: 'transparent', color: '#7c3aed', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
                   {c.startFree}
