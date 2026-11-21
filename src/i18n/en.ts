@@ -105,7 +105,7 @@ export const en = {
     ai_pro_subtitle: `Claude AI describes the patterns in your own symptom entries. It is for information only and is not a diagnosis.`,
     ai_unlock: 'Unlock AI Analysis',
     ai_free_remaining: 'Free analyses remaining this month: {n}/5',
-    ai_free_limit_reached: "You've used all 5 free analyses this month. Upgrade to Pro for unlimited.",
+    ai_free_limit_reached: "You've used all 5 free analyses this month. Upgrade to Pro for up to 20 per month.", ai_pro_limit_reached: "You've used all 20 analyses this month. They will be available again next month.",
     ai_analyze: '✨ Analyze My Patterns',
     ai_analyzing: '🔄 Analyzing...',
     ai_reanalyze: '🔄 Re-analyze',

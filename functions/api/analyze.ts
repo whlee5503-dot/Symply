@@ -130,6 +130,7 @@ function buildTimingSection(logs: Record<string, unknown>[]): string {
 }
 
 const LIMITED_DATA_DAYS = 14
+const MAX_LOG_ENTRIES = 30
 
 // Keeps the model honest: describe what was logged, do not diagnose or guess.
 function buildSafetySection(logCount: number): string {
@@ -161,16 +162,17 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
       return Response.json({ error: 'login_required' }, { status: 403, headers: CORS })
     }
 
-    const { logs, language = 'en', cycleData } = await ctx.request.json() as {
+    const { logs: rawLogs, language = 'en', cycleData } = await ctx.request.json() as {
       logs: Record<string, unknown>[]
       language?: string
       cycleData?: CycleSummary
     }
 
-    if (!logs || logs.length === 0) {
+    if (!rawLogs || rawLogs.length === 0) {
       return Response.json({ error: 'No data provided' }, { status: 400, headers: CORS })
     }
 
+    const logs = [...rawLogs].sort((a, b) => String(a.id ?? '').localeCompare(String(b.id ?? ''))).slice(-MAX_LOG_ENTRIES)
     const mockAnalysis = language === 'ko' ? MOCK_ANALYSIS_KO : language === 'es' ? MOCK_ANALYSIS_ES : MOCK_ANALYSIS_EN
     const langInstruction = LANG_INSTRUCTION[language] ?? LANG_INSTRUCTION.en
     const cycleSection = cycleData ? buildCycleSection(cycleData) : ''
@@ -193,7 +195,7 @@ ${langInstruction}
 Analyze the following ${logs.length} days of symptom data and provide personalized insights.
 ${cycleSection}${timingSection}${safetySection}
 Data (JSON):
-${JSON.stringify(logs, null, 2)}
+${JSON.stringify(logs)}
 
 Please provide your analysis in the following JSON format only (no markdown, no extra text):
 {
