@@ -103,7 +103,7 @@ export const es: Translations = {
     ai_pro_subtitle: `Claude AI describe los patrones de tus propios registros de síntomas. Es solo informativo y no es un diagnóstico.`,
     ai_unlock: 'Desbloquear análisis de IA',
     ai_free_remaining: 'Análisis gratuitos restantes este mes: {n}/5',
-    ai_free_limit_reached: 'Has usado los 5 análisis gratuitos de este mes. Actualiza a Pro para uso ilimitado.',
+    ai_free_limit_reached: 'Has usado los 5 análisis gratuitos de este mes. Actualiza a Pro para hasta 20 al mes.', ai_pro_limit_reached: 'Has usado los 20 análisis de este mes. Podrás volver a usarlos el próximo mes.',
     ai_analyze: '✨ Analizar mis patrones',
     ai_analyzing: '🔄 Analizando...',
     ai_reanalyze: '🔄 Re-analizar',

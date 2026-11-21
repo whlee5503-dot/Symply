@@ -103,7 +103,7 @@ export const ko: Translations = {
     ai_pro_subtitle: `Claude AI가 내 증상 기록에서 나타난 패턴을 설명해 줍니다. 진단이 아닌 참고용 설명입니다.`,
     ai_unlock: 'AI 분석 잠금 해제',
     ai_free_remaining: '이번 달 무료 분석 남은 횟수: {n}/5',
-    ai_free_limit_reached: '이번 달 무료 분석 5회를 모두 사용했습니다. Pro로 업그레이드하면 무제한으로 이용할 수 있습니다.',
+    ai_free_limit_reached: '이번 달 무료 분석 5회를 모두 사용했습니다. Pro로 업그레이드하면 월 20회까지 이용할 수 있습니다.', ai_pro_limit_reached: '이번 달 분석 20회를 모두 사용했습니다. 다음 달에 다시 이용할 수 있습니다.',
     ai_analyze: '✨ 내 패턴 분석하기',
     ai_analyzing: '🔄 분석 중...',
     ai_reanalyze: '🔄 다시 분석',

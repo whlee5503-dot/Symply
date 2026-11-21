@@ -193,7 +193,7 @@ export default function InsightsPage() {
       if (e instanceof LoginRequiredError) {
         setAiError(guestNotice)
       } else if (e instanceof AnalysisQuotaError) {
-        if (e.reason === 'limit') {
+        if (e.reason === 'limit' && isPro) { setAiError(t.insights.ai_pro_limit_reached) } else if (e.reason === 'limit') {
           setFreeCallsUsed(5)
           setShowUpgrade(true)
         } else {

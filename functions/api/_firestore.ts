@@ -3,7 +3,7 @@ const DOC_ROOT = `projects/${PROJECT_ID}/databases/(default)/documents`
 const BASE = `https://firestore.googleapis.com/v1/${DOC_ROOT}`
 
 // Free users get this many real AI analyses per calendar month.
-export const FREE_MONTHLY_LIMIT = 5
+export const FREE_MONTHLY_LIMIT = 5; export const PRO_MONTHLY_LIMIT = 20
 // Value stored in users/{uid}.plan for paying users. Adjust if the app uses a different string.
 const PRO_PLAN = 'pro'
 
@@ -126,18 +126,18 @@ export type QuotaResult =
     | { ok: false; reason: 'limit' | 'busy' }
 
 // Reserves one AI call BEFORE the model is called.
-// - Pro users: always allowed, nothing is counted.
+// - Pro users: blocked after PRO_MONTHLY_LIMIT calls in the current month.
 // - Free users: blocked after FREE_MONTHLY_LIMIT calls in the current month.
 // The write is guarded by the document's updateTime, so parallel requests
 // cannot all pass the check at once (the losers get reason: 'busy').
 // Call refund() if the AI call fails or falls back to mock output.
 export async function reserveAiCall(env: FirestoreEnv, uid: string): Promise<QuotaResult> {
     const usage = await readUserUsage(env, uid)
-    if (usage.plan === PRO_PLAN) return { ok: true, refund: async () => { } }
+    // Pro users are counted too, against the higher PRO_MONTHLY_LIMIT.
 
     const month = currentMonthKey()
     const used = usage.month === month ? usage.count : 0
-    if (used >= FREE_MONTHLY_LIMIT) return { ok: false, reason: 'limit' }
+    if (used >= (usage.plan === PRO_PLAN ? PRO_MONTHLY_LIMIT : FREE_MONTHLY_LIMIT)) return { ok: false, reason: 'limit' }
 
     const docName = `${DOC_ROOT}/users/${encodeURIComponent(uid)}`
     const res = await commitWrite(env, {
