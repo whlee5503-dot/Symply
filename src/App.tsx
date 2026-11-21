@@ -16,6 +16,7 @@ import { lazy, Suspense } from 'react'
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const DeleteAccountPage = lazy(() => import('./pages/DeleteAccountPage'))
 const RefundPage = lazy(() => import('./pages/RefundPage'))
+const TermsPage = lazy(() => import('./pages/TermsPage'))
 import { initNotifications } from './lib/notifications'
 import { trackEvent } from './lib/trackEvent'
 import { useEffect } from 'react'
@@ -80,6 +81,9 @@ function AppRoutes() {
           <Route path="/refund" element={<Suspense fallback={null}><RefundPage lang="en" /></Suspense>} />
           <Route path="/refund/ko" element={<Suspense fallback={null}><RefundPage lang="ko" /></Suspense>} />
           <Route path="/refund/es" element={<Suspense fallback={null}><RefundPage lang="es" /></Suspense>} />
+          <Route path="/terms" element={<Suspense fallback={null}><TermsPage lang="en" /></Suspense>} />
+          <Route path="/terms/ko" element={<Suspense fallback={null}><TermsPage lang="ko" /></Suspense>} />
+          <Route path="/terms/es" element={<Suspense fallback={null}><TermsPage lang="es" /></Suspense>} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </>
@@ -110,6 +114,9 @@ function AppRoutes() {
         <Route path="/refund" element={<Suspense fallback={null}><RefundPage lang="en" /></Suspense>} />
         <Route path="/refund/ko" element={<Suspense fallback={null}><RefundPage lang="ko" /></Suspense>} />
         <Route path="/refund/es" element={<Suspense fallback={null}><RefundPage lang="es" /></Suspense>} />
+        <Route path="/terms" element={<Suspense fallback={null}><TermsPage lang="en" /></Suspense>} />
+        <Route path="/terms/ko" element={<Suspense fallback={null}><TermsPage lang="ko" /></Suspense>} />
+        <Route path="/terms/es" element={<Suspense fallback={null}><TermsPage lang="es" /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />

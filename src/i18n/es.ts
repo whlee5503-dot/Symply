@@ -227,6 +227,8 @@ export const es: Translations = {
     about_privacy_val: 'Sin anuncios. Sin venta de datos.',
     about_refund: 'Reembolsos y cancelación',
     about_refund_val: 'Reembolso total en 7 días',
+    about_terms: 'Términos del servicio',
+    about_terms_val: 'Condiciones de uso',
     about_evidence: 'Base de evidencia',
     about_evidence_val: 'Diseño basado en MPH',
     about_disclaimer: 'Symply no es un dispositivo médico. Todas las decisiones médicas deben tomarse con tu proveedor de salud.',

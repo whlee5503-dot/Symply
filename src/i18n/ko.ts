@@ -228,6 +228,8 @@ export const ko: Translations = {
     about_privacy_val: '광고 없음. 데이터 판매 없음.',
     about_refund: '환불·구독 해지',
     about_refund_val: '7일 이내 전액 환불',
+    about_terms: '이용약관',
+    about_terms_val: '서비스 이용 조건',
     about_evidence: '근거 기반',
     about_evidence_val: 'MPH 전문가 설계',
     about_disclaimer: 'Symply는 의료 기기가 아닙니다. 모든 의료적 결정은 전문 의료인과 상담하세요.',
