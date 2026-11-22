@@ -190,6 +190,28 @@ export async function activatePro(env: FirestoreEnv, uid: string): Promise<void>
     if (!res.ok) throw new Error(`Firestore write failed: ${res.status}`)
 }
 
+// Called only by the server when Polar reports a revoked subscription or a full refund.
+// Only touches an existing user document, so a deleted account is never re-created.
+export async function deactivatePro(env: FirestoreEnv, uid: string): Promise<void> {
+    const docName = `${DOC_ROOT}/users/${encodeURIComponent(uid)}`
+    const res = await commitWrite(env, {
+        update: {
+            name: docName,
+            fields: {
+                plan: { stringValue: 'free' },
+                planDeactivatedAt: { stringValue: new Date().toISOString() },
+            },
+        },
+        updateMask: { fieldPaths: ['plan', 'planDeactivatedAt'] },
+        currentDocument: { exists: true },
+    })
+    if (res.ok) return
+
+    const body = await res.text()
+    // The user document is already gone (account deleted): nothing to downgrade.
+    if (body.includes('NOT_FOUND') || body.includes('FAILED_PRECONDITION')) return
+    throw new Error(`Firestore write failed: ${res.status}`)
+}
 // Deletes every document under logs/{uid}/entries and the users/{uid} document.
 // Safe to call again: documents that are already gone are simply skipped.
 export async function deleteUserData(env: FirestoreEnv, uid: string): Promise<void> {
