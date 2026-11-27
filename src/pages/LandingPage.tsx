@@ -300,6 +300,14 @@ export default function LandingPage() {
         <p style={{ fontSize: '0.78rem', color: '#9ca3af' }}>
           {c.footer} · {!isRunningInTWA() && (<><a href={language === 'ko' ? '/refund/ko' : language === 'es' ? '/refund/es' : '/refund'} style={{ color: '#7c3aed', textDecoration: 'none' }}>{language === 'ko' ? '환불·해지' : language === 'es' ? 'Reembolsos' : 'Refunds'}</a> · <a href={language === 'ko' ? '/terms/ko' : language === 'es' ? '/terms/es' : '/terms'} style={{ color: '#7c3aed', textDecoration: 'none' }}>{language === 'ko' ? '이용약관' : language === 'es' ? 'Términos' : 'Terms'}</a> · </>)}<a href="mailto:contact@phtlab.org" style={{ color: '#7c3aed', textDecoration: 'none' }}>Contact</a>
         </p>
+        {language === 'ko' && (
+          <div style={{ marginTop: '12px', fontSize: '0.72rem', lineHeight: 1.7, color: '#9ca3af' }}>
+            <div>상호: PublicHealth Tech Lab (퍼블릭헬스테크랩) · 대표자: 이원호</div>
+            <div>사업자등록번호: 646-34-01800 · 통신판매업 신고번호: 제2026-대전유성-2376호</div>
+            <div>주소: 대전광역시 유성구 봉산로 45, 101동 205호 (송강동, 송강마을1단지)</div>
+            <div>전화: 010-2405-3386 · 이메일: contact@phtlab.org</div>
+          </div>
+        )}
       </footer>
     </div>
   )
